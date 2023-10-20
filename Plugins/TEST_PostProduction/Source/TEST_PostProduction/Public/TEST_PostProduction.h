@@ -26,4 +26,26 @@ private:
 
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
+
+
+#pragma region CustomEditorTab
+
+	void RegisterCustomEditorTab();
+
+	TSharedRef<SDockTab> OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs);
+
+#pragma endregion 
+
+#pragma region ContentBrowserMenuExtention
+
+	void InitCBMenuExtension();
+
+	TSharedRef<FExtender> CustomCBMenuExtender(const TArray<FString>& SeletedPaths);
+
+	void AddCBMenuEntry(FMenuBuilder& MenuBuilder);
+
+	void OnDeleteUnusedAssetButtonClicked();
+#pragma endregion
+	
+
 };

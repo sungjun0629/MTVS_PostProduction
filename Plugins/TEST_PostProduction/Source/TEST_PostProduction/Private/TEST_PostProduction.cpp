@@ -5,6 +5,9 @@
 #include "TEST_PostProductionCommands.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
+#include "ContentBrowserModule.h"
+#include "Modules/ModuleManager.h"
+#include "PostProductionWidget.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -27,6 +30,9 @@ void FTEST_PostProductionModule::StartupModule()
 		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FTEST_PostProductionModule::RegisterMenus));
+
+	
+	RegisterCustomEditorTab();
 }
 
 void FTEST_PostProductionModule::ShutdownModule()
@@ -45,13 +51,7 @@ void FTEST_PostProductionModule::ShutdownModule()
 
 void FTEST_PostProductionModule::PluginButtonClicked()
 {
-	// Put your "OnButtonClicked" stuff here
-	FText DialogText = FText::Format(
-							LOCTEXT("PluginButtonDialogText", "Add code to {0} in {1} to override this button's actions"),
-							FText::FromString(TEXT("FTEST_PostProductionModule::PluginButtonClicked()")),
-							FText::FromString(TEXT("TEST_PostProduction.cpp"))
-					   );
-	FMessageDialog::Open(EAppMsgType::Ok, DialogText);
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
 }
 
 void FTEST_PostProductionModule::RegisterMenus()
@@ -78,6 +78,87 @@ void FTEST_PostProductionModule::RegisterMenus()
 		}
 	}
 }
+
+
+#pragma region CustomEditorTab
+
+void FTEST_PostProductionModule::RegisterCustomEditorTab()
+{
+	// Enroll NomadTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("PostProduction"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnPostProductionTab)).SetDisplayName(FText::FromString("PostProduiction Tab"));
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+	[
+		SNew(SPostProductionWidget)
+	]; 
+}
+
+#pragma endregion 
+
+#pragma region ContentBrowserMenuExtention
+
+void FTEST_PostProductionModule::InitCBMenuExtension()
+{
+	//<---------- Added a Custom Delegate to menu extender ---------->
+	// Load Content Browser Module
+	FContentBrowserModule& ContentBrowserModule = 
+		FModuleManager::LoadModuleChecked<FContentBrowserModule>(TEXT("Content Browser"));
+
+	TArray<FContentBrowserMenuExtender_SelectedPaths>& ContentBrowserModuleMenuExtenders =
+		ContentBrowserModule.GetAllPathViewContextMenuExtenders();
+	
+	// custom Delegate, add Address to enroll the function
+	FContentBrowserMenuExtender_SelectedPaths CustomCBMenuDelegate;
+	CustomCBMenuDelegate.BindRaw(this, &FTEST_PostProductionModule::CustomCBMenuExtender);
+	ContentBrowserModuleMenuExtenders.Add(CustomCBMenuDelegate);
+
+	// Add and Bind in One Line
+	//ContentBrowserModuleMenuExtenders.Add(FContentBrowserMenuExtender_SelectedPaths::CreateRaw(this,&FTEST_PostProductionModule::CustomCBMenuExtender));
+
+
+
+}
+
+TSharedRef<FExtender> FTEST_PostProductionModule::CustomCBMenuExtender(const TArray<FString>& SeletedPaths)
+{
+	TSharedRef<FExtender> MenuExtender (new FExtender());
+
+	// how many folders are selected
+	if (SeletedPaths.Num() > 0)
+	{
+		MenuExtender->AddMenuExtension(FName("Delete"),
+		EExtensionHook::After, 
+		TSharedPtr<FUICommandList>(),
+		// second Binding : Define the details for the menu entry
+		FMenuExtensionDelegate::CreateRaw(this, &FTEST_PostProductionModule::AddCBMenuEntry)
+		);
+	}
+
+	return MenuExtender;
+}
+
+void FTEST_PostProductionModule::AddCBMenuEntry(FMenuBuilder& MenuBuilder)
+{
+	MenuBuilder.AddMenuEntry
+	(
+		LOCTEXT("TEST_PostProduction", "TEST_PostProduction"),
+		LOCTEXT("TEST_PostProduction_ToolTip", "TEST_PostProduction"),
+		FSlateIcon(),
+		//third Binding : the actual function to execute
+		FUIAction(FExecuteAction::CreateRaw(this, &FTEST_PostProductionModule::OnDeleteUnusedAssetButtonClicked))
+	);
+}
+
+void FTEST_PostProductionModule::OnDeleteUnusedAssetButtonClicked()
+{
+	FMessageDialog::Open(EAppMsgType::Ok, LOCTEXT("TEST_PostProduction", "TEST_PostProduction"));
+}
+
+#pragma endregion
 
 #undef LOCTEXT_NAMESPACE
 	

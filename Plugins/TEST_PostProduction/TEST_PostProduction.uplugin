@@ -18,7 +18,7 @@
 		{
 			"Name": "TEST_PostProduction",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault"
 		}
 	]
 }
