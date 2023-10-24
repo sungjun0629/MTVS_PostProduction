@@ -15,6 +15,7 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Text/STextBlock.h"
 #include "WebBrowser/Public/SWebBrowser.h"
+#include "Framework/Docking/TabManager.h"
 
 
 void SPostProductionWidget::Construct(const FArguments& InArgs)
@@ -23,7 +24,10 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 	bCanSupportFocus = true;
 
 	FSlateFontInfo TitleTextFont = FCoreStyle::Get().GetFontStyle(FName("EmbossedText"));
-	TitleTextFont.Size = 30;
+	FSlateFontInfo SubTitleTextFont = FCoreStyle::Get().GetFontStyle(FName("EmbossedText"));
+	TitleTextFont.Size = 35;
+	SubTitleTextFont.Size = 15;
+
 
 	ChildSlot
 		[	//Main vertical box
@@ -32,11 +36,22 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 				//First vertical slot for title text
 				+ SVerticalBox::Slot()
 				.AutoHeight()
-				.Padding(0,80,0,50)
+				.Padding(0,40,0,0)
 				[
 					SNew(STextBlock)
-						.Text(FText::FromString(TEXT("Login")))
+						.Text(FText::FromString(TEXT("LIFE")))
 						.Font(TitleTextFont)
+						.Justification(ETextJustify::Center)
+						.ColorAndOpacity(FColor::White)
+				]
+
+				+SVerticalBox::Slot()
+				.AutoHeight()
+				.Padding(0, 20, 0, 80)
+				[
+					SNew(STextBlock)
+						.Text(FText::FromString(TEXT("Give Life to Digital Character")))
+						.Font(SubTitleTextFont)
 						.Justification(ETextJustify::Center)
 						.ColorAndOpacity(FColor::White)
 				]
@@ -46,37 +61,70 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 				.AutoHeight()
 				.Padding(100,0, 100,30)
 				[
-					SNew(SButton)
-						.OnClicked(this, &SPostProductionWidget::OnKakaoLoginClicked)
-						.HAlign(HAlign_Center)
-						[
-							SNew(STextBlock)
-								.Text(FText::FromString("Kakao Login"))
-								.ColorAndOpacity(FSlateColor(FLinearColor::White))
-						]
-				]
+					SNew(SHorizontalBox)
+					
+					// Kakao Login Layout
+					+ SHorizontalBox::Slot()
+					.AutoWidth()
+					.Padding(50, 0, 20, 0)
+					[
+						SNew(SButton)
+							.OnClicked(this, &SPostProductionWidget::OnKakaoLoginClicked)
+							.HAlign(HAlign_Center)
+							.VAlign(VAlign_Center)
+							[
+								SNew(STextBlock)
+									.Text(FText::FromString("Kakao Login"))
+									.ColorAndOpacity(FSlateColor(FLinearColor::White))
+							]
+					]
 
-				+ SVerticalBox::Slot()
-				.AutoHeight()
-				.Padding(100, 0, 100, 30)
-				[
-					SNew(SButton)
-						.Text(FText::FromString("GitHub Login"))
-						.OnClicked(this, &SPostProductionWidget::OnGitHubLoginClicked)
-						.HAlign(HAlign_Center)
-				]
 
+					// GitHub Login Layout
+					+SHorizontalBox::Slot()
+					.AutoWidth()
+					.Padding(0, 0, 0, 0)
+					[
+						SNew(SButton)
+							.VAlign(VAlign_Center)
+							.Text(FText::FromString("GitHub Login"))
+							.OnClicked(this, &SPostProductionWidget::OnGitHubLoginClicked)
+							.HAlign(HAlign_Center)
+					]
+				]
 		];
 }
 
 FReply SPostProductionWidget::OnKakaoLoginClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Kakao Login Clicked"));
+
+	// Open the new editor tab
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+
+	// Close the old tab if it exists
+	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));
+	if (OldTab.IsValid())
+	{
+		OldTab->RequestCloseTab();
+	}
+
 	return FReply::Handled();
 }
 
 FReply SPostProductionWidget::OnGitHubLoginClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("GitHub Login Clicked"));
+
+	// Open the new editor tab
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	
+	// Close the old tab if it exists
+	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));
+	if (OldTab.IsValid())
+	{
+		OldTab->RequestCloseTab();
+	}
+
 	return FReply::Handled();
 }

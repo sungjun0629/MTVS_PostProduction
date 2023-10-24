@@ -28,7 +28,11 @@ public class TEST_PostProduction : ModuleRules
 			{
 				"Core",
                 "Blutility",
-                "WebBrowser"
+                "WebBrowser",
+                "EditorWidgets",
+                "Json",
+				"JsonUtilities",
+				"HTTP"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

@@ -8,6 +8,7 @@
 #include "ContentBrowserModule.h"
 #include "Modules/ModuleManager.h"
 #include "PostProductionWidget.h"
+#include "MainMenuWidget.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -86,6 +87,12 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 {
 	// Enroll NomadTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("PostProduction"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnPostProductionTab)).SetDisplayName(FText::FromString("PostProduiction Tab"));
+
+	// Enroll Video Tab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Video Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnMainMenuTab)).SetDisplayName(FText::FromString("Video Tab"));
+	
+	// Enroll MotionTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Motion Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnMainMenuTab)).SetDisplayName(FText::FromString("Motion Tab"));
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
@@ -95,6 +102,15 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const 
 	[
 		SNew(SPostProductionWidget)
 	]; 
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMainMenuTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+		[
+			SNew(SMainMenuWidget)
+		];
 }
 
 #pragma endregion 

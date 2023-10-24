@@ -34,6 +34,8 @@ private:
 
 	TSharedRef<SDockTab> OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs);
 
+	TSharedRef<SDockTab> OnSpawnMainMenuTab(const FSpawnTabArgs& spawnArgs);
+
 #pragma endregion 
 
 #pragma region ContentBrowserMenuExtention
