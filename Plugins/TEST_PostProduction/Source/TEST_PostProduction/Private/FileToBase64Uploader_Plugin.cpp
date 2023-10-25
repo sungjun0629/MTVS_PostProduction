@@ -33,27 +33,53 @@ void UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 {
 	FString FileName = FPaths::GetCleanFilename(FullFilePath);
 
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *ExtensionString(FileName));
+
 	FHttpModule& HttpModule = FHttpModule::Get();
 	TSharedRef<IHttpRequest> HttpRequest = HttpModule.CreateRequest();
 
 	TArray<uint8> FileRawData;
 	FFileHelper::LoadFileToArray(FileRawData, *FullFilePath);
 
+
 	FString Base64EncodedString = FBase64::Encode(FileRawData, EBase64Mode::Standard);
 	TMap<FString, FString> EncodedData;
 	EncodedData.Add("fileName", Base64EncodedString);
+
+	if (*ExtensionString(FileName) == FString("wav"))
+	{
+		// 음성의 경우 modelName이 필요함
+		//UE_LOG(LogTemp, Warning, TEXT("WAV Check"));
+		FString ModelName = "dahyun";
+		EncodedData.Add("modelName", ModelName);
+	}
 
 	FString SendJsonData = UJsonParseLibrary_Plugin::MakeJson(EncodedData);
 
 	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, SendJsonData);
 
-	HttpRequest->SetURL("http://192.168.0.12:8080/view/video");
+	// 전달하는 파일 확장자가 mp4일 경우 Video 경로로 전송
+	if (*ExtensionString(FileName) == FString("mp4"))
+	{
+		HttpRequest->SetURL("http://192.168.1.186:8080/view/video");
+	}
+
+	// 전달하는 파일 확장자가 wav일 경우 voice 경로로 전송
+	if (*ExtensionString(FileName) == FString("wav"))
+	{
+		HttpRequest->SetURL("http://192.168.1.186:8080/view/voice");
+	}
+
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	HttpRequest->SetContentAsString(SendJsonData);
 	HttpRequest->OnProcessRequestComplete().BindUObject(this, &UFileToBase64Uploader_Plugin::OnPostData);
 
 	HttpRequest->ProcessRequest();
+
+	/*FTimerHandle Timer;
+
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &UFileToBase64Uploader_Plugin::GetResult, 10.f, false);*/
 }
 
 void UFileToBase64Uploader_Plugin::OnPostData(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
@@ -88,7 +114,26 @@ void UFileToBase64Uploader_Plugin::OnPostData(FHttpRequestPtr Request, FHttpResp
 	//}
 }
 
+void UFileToBase64Uploader_Plugin::GetResult()
+{
+	UE_LOG(LogTemp, Error, TEXT("Response Idea"));
+}
+
 void UFileToBase64Uploader_Plugin::ProcessResponse(FString ResponseContent)
 {
 	UE_LOG(LogTemp, Error, TEXT("Response: %s"), *ResponseContent);
+
+}
+
+FString UFileToBase64Uploader_Plugin::ExtensionString(FString FilePathString)
+{
+	FText FileText = FText::FromString(FilePathString);
+
+	FString FileString = FileText.ToString();
+
+	int32 SearchPoint = UKismetStringLibrary::FindSubstring(FileString, ".") + 1;
+
+	FString Extension = UKismetStringLibrary::RightChop(FileString, SearchPoint);
+
+	return Extension;
 }

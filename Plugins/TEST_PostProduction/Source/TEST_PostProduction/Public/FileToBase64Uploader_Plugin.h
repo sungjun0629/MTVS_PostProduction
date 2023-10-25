@@ -18,18 +18,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UploadFile(FString FullFilePath);
 
-	//UFUNCTION()
-	//void OnPostData(TSharedPtr<IHttpRequest> Request, TSharedPtr<IHttpResponse> Response, bool bConnectedSuccessfully);
 	void OnPostData(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully);
+
+	void GetResult();
+
 
 private:
 	FString UploadFileName;
-
-	//FString BoundaryLabel = FString();
-	//FString BoundaryBegin = FString();
-	//FString BoundaryEnd = FString();
-
-	//FString AddData(FString Name, FString Value);
+	FString FullFilePathString;
 
 	void ProcessResponse(FString ResponseContent);
+
+	FString ExtensionString(FString FilePathString);
+
+	
 };

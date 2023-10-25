@@ -58,6 +58,7 @@ FReply SMainMenuWidget::OnDropVideo(const FGeometry& MyGeometry, const FDragDrop
 	else if(DragDropOperation.IsValid() && DragDropOperation->IsOfType<FExternalDragOperation>())
 	{
 		TSharedPtr<FExternalDragOperation> FileOperation = StaticCastSharedPtr<FExternalDragOperation>(DragDropOperation);
+
 		UE_LOG(LogTemp, Warning, TEXT("Dropped file path num: %s"), **FileOperation->GetFiles().begin());
 
 		SetAssetPath(*FileOperation->GetFiles().begin());
