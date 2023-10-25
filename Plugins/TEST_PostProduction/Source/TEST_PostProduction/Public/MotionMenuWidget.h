@@ -6,6 +6,7 @@
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "WebBrowser/Public/SWebBrowserView.h"
 
+
 class SMotionMenuWidget : public SCompoundWidget
 {
 	SLATE_BEGIN_ARGS(SMotionMenuWidget) {}
@@ -26,6 +27,8 @@ public:
 
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
 
+	FOnGetResponse OnGetResponseDelegate;
 
-	void OnDownloadProgress(int64 BytesReceived, int64 ContentLength, float ProgressRatio);
+	UFUNCTION()
+	void OnGetResponse();
 };

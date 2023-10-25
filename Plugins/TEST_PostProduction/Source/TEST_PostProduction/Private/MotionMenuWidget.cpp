@@ -5,11 +5,17 @@
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "Widgets/SCanvas.h"
 #include "Widgets/Input/SButton.h"
+#include "MainMenuWidget.h"
 #include "FileToStorageDownloader_Plugin.h"
+
 
 void SMotionMenuWidget::Construct(const FArguments& InArgs)
 {
-	FString URL = "http://192.168.0.4:8080/view";
+	TSharedPtr<SMainMenuWidget> MainMenuWidget;
+	//MainMenuWidget->OnGetResponse.BindSP(this, &SMotionMenuWidget::OnGetResponse);
+
+
+	FString URL = "http://192.168.0.9:8080/view";
 
     // Creating the slate widget with an SCanvas and SWebBrowser
 	WebBrowserWidget = SNew(SWebBrowser)
@@ -29,14 +35,14 @@ void SMotionMenuWidget::Construct(const FArguments& InArgs)
 				WebBrowserWidget.ToSharedRef()
 			]
 
-			+ SCanvas::Slot()
+			/*+ SCanvas::Slot()
 			.Position(FVector2D(50, 50))
 			.Size(FVector2D(100, 100))
 			[
 				SNew(SButton)
 					.OnClicked(this, &SMotionMenuWidget::OnReloadClicked)
 					.Text(FText::FromString("Reload"))
-			]
+			]*/
 	];
 }
 
@@ -66,4 +72,9 @@ void SMotionMenuWidget::OnURLChanged(const FText& InText)
 			StorageDownload->DownloadFileToStorage(FBXURL, SavePath , 15.f, "", true, OnDownloadProgressDelegate, OnFileToStorageDownloadCompleteDelegate);
 		}
 	}
+}
+
+void SMotionMenuWidget::OnGetResponse()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnGetResponse"));
 }

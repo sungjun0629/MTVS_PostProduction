@@ -3,6 +3,11 @@
 #pragma once
 
 #include "Widgets/SCompoundWidget.h"
+#include "Interfaces/IHttpRequest.h"
+#include "Interfaces/IHttpResponse.h"
+
+
+DECLARE_DELEGATE(FOnGetResponse);
 
 class SMainMenuWidget : public SCompoundWidget
 {
@@ -12,6 +17,8 @@ class SMainMenuWidget : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+
+	FOnGetResponse OnGetResponse;
 
 	void Construct(const FArguments& InArgs);
 
@@ -25,6 +32,7 @@ public:
 
 	FReply	OnUploadFileClicked();
 
+	void OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<IHttpResponse> Response, bool bConnectedSuccessfully);
 
 private:
 	FString AssetPath;
