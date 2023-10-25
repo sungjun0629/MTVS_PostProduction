@@ -18,6 +18,7 @@ public class TEST_PostProduction : ModuleRules
 		PrivateIncludePaths.AddRange(
 			new string[] {
             System.IO.Path.GetFullPath(Target.RelativeEnginePath) + "/Source/Editor/Blutility/Private",
+            System.IO.Path.GetFullPath(Target.RelativeEnginePath) + "/Source/Runtime/CEF3Utils/Private",
 				// ... add other private include paths required here ...
 			}
 			);
@@ -50,7 +51,7 @@ public class TEST_PostProduction : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"UMG",
+				"UMG"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
