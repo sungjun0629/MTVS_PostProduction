@@ -29,7 +29,7 @@ TArray<uint8> FStringToUint8(const FString& InString)
 //
 //}
 
-void UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
+FString UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 {
 	FString FileName = FPaths::GetCleanFilename(FullFilePath);
 
@@ -77,6 +77,7 @@ void UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 
 	HttpRequest->ProcessRequest();
 
+	return Base64EncodedString;
 	/*FTimerHandle Timer;
 
 	GetWorld()->GetTimerManager().SetTimer(Timer, this, &UFileToBase64Uploader_Plugin::GetResult, 10.f, false);*/
@@ -84,7 +85,18 @@ void UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 
 void UFileToBase64Uploader_Plugin::OnPostData(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 {
-	//if (bConnectedSuccessfully)
+	if (bConnectedSuccessfully)
+	{
+		// After Upload Audio, Get a Response from Server
+		UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
+		FString res = Response->GetContentAsString();
+		FString parsedData = jsonParser->JsonParse(res);
+
+		if(!parsedData.IsEmpty())
+		UE_LOG(LogTemp, Warning, TEXT("Successfully Get WAV Response : %s"), *parsedData);
+	}
+
+	//if(bConnectedSuccessfully)
 	//{
 	//	FString receivedData = Response->GetContentAsString();
 

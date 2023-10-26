@@ -14,4 +14,6 @@ class UJsonParseLibrary_Plugin : public UBlueprintFunctionLibrary
 
 public:
 	static FString MakeJson(const TMap<FString, FString> source);
+
+	static FString JsonParse(const FString& originData);
 };

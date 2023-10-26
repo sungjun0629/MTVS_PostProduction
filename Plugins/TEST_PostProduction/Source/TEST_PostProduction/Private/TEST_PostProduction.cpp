@@ -110,7 +110,7 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMainMenuTab(const FSpawn
 	// NomadTab : can be dragged out
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
 		[
-			SNew(SMainMenuWidget) 
+			SNew(SMainMenuWidget)
 		];
 }
 

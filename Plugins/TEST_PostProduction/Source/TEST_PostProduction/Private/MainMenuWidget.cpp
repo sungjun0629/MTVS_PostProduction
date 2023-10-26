@@ -8,29 +8,121 @@
 #include "Input/DragAndDrop.h"
 #include "FileToBase64Uploader_Plugin.h"
 #include "HttpModule.h"
+#include "Dom/JsonObject.h"
+#include "Serialization/JsonWriter.h"
+#include "Serialization/JsonSerializer.h"
+#include "JsonParseLibrary_Plugin.h"
+#include "MotionMenuWidget.h"
+#include "Engine/Texture.h"
+#include "Styling/SlateStyle.h"
+#include "Interfaces/IPluginManager.h"
+#include "Styling/SlateStyleMacros.h"
+#include "Framework/Docking/TabManager.h"
+
 
 void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
 
+	FSlateBrush WhiteImageBrush;
+	WhiteImageBrush.TintColor = FLinearColor(1.0f, 1.0f, 1.0f, 0.3f); // White color with opacity of 0.3
+
+	
+	dropText = SNew(STextBlock)
+		.Text(FText::FromString("Drop item here!"))
+		.ColorAndOpacity(FLinearColor::White);
+
+
+	/*TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("TEST_PostProductionStyle"));
+	Style->SetContentRoot(IPluginManager::Get().FindPlugin("TEST_PostProduction")->GetBaseDir() / TEXT("Resources"));
+	Style->GetBrush("TEST_PostProduction.PluginAction");
+
+
+	Style->Set("TEST_PostProduction.PluginAction", new IMAGE_BRUSH_SVG(TEXT("PlaceholderButtonIcon")));*/
+
 	ChildSlot
 	[
-		SNew(SDropTarget)
+		/*SNew(SDropTarget)
 			.OnAllowDrop_Raw(this, &SMainMenuWidget::OnAllowDrop)
 			.OnDropped(this, &SMainMenuWidget::OnDropVideo)
 			[
+				SNew(SBorder)
+					.BorderImage(FCoreStyle::Get().GetBrush("NoBorder"))
+					.Padding(4.0f)
+.ColorAndOpacity(FColor::Blue)
+.DesiredSizeScale(FVector2D(0.5f,0.5f))
+					[
+						SNew(STextBlock)
+							.Text(FText::FromString("Drop items here!"))
+							.ColorAndOpacity(FLinearColor::White)
+					]*/
+
+
+		SNew(SBorder)
+			.BorderImage(FCoreStyle::Get().GetBrush("NoBorder"))
+			.ContentScale(FVector2D(1.0f, 0.7f))
+			/*.OnMouseButtonDown_Lambda([]() {
+				UE_LOG(LogTemp, Warning, TEXT("MouseButtonDown"));
+				return FReply::Handled();
+			})
+			.OnMouseButtonUp_Lambda([]() {
+				UE_LOG(LogTemp, Warning, TEXT("MouseButtonUp"));
+				return FReply::Handled();
+			})*/
+			.Padding(0,15)
+			[
 				SNew(SVerticalBox)
+					
+					+ SVerticalBox::Slot()
+					[
+						SNew(SDropTarget)
+							.OnAllowDrop_Raw(this, &SMainMenuWidget::OnAllowDrop)
+							.OnDropped(this, &SMainMenuWidget::OnDropVideo)
+							[
+								SNew(SBox)
+									.HAlign(HAlign_Center)
+									.VAlign(VAlign_Center)
+									[
+										dropText.ToSharedRef()
+										/*SNew(STextBlock)
+											.Text(FText::FromString("Drop items here!"))
+											.ColorAndOpacity(FLinearColor::White)*/
+									]
+							]
+					]
 
 					+ SVerticalBox::Slot()
+					.Padding(20, 10)
 					.AutoHeight()
-					.Padding(0, 400, 0, 0)
+					.HAlign(HAlign_Right)
 					[
 						SNew(SButton)
 							.VAlign(VAlign_Center)
-							.Text(FText::FromString("Upload File"))
+							.HAlign(HAlign_Right)
 							.OnClicked(this, &SMainMenuWidget::OnUploadFileClicked)
-							.HAlign(HAlign_Center)
+							[
+								SNew(STextBlock)
+									.Text(FText::FromString("Upload File"))
+							]
+
 					]
+				
 			]
+
+
+					/*SNew(SVerticalBox)
+
+						+ SVerticalBox::Slot()
+						.AutoHeight()
+						.Padding(0, 400, 0, 0)
+						[
+							SNew(SButton)
+								.VAlign(VAlign_Center)
+								.Text(FText::FromString("Upload File"))
+								.OnClicked(this, &SMainMenuWidget::OnUploadFileClicked)
+								.HAlign(HAlign_Center)
+						]*/
+			//]
+	//];
 	];
 }
 
@@ -61,6 +153,8 @@ FReply SMainMenuWidget::OnDropVideo(const FGeometry& MyGeometry, const FDragDrop
 
 		UE_LOG(LogTemp, Warning, TEXT("Dropped file path num: %s"), **FileOperation->GetFiles().begin());
 
+		dropText->SetText(FText::FromString("Click *Upload File* Button To Get Animation"));
+
 		SetAssetPath(*FileOperation->GetFiles().begin());
 		
 		return FReply::Handled();
@@ -73,17 +167,26 @@ FReply SMainMenuWidget::OnDropVideo(const FGeometry& MyGeometry, const FDragDrop
 FReply SMainMenuWidget::OnUploadFileClicked()
 {
 	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
-	FileUpload->UploadFile(AssetPath);
+	FString base64Info = FileUpload->UploadFile(AssetPath);
+
+	dropText->SetText(FText::FromString("Downloading starts! It may take a few minutes"));
 
 	// Request whether Or not Motion Matching is finished
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
-	FString url = "http://192.168.0.9:8080/view/video";
 
-	Request->SetURL(url);
-	Request->SetVerb("GET");
+	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
+	RequestObj->SetStringField("fileName", *base64Info);
+
+	FString RequestBody;
+	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
+	FJsonSerializer::Serialize(RequestObj, Writer);
+
+	Request->SetURL("http://192.168.0.9:8080/view/video");
+	Request->SetVerb("POST");
+	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
+	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
 	Request->ProcessRequest();
-
 
 	return FReply::Handled();
 }
@@ -93,15 +196,31 @@ void SMainMenuWidget::OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<I
 	if (bConnectedSuccessfully)
 	{
 		// MotionMenu Tab에 이벤트 전달, 웹 페이지의 visibility를 true로 변경해준다.
-		if(OnGetResponse.IsBound()) OnGetResponse.Execute();
+		//if(OnGetResponse.IsBound()) OnGetResponse.Execute();
 		UE_LOG(LogTemp, Warning, TEXT("Successfully Get Response"));
-		// 만약 이미 true라면 reload를 한다. 
+
+		dropText->SetText(FText::FromString("Downloading Completed, Drop item here again!"));
+
+
+		  // 다른 방식
+		TSharedPtr<SDockTab> motionTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Motion Tab"));
+		if(!motionTab.IsValid()) {
+			FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
+			FGlobalTabmanager::Get()->SetActiveTab(motionTab);
+		}
+		else
+		{
+			// 만약 이미 tab이 활성화 되어있다면 reload를 한다. 
+			//motionTab->RequestCloseTab();
+			FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
+			/*TSharedPtr<SDockTab> reMotionTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Motion Tab"));*/
+			//FGlobalTabmanager::Get()->SetActiveTab(motionTab);
+			UE_LOG(LogTemp, Warning, TEXT("Reload"));
+		}
+
 	}
 	else
 	{
-		if(OnGetResponse.IsBound()) OnGetResponse.Execute();
 		UE_LOG(LogTemp, Warning, TEXT("Can't Get Response From Motion Matching Downloading Process"));
 	}
 }
-
-

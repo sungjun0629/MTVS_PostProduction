@@ -16,7 +16,7 @@ class UFileToBase64Uploader_Plugin : public UObject
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	void UploadFile(FString FullFilePath);
+	FString UploadFile(FString FullFilePath);
 
 	void OnPostData(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully);
 

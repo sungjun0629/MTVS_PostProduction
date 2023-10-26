@@ -7,20 +7,27 @@
 #include "Widgets/Input/SButton.h"
 #include "MainMenuWidget.h"
 #include "FileToStorageDownloader_Plugin.h"
+#include "Framework/Docking/TabManager.h"
 
 
 void SMotionMenuWidget::Construct(const FArguments& InArgs)
 {
 	TSharedPtr<SMainMenuWidget> MainMenuWidget;
 	//MainMenuWidget->OnGetResponse.BindSP(this, &SMotionMenuWidget::OnGetResponse);
+	FVector2D size;
+	TSharedPtr<SDockTab> motionTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Motion Tab"));
+	if (motionTab.IsValid())
+	{
+		size = motionTab->GetDesiredSize();
+		UE_LOG(LogTemp,Warning,TEXT("x : %f, y: %f"), size.X, size.Y);
+	}
 
 
-	FString URL = "http://192.168.0.9:8080/view";
+	FString URL = "http://192.168.0.9:8080/view/";
 
     // Creating the slate widget with an SCanvas and SWebBrowser
 	WebBrowserWidget = SNew(SWebBrowser)
 		.InitialURL(URL)
-		.ViewportSize(FVector2D(500,500))
 		.ShowAddressBar(true)
 		.OnUrlChanged_Raw(this, &SMotionMenuWidget::OnURLChanged);
 
@@ -30,7 +37,9 @@ void SMotionMenuWidget::Construct(const FArguments& InArgs)
 
 			+ SCanvas::Slot()
 			.Position(FVector2D(50, 50))
-			.Size(FVector2D(700, 500))
+			.Size(FVector2D(1000,500))
+//.HAlign(HAlign_Center)
+//.VAlign(VAlign_Center)
 			[
 				WebBrowserWidget.ToSharedRef()
 			]
