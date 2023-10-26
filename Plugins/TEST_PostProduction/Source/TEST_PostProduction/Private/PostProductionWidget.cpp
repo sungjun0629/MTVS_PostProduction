@@ -28,6 +28,12 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 	TitleTextFont.Size = 35;
 	SubTitleTextFont.Size = 15;
 
+	const float XPercent = 0.3f;
+	const float YPercent = 0.5f;
+	/*TSharedPtr<SDockTab> activeTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));
+	FVector2D parentSize = activeTab->GetDesiredSize();
+	FVector2D childSize = FVector2D(parentSize.X * XPercent, parentSize.Y * YPercent);*/
+
 
 	ChildSlot
 		[	//Main vertical box
@@ -59,14 +65,16 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 				// Second vertical slot for username and password
 				+ SVerticalBox::Slot()
 				.AutoHeight()
-				.Padding(100,0, 100,30)
+				.HAlign(HAlign_Center)
+				.VAlign(VAlign_Center)
 				[
 					SNew(SHorizontalBox)
 					
 					// Kakao Login Layout
 					+ SHorizontalBox::Slot()
-					.AutoWidth()
-					.Padding(50, 0, 20, 0)
+					.HAlign(HAlign_Center)
+					.VAlign(VAlign_Center)
+.Padding(5,0)
 					[
 						SNew(SButton)
 							.OnClicked(this, &SPostProductionWidget::OnKakaoLoginClicked)
@@ -82,14 +90,19 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 
 					// GitHub Login Layout
 					+SHorizontalBox::Slot()
-					.AutoWidth()
-					.Padding(0, 0, 0, 0)
+					.HAlign(HAlign_Center)
+					.VAlign(VAlign_Center)
+.Padding(5,0)
 					[
 						SNew(SButton)
 							.VAlign(VAlign_Center)
-							.Text(FText::FromString("GitHub Login"))
-							.OnClicked(this, &SPostProductionWidget::OnGitHubLoginClicked)
 							.HAlign(HAlign_Center)
+							.OnClicked(this, &SPostProductionWidget::OnGitHubLoginClicked)
+							[
+								SNew(STextBlock)
+									.Text(FText::FromString("Github Login"))
+									.ColorAndOpacity(FSlateColor(FLinearColor::White))
+							]
 					]
 				]
 		];
@@ -100,7 +113,6 @@ FReply SPostProductionWidget::OnKakaoLoginClicked()
 	UE_LOG(LogTemp, Warning, TEXT("Kakao Login Clicked"));
 
 	// Open the new editor tab
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 
 	// Close the old tab if it exists
@@ -118,7 +130,6 @@ FReply SPostProductionWidget::OnGitHubLoginClicked()
 	UE_LOG(LogTemp, Warning, TEXT("GitHub Login Clicked"));
 
 	// Open the new editor tab
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	
 	// Close the old tab if it exists

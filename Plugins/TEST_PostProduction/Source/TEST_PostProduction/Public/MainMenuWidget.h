@@ -17,6 +17,8 @@ class SMainMenuWidget : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+	
+	TSharedPtr<STextBlock> dropText;
 
 	FOnGetResponse OnGetResponse;
 
@@ -32,6 +34,7 @@ public:
 
 	FReply	OnUploadFileClicked();
 
+	// After Upload Video, Wait for Response and Send Event
 	void OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<IHttpResponse> Response, bool bConnectedSuccessfully);
 
 private:

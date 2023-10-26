@@ -19,3 +19,26 @@ FString UJsonParseLibrary_Plugin::MakeJson(const TMap<FString, FString> source)
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	return JsonData;
 }
+
+FString UJsonParseLibrary_Plugin::JsonParse(const FString& originData)
+{
+	FString parsedData;
+
+	// Reader를 만든다.
+	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
+
+	// reader로 파싱된 결과를 담을 json Object를 선언한다.
+	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());
+
+	// 해독한다.
+	if (FJsonSerializer::Deserialize(reader, result))
+	{
+		parsedData = result->GetStringField("voiceUrl");
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to Parsing"));
+	}
+
+	return parsedData;
+}
