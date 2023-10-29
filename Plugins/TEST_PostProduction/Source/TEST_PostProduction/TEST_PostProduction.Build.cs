@@ -33,7 +33,8 @@ public class TEST_PostProduction : ModuleRules
                 "EditorWidgets",
                 "Json",
 				"JsonUtilities",
-				"HTTP"
+				"HTTP",
+                "DesktopPlatform"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

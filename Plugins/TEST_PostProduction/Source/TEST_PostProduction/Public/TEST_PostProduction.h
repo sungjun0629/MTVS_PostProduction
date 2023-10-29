@@ -38,6 +38,9 @@ private:
 
 	TSharedRef<SDockTab> OnSpawnWebTab(const FSpawnTabArgs& spawnArgs);
 
+	TSharedRef<SDockTab> OnSpawnSoundTab(const FSpawnTabArgs& spawnArgs);
+
+
 #pragma endregion 
 
 #pragma region ContentBrowserMenuExtention

@@ -181,7 +181,7 @@ FReply SMainMenuWidget::OnUploadFileClicked()
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj, Writer);
 
-	Request->SetURL("http://192.168.0.9:8080/view/video");
+	Request->SetURL("http://192.168.1.186:8080/view/video");
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	Request->SetContentAsString(RequestBody);

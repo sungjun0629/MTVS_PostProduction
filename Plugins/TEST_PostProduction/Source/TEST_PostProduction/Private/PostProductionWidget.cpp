@@ -131,6 +131,8 @@ FReply SPostProductionWidget::OnGitHubLoginClicked()
 
 	// Open the new editor tab
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 	
 	// Close the old tab if it exists
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));

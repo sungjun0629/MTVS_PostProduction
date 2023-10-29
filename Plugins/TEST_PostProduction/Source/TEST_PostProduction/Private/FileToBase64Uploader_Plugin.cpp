@@ -61,13 +61,13 @@ FString UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 	// 전달하는 파일 확장자가 mp4일 경우 Video 경로로 전송
 	if (*ExtensionString(FileName) == FString("mp4"))
 	{
-		HttpRequest->SetURL("http://192.168.0.9:8080/view/video");
+		HttpRequest->SetURL("http://192.168.1.186:8080/view/video");
 	}
 
 	// 전달하는 파일 확장자가 wav일 경우 voice 경로로 전송
 	if (*ExtensionString(FileName) == FString("wav"))
 	{
-		HttpRequest->SetURL("http://192.168.0.9:8080/view/voice");
+		HttpRequest->SetURL("http://192.168.1.186:8080/view/voice");
 	}
 
 	HttpRequest->SetVerb(TEXT("POST"));

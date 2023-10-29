@@ -10,6 +10,7 @@
 #include "PostProductionWidget.h"
 #include "MainMenuWidget.h"
 #include "MotionMenuWidget.h"
+#include "SoundConvertWidget.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -94,6 +95,9 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 	
 	// Enroll MotionTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Motion Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnWebTab)).SetDisplayName(FText::FromString("Motion Tab"));
+
+	// Enroll SoundTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Sound Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnSoundTab)).SetDisplayName(FText::FromString("Sound Tab"));
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
@@ -120,6 +124,14 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnWebTab(const FSpawnTabAr
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
 		[
 			SNew(SMotionMenuWidget)
+		];
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnSoundTab(const FSpawnTabArgs& spawnArgs)
+{
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+		[
+			SNew(SSoundConvertWidget)
 		];
 }
 

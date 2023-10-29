@@ -8,6 +8,7 @@
 #include "MainMenuWidget.h"
 #include "FileToStorageDownloader_Plugin.h"
 #include "Framework/Docking/TabManager.h"
+#include "Misc/DateTime.h"
 
 
 void SMotionMenuWidget::Construct(const FArguments& InArgs)
@@ -23,7 +24,7 @@ void SMotionMenuWidget::Construct(const FArguments& InArgs)
 	}
 
 
-	FString URL = "http://192.168.0.9:8080/view/";
+	FString URL = "http://192.168.1.186:8080/view/";
 
     // Creating the slate widget with an SCanvas and SWebBrowser
 	WebBrowserWidget = SNew(SWebBrowser)
@@ -57,7 +58,7 @@ void SMotionMenuWidget::Construct(const FArguments& InArgs)
 
 FReply SMotionMenuWidget::OnReloadClicked()
 {
-    WebBrowserWidget->LoadURL("http://192.168.0.4:8080/view/");
+    WebBrowserWidget->LoadURL("http://192.168.1.186:8080/view/");
 	UE_LOG(LogTemp, Warning, TEXT("OnReloadClicked : %s") , *WebBrowserWidget->GetUrl());
 
 
@@ -68,8 +69,13 @@ void SMotionMenuWidget::OnURLChanged(const FText& InText)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnURLChanged : %s"), *InText.ToString());
 
+	const FDateTime Now = FDateTime::Now();
+	const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));
+
 	FString FBXURL="";
-	FString SavePath = "D:\\DownTest\\File2.fbx";
+	FString SavePath = "D:\\DownTest\\";
+	SavePath.Append(DateTimeString);
+	SavePath.Append(TEXT("_PostProduction.fbx"));
 	UFileToStorageDownloader_Plugin* StorageDownload;
 
 	if (InText.ToString().Contains("result?fbxUrl="))
