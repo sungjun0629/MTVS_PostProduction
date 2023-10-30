@@ -25,8 +25,9 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Engine/Engine.h"
 
-
+#include "Runtime/Engine/Public/AudioDevice.h"
 
 void SSoundConvertWidget::Construct(const FArguments& InArgs)
 {	
@@ -332,33 +333,26 @@ FReply SSoundConvertWidget::OnPlayClicked()
     //FSlateApplication::Get().GetRenderer()->OnFrame().AddRaw(this, &SSoundConvertWidget::UpdateSlider);
 
     UAudioComponent* soundComponent = NewObject<UAudioComponent>();
-
+    USoundCue* soundCue = nullptr;
     if (bIsOriginalChecked)
     {
 		//Play Original Sound
         SoundWave = LoadObject<USoundWave>(nullptr, *originalFilePath, nullptr, LOAD_None, nullptr);
-        USoundCue* soundCue = LoadObject<USoundCue>(nullptr, TEXT("/Script/Engine.SoundCue'/Game/TestVoice_1_Cue.TestVoice_1_Cue'"));
-        if (soundComponent)
-        {
-            if(soundCue)
-            {
-                soundComponent->SetSound(soundCue);
-                UE_LOG(LogTemp, Warning, TEXT("sound play"))
-                soundComponent->Play();
-            }
-        }
+		soundCue = LoadObject<USoundCue>(nullptr, TEXT("/Script/Engine.SoundCue'/Game/TestVoice_1_Cue.TestVoice_1_Cue'"));
 	}
     else    
     {
 		//Play Converted Sound
         SoundWave = LoadObject<USoundWave>(nullptr, *convertedFilePath, nullptr, LOAD_None, nullptr);
+        soundCue = LoadObject<USoundCue>(nullptr, TEXT("/Script/Engine.SoundCue'/Game/result_voice_Cue.result_voice_Cue'"));
 	}
 
     //UAudioComponent* AudioComponent = UGameplayStatics::CreateSound2D(uobject, SoundWave);
     //AudioComponent->Play();
-    FSlateSound Sound ; 
-    Sound.SetResourceObject(SoundWave);
-    //FSlateApplication::Get().PlaySound(Sound);
+
+    FSlateSound Sound;
+    Sound.SetResourceObject(soundCue);
+    FSlateApplication::Get().PlaySound(Sound);
 
     bIsPlaying = true;
     //UObject* LoadedObject = nullptr;
@@ -392,6 +386,13 @@ FReply SSoundConvertWidget::OnStopClicked()
 {
     bIsPlaying = false;
     CurrentPlaybackPosition = 0.0f;
+
+    // To stop the sound, use the following code:
+    if (GEngine && GEngine->GetMainAudioDevice()) {
+        FAudioDevice* AudioDevice = GEngine->GetMainAudioDevice().GetAudioDevice();
+ 	     AudioDevice->Flush(nullptr);
+        UE_LOG(LogTemp, Warning, TEXT("stop"));
+    }
 
 	return FReply::Handled();
 }
