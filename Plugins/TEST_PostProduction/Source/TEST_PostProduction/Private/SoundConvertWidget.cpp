@@ -24,6 +24,7 @@
 #include "Misc/FileHelper.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 
 
@@ -224,10 +225,11 @@ void SSoundConvertWidget::Construct(const FArguments& InArgs)
                         + SHorizontalBox::Slot()
                         [
                             SNew(SButton)
-                                .Text(FText::FromString("Play"))
+                                .Text(FText::FromString("Stop"))
+                                .OnClicked(this, &SSoundConvertWidget::OnStopClicked)
                                 [
                                     SNew(SImage)
-                                        .Image(FAppStyle::Get().GetBrush("Icons.Pause"))
+                                        .Image(FAppStyle::Get().GetBrush("Icons.Escape"))
                                         .ColorAndOpacity(FSlateColor::UseForeground())
                                 ]
                         ]
@@ -324,26 +326,41 @@ FReply SSoundConvertWidget::OnConvertClicked()
 
 FReply SSoundConvertWidget::OnPlayClicked()
 {
-    FString FilePath = "/Script/Engine.SoundWave'/Game/test_10.test_10'";
-    SoundWave = LoadObject<USoundWave>(nullptr, *FilePath, nullptr, LOAD_None, nullptr);
+    FString originalFilePath = "/Script/Engine.SoundWave'/Game/TestVoice_1.TestVoice_1'";
+    FString convertedFilePath = "/Script/Engine.SoundWave'/Game/test_10.test_10'";
 
-    FSlateSound Sound ; 
-    Sound.SetResourceObject(SoundWave);
-
-    FSlateApplication::Get().PlaySound(Sound);
-
-
-    
     //FSlateApplication::Get().GetRenderer()->OnFrame().AddRaw(this, &SSoundConvertWidget::UpdateSlider);
+
+    UAudioComponent* soundComponent = NewObject<UAudioComponent>();
 
     if (bIsOriginalChecked)
     {
 		//Play Original Sound
+        SoundWave = LoadObject<USoundWave>(nullptr, *originalFilePath, nullptr, LOAD_None, nullptr);
+        USoundCue* soundCue = LoadObject<USoundCue>(nullptr, TEXT("/Script/Engine.SoundCue'/Game/TestVoice_1_Cue.TestVoice_1_Cue'"));
+        if (soundComponent)
+        {
+            if(soundCue)
+            {
+                soundComponent->SetSound(soundCue);
+                UE_LOG(LogTemp, Warning, TEXT("sound play"))
+                soundComponent->Play();
+            }
+        }
 	}
     else    
     {
 		//Play Converted Sound
+        SoundWave = LoadObject<USoundWave>(nullptr, *convertedFilePath, nullptr, LOAD_None, nullptr);
 	}
+
+    //UAudioComponent* AudioComponent = UGameplayStatics::CreateSound2D(uobject, SoundWave);
+    //AudioComponent->Play();
+    FSlateSound Sound ; 
+    Sound.SetResourceObject(SoundWave);
+    //FSlateApplication::Get().PlaySound(Sound);
+
+    bIsPlaying = true;
     //UObject* LoadedObject = nullptr;
 
    /* UObjectLibrary* ObjectLibrary = UObjectLibrary::CreateLibrary(UObject::StaticClass(), false, GIsEditor);
@@ -369,6 +386,14 @@ FReply SSoundConvertWidget::OnPlayClicked()
 
   
     return FReply::Handled();
+}
+
+FReply SSoundConvertWidget::OnStopClicked()
+{
+    bIsPlaying = false;
+    CurrentPlaybackPosition = 0.0f;
+
+	return FReply::Handled();
 }
 
 void SSoundConvertWidget::OnCheckOriginalStateChanged(ECheckBoxState NewState)
@@ -416,7 +441,7 @@ void SSoundConvertWidget::UpdateSlider(float deltaTime)
 
 void SSoundConvertWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
-    if (SoundWave && originalSlider.IsValid())
+    if (bIsPlaying && SoundWave && originalSlider.IsValid())
 	{
 		// Update the slider position based on the current playback position of the audio
         CurrentPlaybackPosition += InDeltaTime;

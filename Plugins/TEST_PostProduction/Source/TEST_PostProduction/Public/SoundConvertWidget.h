@@ -28,6 +28,8 @@ public:
 
 	USoundWave* SoundWave;
 
+	bool bIsPlaying = false;
+
 	bool bIsOriginalChecked;
 
 	bool bIsConvertedChecked;
@@ -39,6 +41,8 @@ public:
 	FReply OnConvertClicked();
 
 	FReply OnPlayClicked();
+
+	FReply OnStopClicked();
 
 	void OnCheckOriginalStateChanged(ECheckBoxState NewState);
 
