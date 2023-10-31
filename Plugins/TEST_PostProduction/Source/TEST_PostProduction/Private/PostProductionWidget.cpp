@@ -131,9 +131,12 @@ FReply SPostProductionWidget::OnGitHubLoginClicked()
 	UE_LOG(LogTemp, Warning, TEXT("GitHub Login Clicked"));
 
 	// Open the new editor tab
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
 	
+	// Open Login Web Browser
+
 	// Close the old tab if it exists
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));
 	if (OldTab.IsValid())

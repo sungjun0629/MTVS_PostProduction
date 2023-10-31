@@ -40,6 +40,8 @@ private:
 
 	TSharedRef<SDockTab> OnSpawnSoundTab(const FSpawnTabArgs& spawnArgs);
 
+	TSharedRef<SDockTab> OnSpawnLoginTab(const FSpawnTabArgs& spawnArgs);
+
 
 #pragma endregion 
 

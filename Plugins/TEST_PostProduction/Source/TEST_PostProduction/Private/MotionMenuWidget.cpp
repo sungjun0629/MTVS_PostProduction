@@ -9,6 +9,7 @@
 #include "FileToStorageDownloader_Plugin.h"
 #include "Framework/Docking/TabManager.h"
 #include "Misc/DateTime.h"
+#include "IPConfig.h"
 
 
 void SMotionMenuWidget::Construct(const FArguments& InArgs)
@@ -23,8 +24,8 @@ void SMotionMenuWidget::Construct(const FArguments& InArgs)
 		UE_LOG(LogTemp,Warning,TEXT("x : %f, y: %f"), size.X, size.Y);
 	}
 
+	FString URL = IPConfig::StaticVariable + "/view/";
 
-	FString URL = "http://192.168.1.186:8080/view/";
 
     // Creating the slate widget with an SCanvas and SWebBrowser
 	WebBrowserWidget = SNew(SWebBrowser)

@@ -18,6 +18,7 @@
 #include "Interfaces/IPluginManager.h"
 #include "Styling/SlateStyleMacros.h"
 #include "Framework/Docking/TabManager.h"
+#include "IPConfig.h"
 
 
 void SMainMenuWidget::Construct(const FArguments& InArgs)
@@ -178,10 +179,12 @@ FReply SMainMenuWidget::OnUploadFileClicked()
 	RequestObj->SetStringField("fileName", *base64Info);
 
 	FString RequestBody;
+	FString URL = IPConfig::StaticVariable + "/view/video";
+	
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj, Writer);
 
-	Request->SetURL("http://192.168.1.186:8080/view/video");
+	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	Request->SetContentAsString(RequestBody);

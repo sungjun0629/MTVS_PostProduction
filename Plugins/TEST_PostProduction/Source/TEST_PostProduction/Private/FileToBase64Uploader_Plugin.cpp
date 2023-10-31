@@ -9,6 +9,7 @@
 #include "JsonParseLibrary_Plugin.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Misc/FileHelper.h"
+#include "IPConfig.h"
 
 TArray<uint8> FStringToUint8(const FString& InString)
 {
@@ -61,13 +62,15 @@ FString UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 	// 전달하는 파일 확장자가 mp4일 경우 Video 경로로 전송
 	if (*ExtensionString(FileName) == FString("mp4"))
 	{
-		HttpRequest->SetURL("http://192.168.1.186:8080/view/video");
+		FString	URL = IPConfig::StaticVariable + "/view/video";
+		HttpRequest->SetURL(URL);
 	}
 
 	// 전달하는 파일 확장자가 wav일 경우 voice 경로로 전송
 	if (*ExtensionString(FileName) == FString("wav"))
 	{
-		HttpRequest->SetURL("http://192.168.1.186:8080/view/voice");
+		FString	URL = IPConfig::StaticVariable + "/view/voice";
+		HttpRequest->SetURL(URL);
 	}
 
 	HttpRequest->SetVerb(TEXT("POST"));
