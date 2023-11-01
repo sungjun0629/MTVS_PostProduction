@@ -27,16 +27,22 @@ void LoginLogic_Plugin::GetHeaderToken(FString URL)
 
 void LoginLogic_Plugin::OnGettingToken(TSharedPtr<IHttpRequest> Request, TSharedPtr<IHttpResponse> Response, bool bConnectedSuccessfully)
 {
-	if (bConnectedSuccessfully && Response.IsValid())
+	if (bConnectedSuccessfully && Response.IsValid() && NextStepBool == false)
 	{
+		NextStepBool = true;
 		// Parse the response content to extract the token
 		TArray<FString> ResponseValues = Response->GetAllHeaders();
-		UE_LOG(LogTemp, Warning, TEXT("Response Code : %d"), Response->GetResponseCode());
+
+		int32 ResponseCode = Response->GetResponseCode();
+
+		UE_LOG(LogTemp, Warning, TEXT("Response Code : %d"), ResponseCode);
 		
-		for (FString value : ResponseValues)
+		if (ResponseCode == 200)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Response Value : %s"), *value);
+			for (FString value : ResponseValues)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Response Value : %s"), *value);
+			}
 		}
-		
 	}
 }

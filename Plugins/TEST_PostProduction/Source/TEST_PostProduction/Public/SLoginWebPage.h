@@ -16,7 +16,8 @@ class SLoginWebPage : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
-	
+	bool DoOnceBool = false;
+
 	void Construct(const FArguments& InArgs);
 
 	TSharedPtr<SWebBrowser> loginWebBrowser;

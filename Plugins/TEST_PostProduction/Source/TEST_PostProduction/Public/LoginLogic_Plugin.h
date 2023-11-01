@@ -14,6 +14,8 @@ public:
 	LoginLogic_Plugin();
 	~LoginLogic_Plugin();
 
+	bool NextStepBool = false;
+
 	 void GetHeaderToken(FString URL);
 
 	void OnGettingToken(TSharedPtr<IHttpRequest> Request, TSharedPtr<IHttpResponse> Response, bool bConnectedSuccessfully);

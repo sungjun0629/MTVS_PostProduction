@@ -4,6 +4,7 @@
 #include "SLoginWebPage.h"
 #include "IPConfig.h"
 #include "LoginLogic_Plugin.h"
+#include "Kismet/KismetStringLibrary.h"
 #include "Widgets/SCanvas.h"
 
 void SLoginWebPage::Construct(const FArguments& InArgs)
@@ -37,5 +38,19 @@ void SLoginWebPage::OnURLChanged(const FText& InText)
 	UE_LOG(LogTemp, Warning, TEXT("SLoginWebPage::OnURLChanged"),);
 	LoginLogic_Plugin* loginLogic = new LoginLogic_Plugin();
 
-	loginLogic->GetHeaderToken(InText.ToString());
+	FString URLString = InText.ToString();
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *URLString);
+
+	static FString CheckPointString = "https://logins.daum.net/accounts/kakaossotokenlogin.do?redirect=true&ssotoken=";
+	static FString NextStepString = "http://192.168.1.11:8080/oauth2/callback/kakao?code=";
+
+	//bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
+	bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
+
+	if (NeedValueString && DoOnceBool == false)
+	{
+		DoOnceBool = true;
+		loginLogic->GetHeaderToken(URLString);
+	}
 }
