@@ -184,9 +184,13 @@ FReply SMainMenuWidget::OnUploadFileClicked()
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj, Writer);
 
+	UE_LOG(LogTemp, Warning, TEXT("Token : %s"), *IPConfig::Token);
+	FString BearerToken = "Bearer " + IPConfig::Token;
+
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
+	Request->SetHeader(TEXT("Authorization"), BearerToken);
 	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
 	Request->ProcessRequest();
@@ -200,7 +204,7 @@ void SMainMenuWidget::OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<I
 	{
 		// MotionMenu Tab에 이벤트 전달, 웹 페이지의 visibility를 true로 변경해준다.
 		//if(OnGetResponse.IsBound()) OnGetResponse.Execute();
-		UE_LOG(LogTemp, Warning, TEXT("Successfully Get Response"));
+		UE_LOG(LogTemp, Warning, TEXT("Successfully Get Response : %d"), Response->GetResponseCode());
 
 		dropText->SetText(FText::FromString("Downloading Completed, Drop item here again!"));
 

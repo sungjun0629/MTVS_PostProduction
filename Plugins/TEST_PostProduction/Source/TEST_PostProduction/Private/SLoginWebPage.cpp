@@ -47,33 +47,26 @@ void SLoginWebPage::OnURLChanged(const FText& InText)
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *URLString);
 
 	static FString CheckPointString = "https://logins.daum.net/accounts/kakaossotokenlogin.do?redirect=true&ssotoken=";
-	//static FString NextStepString = "http://192.168.1.11:8080/oauth2/callback/kakao?code=";
 	static FString NextStepString = IPConfig::StaticVariable;
 
-	//bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
 	bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
 
 	if (NeedValueString && DoOnceBool == false)
 	{
-		tikcerHandle = FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateRaw(this, &SLoginWebPage::OnTicker), 1.0f);
+		OnGetToken();
 	}
 }
 
 
-bool SLoginWebPage::OnTicker(float DeltaTime)
+void SLoginWebPage::OnGetToken()
 {
 
 	auto Callback = [=](const FString& SourceURL) {
 		// Handle the source URL as needed
-		UE_LOG(LogTemp, Warning, TEXT("Source URL1 : %s"), *SourceURL);
 		ParsingHtml(SourceURL);
 		};
 
 	loginWebBrowser->GetSource(Callback);
-
-	FTicker::GetCoreTicker().RemoveTicker(tikcerHandle);
-
-	return true;
 
 }
 

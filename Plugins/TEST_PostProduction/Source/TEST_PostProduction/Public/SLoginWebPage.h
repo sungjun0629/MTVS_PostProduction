@@ -22,8 +22,6 @@ public:
 
 	FString URLString;
 
-	FDelegateHandle tikcerHandle;
-
 	bool DoOnceBool = false;
 
 	void Construct(const FArguments& InArgs);
@@ -32,7 +30,7 @@ public:
 
 	void OnURLChanged(const FText& InText);
 
-	bool OnTicker(float DeltaTime);
+	void OnGetToken();
 
 	void ParsingHtml(FString HtmlString);
 
