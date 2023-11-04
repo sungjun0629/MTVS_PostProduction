@@ -32,8 +32,11 @@ void LoginLogic_Plugin::OnGettingToken(TSharedPtr<IHttpRequest> Request, TShared
 		NextStepBool = true;
 		// Parse the response content to extract the token
 		TArray<FString> ResponseValues = Response->GetAllHeaders();
+		FString ResponseContent = Response->GetContentAsString();
+		//TArray<FString> RequestValues = Request->GetAllHeaders();
 
 		int32 ResponseCode = Response->GetResponseCode();
+
 
 		UE_LOG(LogTemp, Warning, TEXT("Response Code : %d"), ResponseCode);
 		
@@ -43,6 +46,18 @@ void LoginLogic_Plugin::OnGettingToken(TSharedPtr<IHttpRequest> Request, TShared
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Response Value : %s"), *value);
 			}
+				UE_LOG(LogTemp, Warning, TEXT("Response Content : %s"), *ResponseContent);
+				
+			/*for (FString value : RequestValues)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("RequestValues : %s"), *value);
+			}*/
+
+			
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cant get token"));
 		}
 	}
 }

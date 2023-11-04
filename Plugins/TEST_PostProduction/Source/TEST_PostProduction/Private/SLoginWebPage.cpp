@@ -6,6 +6,12 @@
 #include "LoginLogic_Plugin.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Widgets/SCanvas.h"
+#include "GenericPlatform/GenericPlatformTime.h"
+#include "TimerManager.h"
+#include "Containers/Ticker.h"
+#include "Framework/Docking/TabManager.h"
+
+
 
 void SLoginWebPage::Construct(const FArguments& InArgs)
 {
@@ -36,21 +42,59 @@ void SLoginWebPage::Construct(const FArguments& InArgs)
 void SLoginWebPage::OnURLChanged(const FText& InText)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SLoginWebPage::OnURLChanged"),);
-	LoginLogic_Plugin* loginLogic = new LoginLogic_Plugin();
-
-	FString URLString = InText.ToString();
+	URLString = InText.ToString();
 
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *URLString);
 
 	static FString CheckPointString = "https://logins.daum.net/accounts/kakaossotokenlogin.do?redirect=true&ssotoken=";
-	static FString NextStepString = "http://192.168.1.11:8080/oauth2/callback/kakao?code=";
+	static FString NextStepString = IPConfig::StaticVariable;
 
-	//bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
 	bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
 
 	if (NeedValueString && DoOnceBool == false)
 	{
-		DoOnceBool = true;
-		loginLogic->GetHeaderToken(URLString);
+		OnGetToken();
+	}
+}
+
+
+void SLoginWebPage::OnGetToken()
+{
+
+	auto Callback = [=](const FString& SourceURL) {
+		// Handle the source URL as needed
+		ParsingHtml(SourceURL);
+		};
+
+	loginWebBrowser->GetSource(Callback);
+
+}
+
+void SLoginWebPage::ParsingHtml(FString HtmlString)
+{
+	
+	HtmlString.Split(TEXT("{"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	HtmlString.Split(TEXT(":"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	HtmlString.Split(TEXT("\""), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	HtmlString.Split(TEXT("\""), &HtmlString, nullptr, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+
+	UE_LOG(LogTemp, Warning, TEXT("Access Token : %s"), *HtmlString);
+	IPConfig::Token = HtmlString;
+
+	// 화면 전환
+	ConvertTab();
+}
+
+void SLoginWebPage::ConvertTab()
+{	
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
+
+	// Close the old tab if it exists
+	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Login Tab"));
+	if (OldTab.IsValid())
+	{
+		OldTab->RequestCloseTab();
 	}
 }
