@@ -12,9 +12,32 @@ class TEST_POSTPRODUCTION_API UUW_SingleScript : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = Script)
-	class UTextBlock* Text_Script;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget), Category = Script)
+	class UTextBlock* T_Category;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = ( BindWidget ) , Category = Script)
+	class UTextBlock* T_Location;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = ( BindWidget ) , Category = Script)
+	class UTextBlock* T_SceneNum;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = ( BindWidget ) , Category = Script)
+	class UTextBlock* T_Script;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = ( BindWidget ) , Category = Script)
+	class UTextBlock* T_Speaker;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Category;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite)
+	FString Speaker;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite)
+	FString Script;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite)
+	FString Location;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite)
+	FString SceneNumber;
+	
+	UFUNCTION(BlueprintCallable)
+	void GetScriptTable(FString WriteCategory , FString WriteSpeaker , FString WriteScript , FString WriteLocation);
 
 	UFUNCTION(BlueprintCallable)
-	void CheckScript();
+	void SetTextToUI(UTextBlock* TextBlock, FString Data);
 };
