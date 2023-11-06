@@ -5,7 +5,6 @@
 #include "Widgets/SCompoundWidget.h"
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "WebBrowser/Public/SWebBrowserView.h"
-#include "Engine/TimerHandle.h"
 /**
  * 
  */
@@ -35,4 +34,6 @@ public:
 	void ParsingHtml(FString HtmlString);
 
 	void ConvertTab();
+
+	void SequencerTest();
 };

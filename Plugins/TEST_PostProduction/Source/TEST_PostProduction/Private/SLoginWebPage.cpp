@@ -34,7 +34,6 @@ void SLoginWebPage::Construct(const FArguments& InArgs)
 				[
 					loginWebBrowser.ToSharedRef()
 				]
-
 		];
 
 }
@@ -55,6 +54,7 @@ void SLoginWebPage::OnURLChanged(const FText& InText)
 	{
 		OnGetToken();
 	}
+
 }
 
 
@@ -97,4 +97,37 @@ void SLoginWebPage::ConvertTab()
 	{
 		OldTab->RequestCloseTab();
 	}
+}
+
+void SLoginWebPage::SequencerTest()
+{
+	//FMovieSceneSequenceEditor* SequenceEditor;
+	//if (SequenceEditor)
+	//{
+	//	UMovieSceneSequence* Sequence = SequenceEditor->GetFocusedMovieSceneSequence();
+	//	if (Sequence)
+	//	{
+	//		FGuid ObjectGuid; // Fill in the appropriate object GUID for the object you want to add the keyframe to
+	//		FFrameNumber CurrentTime = SequenceEditor->GetLocalTime().Time;
+	//		FMovieSceneObjectBindingID ObjectBindingID(ObjectGuid, EMovieSceneObjectBindingSpace::Local);
+
+	//		FScopedTransaction Transaction(FText::FromString("Add Transform Keyframe in Sequencer"));
+	//		Sequence->Modify();
+
+	//		UMovieScene* MovieScene = Sequence->GetMovieScene();
+	//		if (MovieScene)
+	//		{
+	//			UMovieScene3DTransformSection* TransformSection = Cast<UMovieScene3DTransformSection>(MovieScene->FindOrCreateSection(ObjectBindingID, UMovieScene3DTransformSection::StaticClass(), CurrentTime));
+	//			if (TransformSection)
+	//			{
+	//				FMovieScene3DTransformKey NewKey;
+	//				NewKey.Translation = Location;
+	//				NewKey.Rotation = FRotator::ZeroRotator; // Set the rotation as needed
+	//				NewKey.Scale = FVector::OneVector; // Set the scale as needed
+	//				TransformSection->AddKey(CurrentTime, NewKey);
+	//			}
+	//		}
+	//	}
+	//}
+
 }

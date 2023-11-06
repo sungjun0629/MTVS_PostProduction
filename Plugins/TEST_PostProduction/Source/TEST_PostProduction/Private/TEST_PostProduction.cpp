@@ -12,6 +12,7 @@
 #include "MotionMenuWidget.h"
 #include "SoundConvertWidget.h"
 #include "SLoginWebPage.h"
+#include "SequencerPractice.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -102,6 +103,9 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 
 	// Enroll SoundTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Login Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnLoginTab)).SetDisplayName(FText::FromString("Login Tab"));
+
+	// Enroll memoTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Memo Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnLoginTab)).SetDisplayName(FText::FromString("Memo Tab"));
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
@@ -145,6 +149,15 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnLoginTab(const FSpawnTab
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
 		[
 			SNew(SLoginWebPage)
+		];
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+		[
+			SNew(SSequencePractice)
 		];
 }
 
