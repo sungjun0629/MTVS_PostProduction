@@ -8,6 +8,7 @@
 #include "MemoDataTable.h"
 #include "Widgets/Input/SComboBox.h"
 #include "Widgets/Views/SListView.h"
+#include "Widgets/Views/STableViewBase.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
@@ -17,25 +18,17 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 		.Text(FText::FromString("Sequencer"));
 
 
-	TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
-
-
+	TSharedPtr<SListView<TSharedPtr<FMemoDataTable>>> csvListView;
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
-
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
-	LoadedDataTable->GetAllRows<FMemoDataTable>(comboBoxContent,TableRows);
+	TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
+	LoadedDataTable->GetAllRows<FMemoDataTable>("random", TableRows);
 
-
-	TArray<TSharedPtr<FMemoDataTable>> TableRowsPtrArray; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 	for ( FMemoDataTable* TableRow : TableRows )
 	{
-		TableRowsPtrArray.Add(MakeShareable(TableRow));
-		UE_LOG(LogTemp , Warning , TEXT("TableRow : %s") , *TableRow->content);
+		UE_LOG(LogTemp,Warning,TEXT("TableRow : %s"),*TableRow->title);
+		memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
 	}
-
-	// Create an SListView widget to display the DataTable content.
-	TSharedPtr<SListView<TSharedPtr<FMemoDataTable>>> ListView;
-
 
 	ChildSlot
 		[
@@ -117,46 +110,33 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 								
 							}
 						})
-					
-					//SNew(SComboBox<TSharedPtr<FString>>)
-					//.Content()
-					//[
-					//	SNew(STextBlock)
-					//	.Text(FText::FromString("Sequencer"))
-					//]
-					//.OptionsSource(&Options)
-					//	.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
-					//	{
-					//			return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
-					//	})
-					//.OnSelectionChanged_Lambda([=] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
-					//	{
-					//		if ( Item.IsValid() )
-					//		{
-					//			FString SelectedItem = *Item.Get();
-					//			// Handle the selection here.
-					//			UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
-					//			
-					//			//ComboBoxWidget->SetContent(SNew(STextBlock).Text(FText::FromString(SelectedItem)));
-					//			//ComboBoxWidget->RefreshOptions();
-					//		}
-					//	})
 				]
 
-				+SVerticalBox::Slot()
+				+ SVerticalBox::Slot()
 				[
-					SAssignNew(ListView , SListView<TSharedPtr<FMemoDataTable>>)
-						.ListItemsSource(&TableRowsPtrArray)
-						.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
-						{
-							return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
-								.Padding(1)
-								.Content()
-								[
-									SNew(STextBlock).Text(FText::FromString(Item->content)) // Display the name property, modify as needed.
-								];
-						})
 
+					// FMemoDataTable
+					SAssignNew(csvListView, SListView<TSharedPtr<FMemoDataTable>>)
+					.ListItemsSource(&memoItems)
+					.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
+					{
+						return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
+							.Padding(1)
+							.Content()
+							[
+								SNew(SHorizontalBox)
+
+									+ SHorizontalBox::Slot()
+									[
+										SNew(STextBlock).Text(FText::FromString(Item->title))
+									]
+
+									+ SHorizontalBox::Slot()
+									[
+										SNew(STextBlock).Text(FText::FromString(Item->content))
+									]
+							];
+					})
 				]
 			
 		];

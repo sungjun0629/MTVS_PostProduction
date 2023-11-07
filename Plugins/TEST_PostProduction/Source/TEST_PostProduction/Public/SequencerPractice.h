@@ -24,6 +24,8 @@ public:
 	TArray<TSharedPtr<FString>> Options;
 	TSharedPtr<SComboBox<TSharedPtr<FString>>> ComboBoxWidget;
 	TSharedPtr<STextBlock> contentTitle;
+	TArray<TSharedPtr<FString>> Items;
+	TArray<TSharedPtr<FMemoDataTable>> memoItems;
 
 public:
 	/** Constructs this widget with InArgs */
