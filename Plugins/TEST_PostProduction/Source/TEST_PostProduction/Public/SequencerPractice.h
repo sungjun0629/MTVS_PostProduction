@@ -16,9 +16,23 @@ class SSequencePractice : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+
+	FString title;
+	FString sequenceName;
+	FString content;
+	FString comboBoxContent = "sequencer";
+	TArray<TSharedPtr<FString>> Options;
+	TSharedPtr<SComboBox<TSharedPtr<FString>>> ComboBoxWidget;
+	TSharedPtr<STextBlock> contentTitle;
+
+public:
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);
 
 	void GetSequenceAsset();
+
+	void ChangeContent(FString content);
+
+	FReply OnSubmitClicked();
 
 };

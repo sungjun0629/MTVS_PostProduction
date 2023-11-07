@@ -105,7 +105,7 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Login Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnLoginTab)).SetDisplayName(FText::FromString("Login Tab"));
 
 	// Enroll memoTab to GlobalTabmanager
-	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Memo Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnLoginTab)).SetDisplayName(FText::FromString("Memo Tab"));
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Memo Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnMemoTab)).SetDisplayName(FText::FromString("Memo Tab"));
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
