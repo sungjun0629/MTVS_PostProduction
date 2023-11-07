@@ -40,4 +40,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetTextToUI(UTextBlock* TextBlock, FString Data);
+
+	UFUNCTION(BlueprintCallable)
+	void GetScriptDataFromSystem(FString SystemCategory, FString SystemSpeaker, FString SystemScript, FString SystemLocation, FString SystemSceneNum);
+
+	void IsSceneNumber(FString SystemSpeaker, FString SystemLocation);
+	void IsNotSceneNumber(FString SystemSceneNum, FString SystemSpeaker, FString SystemScript, FString SystemLocation);
 };
