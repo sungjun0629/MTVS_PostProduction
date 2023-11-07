@@ -18,10 +18,9 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 		.Text(FText::FromString("Sequencer"));
 
 
-	TSharedPtr<SListView<TSharedPtr<FMemoDataTable>>> csvListView;
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
-	TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
+	//TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 	LoadedDataTable->GetAllRows<FMemoDataTable>("random", TableRows);
 
 	for ( FMemoDataTable* TableRow : TableRows )
@@ -99,7 +98,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 												return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
 						})
 						.OnSelectionChanged_Lambda([=] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
-						{
+						{// 중요, ListView refresh Logic
 							if ( Item.IsValid() )
 							{
 								FString SelectedItem = *Item.Get();
@@ -107,7 +106,6 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 								UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
 								
 								ChangeContent(SelectedItem);
-								
 							}
 						})
 				]
@@ -118,6 +116,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 					// FMemoDataTable
 					SAssignNew(csvListView, SListView<TSharedPtr<FMemoDataTable>>)
 					.ListItemsSource(&memoItems)
+					.OnMouseButtonDoubleClick(this, &SSequencePractice::OnMousebuttonDoubleClick)
 					.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
 					{
 						return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
@@ -134,6 +133,12 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 									+ SHorizontalBox::Slot()
 									[
 										SNew(STextBlock).Text(FText::FromString(Item->content))
+									]
+
+									+SHorizontalBox::Slot()
+									[
+										SNew(SCheckBox)
+											.IsChecked(ECheckBoxState::Unchecked)
 									]
 							];
 					})
@@ -176,28 +181,27 @@ void SSequencePractice::ChangeContent(FString contentString)
 	contentTitle->SetText(FText::FromString(contentString));
 
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
-
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
 
-	TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
-	// Populate the TableRows array with data from the DataTable.
+	filterSequenceName = contentString;
+	TableRows.Empty();
+	LoadedDataTable->GetAllRows<FMemoDataTable>("random" , TableRows);
+	memoItems.Empty();
+	for ( FMemoDataTable* TableRow : TableRows )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("TableRow : %s") , *TableRow->title);
+		if ( TableRow->sequenceName == filterSequenceName )
+		memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
+	}
 
-
+	csvListView->RequestListRefresh();
 	
-	// Create an SListView widget to display the DataTable content.
-	TSharedPtr<SListView<TSharedPtr<FMemoDataTable>>> ListView;
-	SAssignNew(ListView , SListView<TSharedPtr<FMemoDataTable>>)
-		//.ItemList(TableRows)
-		.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& LoadedDataTable)
-		{
-				return SNew(STableRow<TSharedPtr<FMemoDataTable>> , LoadedDataTable)
-					.Padding(1)
-					.Content()
-					[
-						SNew(STextBlock).Text(FText::FromString(Item->content)) // Display the name property, modify as needed.
-					];
-		});
+}
+
+void SSequencePractice::OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item)
+{
+	UE_LOG(LogTemp , Warning , TEXT("OnMousebuttonDoubleClick : %s") , *Item->title);
 }
 
 FReply SSequencePractice::OnSubmitClicked()
@@ -206,10 +210,14 @@ FReply SSequencePractice::OnSubmitClicked()
 
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
+	const FDateTime Now = FDateTime::Now();
+	const FString DateTimeString = Now.ToString(TEXT("%Y/%m/%d/%H:%M:%S"));
+
+
 	FMemoDataTable MemoDataTable;
 	MemoDataTable.title = title;
 	MemoDataTable.content = content;
-	MemoDataTable.createdAt = "1";
+	MemoDataTable.createdAt = DateTimeString;
 
 	if ( LoadedDataTable )
 	{

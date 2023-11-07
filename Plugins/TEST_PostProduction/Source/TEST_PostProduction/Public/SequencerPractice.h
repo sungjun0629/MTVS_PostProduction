@@ -21,11 +21,17 @@ public:
 	FString sequenceName;
 	FString content;
 	FString comboBoxContent = "sequencer";
+
+	FString filterSequenceName = "";
+	TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
+
+
 	TArray<TSharedPtr<FString>> Options;
 	TSharedPtr<SComboBox<TSharedPtr<FString>>> ComboBoxWidget;
 	TSharedPtr<STextBlock> contentTitle;
 	TArray<TSharedPtr<FString>> Items;
 	TArray<TSharedPtr<FMemoDataTable>> memoItems;
+	TSharedPtr<SListView<TSharedPtr<FMemoDataTable>>> csvListView;
 
 public:
 	/** Constructs this widget with InArgs */
@@ -34,6 +40,8 @@ public:
 	void GetSequenceAsset();
 
 	void ChangeContent(FString content);
+
+	void OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item);
 
 	FReply OnSubmitClicked();
 

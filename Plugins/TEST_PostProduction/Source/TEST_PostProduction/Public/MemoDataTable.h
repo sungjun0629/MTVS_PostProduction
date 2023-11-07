@@ -19,6 +19,8 @@ struct FMemoDataTable : public FTableRowBase
 public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FString sequenceName;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString title;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString content;
