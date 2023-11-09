@@ -74,5 +74,5 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # MetaHuman
-Face_Archetype*
-*MetaHumanIdentity*
+Content/MetaHumans/Common/Face/Face_Archetype.uasset
+Content/MetaHumans/*MetaHumanIdentity/Face/*FaceMesh.uasset
