@@ -12,6 +12,8 @@ class TEST_POSTPRODUCTION_API UUW_SingleScript : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeConstruct() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget), Category = Script)
 	class UTextBlock* T_Category;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = ( BindWidget ) , Category = Script)
