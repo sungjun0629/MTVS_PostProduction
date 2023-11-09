@@ -54,4 +54,6 @@ public:
 
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
 
+	FVector GetMousePositionInEditor();
+
 };

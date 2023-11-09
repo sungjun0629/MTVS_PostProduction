@@ -34,7 +34,9 @@ public class TEST_PostProduction : ModuleRules
                 "Json",
 				"JsonUtilities",
 				"HTTP",
-                "DesktopPlatform"
+                "DesktopPlatform",
+                "ToolWidgets",
+                "LevelSequence",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

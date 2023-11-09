@@ -42,6 +42,8 @@ private:
 
 	TSharedRef<SDockTab> OnSpawnLoginTab(const FSpawnTabArgs& spawnArgs);
 
+	TSharedRef<SDockTab> OnSpawnMemoTab(const FSpawnTabArgs& spawnArgs);
+
 
 #pragma endregion 
 

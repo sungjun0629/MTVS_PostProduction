@@ -26,8 +26,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Engine/Engine.h"
+#include "Editor/UnrealEd/Public/UnrealEd.h"
 
 #include "Runtime/Engine/Public/AudioDevice.h"
+//#include "Editor.h"
+//#include "Sequencer/Public/ISequencerModule.h"
 
 void SSoundConvertWidget::Construct(const FArguments& InArgs)
 {	
@@ -455,4 +458,37 @@ void SSoundConvertWidget::Tick(const FGeometry& AllottedGeometry, const double I
 			CurrentPlaybackPosition = 0.0f;
 		}*/
     }
+}
+
+FVector SSoundConvertWidget::GetMousePositionInEditor()
+{
+
+    if (GEditor->Trans == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("null"))
+    }
+
+    //FVector2D MousePosition;
+    //FVector mm = GEditor->ClickLocation;
+
+    //UE_LOG(LogTemp,Warning,TEXT("mouse x : %f, y : %f, z : %f"), mm.X, mm.Y, mm.Z);
+    ////FEditorViewportClient* ViewportClient = (FEditorViewportClient*)GEditor->GetActiveViewport()->GetClient();
+    ////if (ViewportClient)
+    ////{
+    ////    FSceneView* SceneView = ViewportClient->GetScene();
+    ////    if (SceneView)
+    ////    {
+    ////        FVector WorldOrigin, WorldDirection;
+    ////        if (ViewportClient->DeprojectScreenToWorld(MousePosition, WorldOrigin, WorldDirection))
+    ////        {
+    ////            // You can use the WorldOrigin and WorldDirection here to get the mouse position in the world.
+    ////            // For example:
+    ////            FVector MouseWorldPosition = WorldOrigin + WorldDirection * 1000; // Assuming 1000 units along the direction vector
+    ////            return MouseWorldPosition;
+    ////        }
+    ////    }
+    ////}
+    return FVector::ZeroVector;
+
+
 }
