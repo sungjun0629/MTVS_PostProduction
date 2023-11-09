@@ -19,7 +19,7 @@ UEUW_ScriptSystem::UEUW_ScriptSystem()
 
 void UEUW_ScriptSystem::NativeConstruct()
 {
-	ScriptDataTable = LoadObject<UDataTable>(nullptr , TEXT("/Game/TestSheet"));
+	ScriptDataTable = LoadObject<UDataTable>(nullptr , TEXT("/Game/TestSheet_C++"));
 	//SingleScriptWidget = LoadObject<UUW_SingleScript>(nullptr , TEXT("/Game/UI_SingleScript_Copy'"));
 
 	OriginalSoundBase = LoadObject<USoundBase>(nullptr , TEXT("/Script/Engine.SoundWave'/Game/TestVoice_1.TestVoice_1'"));
