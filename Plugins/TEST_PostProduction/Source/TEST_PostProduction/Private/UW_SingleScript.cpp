@@ -2,6 +2,11 @@
 #include "Components/TextBlock.h"
 #include "Kismet/KismetStringLibrary.h"
 
+void UUW_SingleScript::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
 void UUW_SingleScript::GetScriptTable(FString WriteCategory , FString WriteSpeaker , FString WriteScript , FString WriteLocation)
 {
 	Category = WriteCategory;
@@ -25,9 +30,9 @@ void UUW_SingleScript::GetScriptDataFromSystem(FString SystemCategory , FString 
 {
 	SceneNumber = UKismetStringLibrary::LeftChop(SystemSceneNum , 2);
 
-	SetTextToUI(T_Category , Category);
+	SetTextToUI(T_Category , SystemCategory);
 
-	if ( Category == "장면" )
+	if ( SystemCategory == "장면" )
 	{
 		IsSceneNumber(SystemSpeaker , SystemLocation);
 	}
