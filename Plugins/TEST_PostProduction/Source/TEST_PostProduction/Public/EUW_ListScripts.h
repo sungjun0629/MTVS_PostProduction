@@ -20,6 +20,8 @@ public:
 	FString Script;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Location"))
 	FString Location;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite , meta = ( DisplayName = "Path" ))
+	FString Path;
 };
 
 UCLASS(BlueprintType)
@@ -29,12 +31,6 @@ class TEST_POSTPRODUCTION_API UEUW_ListScripts : public UEditorUtilityWidget
 
 public:
 	UEUW_ListScripts();
-	
-	/*UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = Script)
-	class UTextBlock* Text_Script;
-
-	UFUNCTION(BlueprintCallable)
-	void CheckScript();*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ScriptData)
 	uint8 ScriptCount = 0;
