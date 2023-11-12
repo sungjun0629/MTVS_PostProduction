@@ -12,7 +12,7 @@
 
 class SSoundConvertWidget : public SCompoundWidget
 {
-	SLATE_BEGIN_ARGS(SMainMenuWidget) {}
+	SLATE_BEGIN_ARGS(SSoundConvertWidget) {}
 
 	SLATE_END_ARGS()
 

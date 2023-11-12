@@ -13,7 +13,7 @@ public:
 	IPConfig();
 	~IPConfig();
 
-	inline static FString StaticVariable = "http://192.168.1.11:8080";
+	inline static FString StaticVariable = "http://192.168.0.29:4493";
 
 	inline static FString Token;
 };

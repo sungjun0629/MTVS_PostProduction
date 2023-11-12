@@ -27,8 +27,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	FSlateBrush WhiteImageBrush;
 	WhiteImageBrush.TintColor = FLinearColor(1.0f, 1.0f, 1.0f, 0.3f); // White color with opacity of 0.3
 
-	
-	dropText = SNew(STextBlock)
+	dropVideoText = SNew(STextBlock)
 		.Text(FText::FromString("Drop item here!"))
 		.ColorAndOpacity(FLinearColor::White);
 
@@ -72,58 +71,39 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 			.Padding(0,15)
 			[
 				SNew(SVerticalBox)
-					
+
 					+ SVerticalBox::Slot()
 					[
 						SNew(SDropTarget)
-							.OnAllowDrop_Raw(this, &SMainMenuWidget::OnAllowDrop)
-							.OnDropped(this, &SMainMenuWidget::OnDropVideo)
+							.OnAllowDrop_Raw(this , &SMainMenuWidget::OnAllowDrop)
+							.OnDropped(this , &SMainMenuWidget::OnDropVideo)
 							[
 								SNew(SBox)
 									.HAlign(HAlign_Center)
 									.VAlign(VAlign_Center)
 									[
-										dropText.ToSharedRef()
-										/*SNew(STextBlock)
-											.Text(FText::FromString("Drop items here!"))
-											.ColorAndOpacity(FLinearColor::White)*/
+										dropVideoText.ToSharedRef()
 									]
 							]
 					]
 
 					+ SVerticalBox::Slot()
-					.Padding(20, 10)
+					.Padding(20 , 10)
 					.AutoHeight()
 					.HAlign(HAlign_Right)
 					[
 						SNew(SButton)
 							.VAlign(VAlign_Center)
 							.HAlign(HAlign_Right)
-							.OnClicked(this, &SMainMenuWidget::OnUploadFileClicked)
+							.OnClicked(this , &SMainMenuWidget::OnVideoUploadFileClicked)
 							[
 								SNew(STextBlock)
-									.Text(FText::FromString("Upload File"))
+									.Text(FText::FromString("video Upload"))
 							]
 
 					]
 				
 			]
-
-
-					/*SNew(SVerticalBox)
-
-						+ SVerticalBox::Slot()
-						.AutoHeight()
-						.Padding(0, 400, 0, 0)
-						[
-							SNew(SButton)
-								.VAlign(VAlign_Center)
-								.Text(FText::FromString("Upload File"))
-								.OnClicked(this, &SMainMenuWidget::OnUploadFileClicked)
-								.HAlign(HAlign_Center)
-						]*/
-			//]
-	//];
 	];
 }
 
@@ -165,10 +145,36 @@ FReply SMainMenuWidget::OnDropVideo(const FGeometry& MyGeometry, const FDragDrop
 
 }
 
+FReply SMainMenuWidget::OnDropImage(const FGeometry& MyGeometry , const FDragDropEvent& DragDropEvent)
+{
+	TSharedPtr<FDragDropOperation> DragDropOperation = DragDropEvent.GetOperation();
+
+	if ( DragDropOperation.IsValid() && DragDropOperation->IsOfType<FAssetDragDropOp>() )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("Can't Drop UASSET"));
+	}
+	else if ( DragDropOperation.IsValid() && DragDropOperation->IsOfType<FExternalDragOperation>() )
+	{
+		TSharedPtr<FExternalDragOperation> FileOperation = StaticCastSharedPtr<FExternalDragOperation>(DragDropOperation);
+
+		UE_LOG(LogTemp , Warning , TEXT("Dropped file path num: %s") , **FileOperation->GetFiles().begin());
+
+		dropText->SetText(FText::FromString("Click *Upload File* Button To Get 3D Object"));
+
+		SetAssetPath(*FileOperation->GetFiles().begin());
+
+		return FReply::Handled();
+	}
+
+	return FReply::Unhandled();
+}
+
 FReply SMainMenuWidget::OnUploadFileClicked()
 {
 	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
 	FString base64Info = FileUpload->UploadFile(AssetPath);
+
+	FString description = "cream_cake";
 
 	dropText->SetText(FText::FromString("Downloading starts! It may take a few minutes"));
 
@@ -176,10 +182,12 @@ FReply SMainMenuWidget::OnUploadFileClicked()
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
 
 	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
-	RequestObj->SetStringField("fileName", *base64Info);
+	RequestObj->SetStringField("imageEncodingString", *base64Info);
+	RequestObj->SetStringField("description", *description);
 
+	// 3d Object Test
 	FString RequestBody;
-	FString URL = IPConfig::StaticVariable + "/view/video";
+	FString URL = IPConfig::StaticVariable + "/image/upload";
 	
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj, Writer);
@@ -190,6 +198,40 @@ FReply SMainMenuWidget::OnUploadFileClicked()
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
+	//Request->SetHeader(TEXT("Authorization"), BearerToken);
+	Request->SetContentAsString(RequestBody);
+	//Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
+	Request->ProcessRequest();
+
+	return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnVideoUploadFileClicked()
+{
+	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
+	FString base64Info = FileUpload->UploadFile(AssetPath);
+
+	dropVideoText->SetText(FText::FromString("Downloading starts! It may take a few minutes"));
+
+	// Request whether Or not Motion Matching is finished
+	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+
+	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
+	RequestObj->SetStringField("fileName" , *base64Info);
+
+	FString RequestBody;
+	FString URL = IPConfig::StaticVariable + "/view/video";
+
+
+	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
+	FJsonSerializer::Serialize(RequestObj , Writer);
+
+	UE_LOG(LogTemp , Warning , TEXT("Token : %s") , *IPConfig::Token);
+	FString BearerToken = "Bearer " + IPConfig::Token;
+
+	Request->SetURL(URL);
+	Request->SetVerb("POST");
+	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
 	Request->SetHeader(TEXT("Authorization"), BearerToken);
 	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
@@ -202,14 +244,14 @@ void SMainMenuWidget::OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<I
 {
 	if (bConnectedSuccessfully)
 	{
-		// MotionMenu Tabø° ¿Ã∫•∆Æ ¿¸¥ﬁ, ¿• ∆‰¿Ã¡ˆ¿« visibility∏¶ true∑Œ ∫Ø∞Ê«ÿ¡ÿ¥Ÿ.
+		// MotionMenu TabÏóê Ïù¥Î≤§Ìä∏ Ï†ÑÎã¨, Ïõπ ÌéòÏù¥ÏßÄÏùò visibilityÎ•º trueÎ°ú Î≥ÄÍ≤ΩÌï¥Ï§ÄÎã§.
 		//if(OnGetResponse.IsBound()) OnGetResponse.Execute();
 		UE_LOG(LogTemp, Warning, TEXT("Successfully Get Response : %d"), Response->GetResponseCode());
 
 		dropText->SetText(FText::FromString("Downloading Completed, Drop item here again!"));
 
 
-		  // ¥Ÿ∏• πÊΩƒ
+		  // Îã§Î•∏ Î∞©Ïãù
 		TSharedPtr<SDockTab> motionTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Motion Tab"));
 		if(!motionTab.IsValid()) {
 			FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
@@ -217,7 +259,7 @@ void SMainMenuWidget::OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<I
 		}
 		else
 		{
-			// ∏∏æ‡ ¿ÃπÃ tab¿Ã »∞º∫»≠ µ«æÓ¿÷¥Ÿ∏È reload∏¶ «—¥Ÿ. 
+			// ÎßåÏïΩ Ïù¥ÎØ∏ tabÏù¥ ÌôúÏÑ±Ìôî ÎêòÏñ¥ÏûàÎã§Î©¥ reloadÎ•º ÌïúÎã§. 
 			//motionTab->RequestCloseTab();
 			FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 			/*TSharedPtr<SDockTab> reMotionTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Motion Tab"));*/

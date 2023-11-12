@@ -13,6 +13,8 @@
 #include "SoundConvertWidget.h"
 #include "SLoginWebPage.h"
 #include "SequencerPractice.h"
+#include "SSequencerDetail.h"
+#include "SImageConverter.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -106,6 +108,12 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 
 	// Enroll memoTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Memo Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnMemoTab)).SetDisplayName(FText::FromString("Memo Tab"));
+
+	// Enroll memoTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Detail Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnDetailTab)).SetDisplayName(FText::FromString("Detail Tab"));
+
+	// Enroll memoTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Asset Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnImageTab)).SetDisplayName(FText::FromString("Asset Tab"));
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
@@ -158,6 +166,24 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoTab(const FSpawnTabA
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
 		[
 			SNew(SSequencePractice)
+		];
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnDetailTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+		[
+			SNew(SSequencerDetail)
+		];
+}	
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnImageTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+		[
+			SNew(SImageConverter)
 		];
 }
 
