@@ -4,18 +4,20 @@
 #include "SSequencerDetail.h"
 #include "Framework/Text/SlateImageRun.h"
 #include "Framework/Text/IRun.h"
+#include "Styling/SlateBrush.h"
+#include "Engine/Texture2D.h"
+#include "UObject/ConstructorHelpers.h"
+#include "SoundConverterLogic.h"
 
 void SSequencerDetail::Construct(const FArguments& InArgs)
 {
 
-	FSlateBrush MySlateBrush;
-	MySlateBrush.SetResourceObject(LoadObject<UObject>(nullptr , TEXT(" / Script / Engine.Texture2D'/Game/Sungjun/Images/storyBoard1.storyBoard1'")));
-	MySlateBrush.ImageSize = FVector2D(50.0f , 50.0f); // Set the size as needed
-	
-	const FSlateBrush* MyBrush = &MySlateBrush;
+	USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
+
+	const FSlateBrush* MyBrush = &(ImageLibrary->MySlateBrush);
 
 	image = SNew(SImage)
-		.Image(MyBrush);
+			.Image(MyBrush);
 
 	title = SNew(STextBlock);
 	period = SNew(STextBlock);
