@@ -9,6 +9,8 @@
 #include "Widgets/Input/SComboBox.h"
 #include "Widgets/Views/SListView.h"
 #include "Widgets/Views/STableViewBase.h"
+#include "Framework/Docking/TabManager.h"
+#include "SSequencerDetail.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
@@ -33,59 +35,15 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 		[
 			SNew(SVerticalBox)
 			
-				+ SVerticalBox::Slot()
-				.AutoHeight()
-				[
-					SNew(SEditableText)
-						.Text(FText::FromString("Sequence Name"))
-						.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
-
-						sequenceName = InText.ToString();
-						UE_LOG(LogTemp , Warning , TEXT("sequenceName : %s") , *InText.ToString());
-						})
-
-				]
-
-
-				+ SVerticalBox::Slot()
-				.AutoHeight()
-				[
-					SNew(SEditableText)
-						.Text(FText::FromString("Title"))
-						.OnTextCommitted_Lambda([=](const FText& InText, ETextCommit::Type InCommitType) { 
-						
-							title = InText.ToString();
-							UE_LOG(LogTemp, Warning, TEXT("Title : %s"), *InText.ToString()); 
-						})
-						
-				]
-
-				+ SVerticalBox::Slot()
-					.MaxHeight(30.f)
-				[
-					SNew(SEditableText)
-						.Text(FText::FromString("Content"))
-						.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
-
-						content = InText.ToString();
-						UE_LOG(LogTemp , Warning , TEXT("Content : %s") , *InText.ToString());
-						})
-				]
-
-				+SVerticalBox::Slot()
-				.AutoHeight()
-				.VAlign(VAlign_Center)
-				.HAlign(HAlign_Right)
-				[
-					SNew(SButton)
-						.Text(FText::FromString("Button"))
-						.OnClicked(this, &SSequencePractice::OnSubmitClicked)
-				]
 
 				+SVerticalBox::Slot()
 				.AutoHeight()
 				[
-					SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
+					SNew(SHorizontalBox)
+
+					+ SHorizontalBox::Slot()
+					[ 
+						SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
 						.OptionsSource(&Options)
 						.Content()
 						[
@@ -94,20 +52,37 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 						]
 						.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
 						{
-												
-												return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
+
+							return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
 						})
-						.OnSelectionChanged_Lambda([=] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
+						.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
 						{// 중요, ListView refresh Logic
 							if ( Item.IsValid() )
 							{
 								FString SelectedItem = *Item.Get();
 								// Handle the selection here.
 								UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
-								
+
 								ChangeContent(SelectedItem);
 							}
 						})
+					]
+
+					+SHorizontalBox::Slot()
+						.AutoWidth()
+					[
+						SNew(SButton)
+							.Text(FText::FromString("Detail"))
+							.OnClicked(this , &SSequencePractice::OnDetailClicked)
+					]
+
+					+ SHorizontalBox::Slot()
+						.AutoWidth()
+					[
+						SNew(SButton)
+							.Text(FText::FromString("Write"))
+							.OnClicked(this , &SSequencePractice::OnWriteClicked)
+					]
 				]
 
 				+ SVerticalBox::Slot()
@@ -202,6 +177,7 @@ void SSequencePractice::ChangeContent(FString contentString)
 void SSequencePractice::OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item)
 {
 	UE_LOG(LogTemp , Warning , TEXT("OnMousebuttonDoubleClick : %s") , *Item->title);
+
 }
 
 FReply SSequencePractice::OnSubmitClicked()
@@ -232,4 +208,25 @@ FReply SSequencePractice::OnSubmitClicked()
 	return FReply::Handled();
 }
 
+FReply SSequencePractice::OnDetailClicked()
+{
+	TSharedPtr<SDockTab> checkTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Detail Tab"));
+
+	if ( !checkTab.IsValid() )
+	{
+		TSharedPtr<SDockTab> sequencerDetail = FGlobalTabmanager::Get()->TryInvokeTab(FName("Detail Tab"));
+	}
+	else
+	{
+		/*TSharedPtr<SSequencerDetail> customSharedPtr = StaticCastSharedPtr<SSequencerDetail>(checkTab);
+		customSharedPtr->ReloadContent();*/
+	}
+
+	return FReply::Handled();
+}
+
+FReply SSequencePractice::OnWriteClicked()
+{
+	return FReply::Handled();
+}
 

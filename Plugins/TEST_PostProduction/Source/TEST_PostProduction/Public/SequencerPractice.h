@@ -5,6 +5,7 @@
 #include "Widgets/SCompoundWidget.h"
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "WebBrowser/Public/SWebBrowserView.h"
+#include "MemoDataTable.h"
 /**
  *
  */
@@ -44,5 +45,9 @@ public:
 	void OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item);
 
 	FReply OnSubmitClicked();
+
+	FReply OnDetailClicked();
+
+	FReply OnWriteClicked();
 
 };

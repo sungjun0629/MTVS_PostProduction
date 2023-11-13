@@ -24,13 +24,13 @@ FString UJsonParseLibrary_Plugin::JsonParse(const FString& originData)
 {
 	FString parsedData;
 
-	// Reader¸¦ ¸¸µç´Ù.
+	// Readerë¥¼ ë§Œë“ ë‹¤.
 	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
 
-	// reader·Î ÆÄ½ÌµÈ °á°ú¸¦ ´ãÀ» json Object¸¦ ¼±¾ğÇÑ´Ù.
+	// readerë¡œ íŒŒì‹±ëœ ê²°ê³¼ë¥¼ ë‹´ì„ json Objectë¥¼ ì„ ì–¸í•œë‹¤.
 	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());
 
-	// ÇØµ¶ÇÑ´Ù.
+	// í•´ë…í•œë‹¤.
 	if (FJsonSerializer::Deserialize(reader, result))
 	{
 		parsedData = result->GetStringField("voiceUrl");
@@ -38,6 +38,32 @@ FString UJsonParseLibrary_Plugin::JsonParse(const FString& originData)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Parsing"));
+	}
+
+	return parsedData;
+}
+
+TArray<FString> UJsonParseLibrary_Plugin::JsonParse3DImage(const FString& originData)
+{
+	TArray<FString> parsedData;
+
+
+	// Readerë¥¼ ë§Œë“ ë‹¤.
+	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
+
+	// readerë¡œ íŒŒì‹±ëœ ê²°ê³¼ë¥¼ ë‹´ì„ json Objectë¥¼ ì„ ì–¸í•œë‹¤.
+	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());
+
+	// í•´ë…í•œë‹¤.
+	if ( FJsonSerializer::Deserialize(reader , result) )
+	{
+		parsedData.Add(result->GetStringField("albedoUrl"));
+		parsedData.Add(result->GetStringField("meshMtl"));
+		parsedData.Add(result->GetStringField("meshObj"));
+	}
+	else
+	{
+		UE_LOG(LogTemp , Warning , TEXT("Failed to Parsing 3D Image"));
 	}
 
 	return parsedData;

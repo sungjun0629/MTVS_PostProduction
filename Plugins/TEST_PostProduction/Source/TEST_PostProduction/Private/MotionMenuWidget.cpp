@@ -71,7 +71,7 @@ void SMotionMenuWidget::OnURLChanged(const FText& InText)
 	UE_LOG(LogTemp, Warning, TEXT("OnURLChanged : %s"), *InText.ToString());
 
 	const FDateTime Now = FDateTime::Now();
-	const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));
+	const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;
 
 	FString FBXURL="";
 	FString SavePath = "D:\\DownTest\\";

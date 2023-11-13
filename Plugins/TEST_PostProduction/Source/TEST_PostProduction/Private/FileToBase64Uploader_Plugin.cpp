@@ -49,7 +49,7 @@ FString UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 
 	if (*ExtensionString(FileName) == FString("wav"))
 	{
-		// À½¼ºÀÇ °æ¿ì modelNameÀÌ ÇÊ¿äÇÔ
+		// ìŒì„±ì˜ ê²½ìš° modelNameì´ í•„ìš”í•¨
 		//UE_LOG(LogTemp, Warning, TEXT("WAV Check"));
 		FString ModelName = "dahyun";
 		EncodedData.Add("modelName", ModelName);
@@ -59,26 +59,33 @@ FString UFileToBase64Uploader_Plugin::UploadFile(FString FullFilePath)
 
 	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, SendJsonData);
 
-	// Àü´ÞÇÏ´Â ÆÄÀÏ È®ÀåÀÚ°¡ mp4ÀÏ °æ¿ì Video °æ·Î·Î Àü¼Û
+	// ì „ë‹¬í•˜ëŠ” íŒŒì¼ í™•ìž¥ìžê°€ mp4ì¼ ê²½ìš° Video ê²½ë¡œë¡œ ì „ì†¡
 	if (*ExtensionString(FileName) == FString("mp4"))
 	{
 		FString	URL = IPConfig::StaticVariable + "/view/video";
 		HttpRequest->SetURL(URL);
 	}
 
-	// Àü´ÞÇÏ´Â ÆÄÀÏ È®ÀåÀÚ°¡ wavÀÏ °æ¿ì voice °æ·Î·Î Àü¼Û
+	// ì „ë‹¬í•˜ëŠ” íŒŒì¼ í™•ìž¥ìžê°€ wavì¼ ê²½ìš° voice ê²½ë¡œë¡œ ì „ì†¡
 	if (*ExtensionString(FileName) == FString("wav"))
 	{
 		FString	URL = IPConfig::StaticVariable + "/view/voice";
 		HttpRequest->SetURL(URL);
 	}
 
-	HttpRequest->SetVerb(TEXT("POST"));
+	// ì „ë‹¬í•˜ëŠ” íŒŒì¼ í™•ìž¥ìžê°€ ë‹¤ë¥¸ê²½ìš°ì¼ ê²½ìš°(jpg,png,jpeg) ê²½ë¡œë¡œ ì „ì†¡
+	/*else
+	{
+		FString	URL = IPConfig::StaticVariable + "/image/upload";
+		HttpRequest->SetURL(URL);
+	}*/
+
+	/*HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	HttpRequest->SetContentAsString(SendJsonData);
 	HttpRequest->OnProcessRequestComplete().BindUObject(this, &UFileToBase64Uploader_Plugin::OnPostData);
 
-	HttpRequest->ProcessRequest();
+	HttpRequest->ProcessRequest();*/
 
 	return Base64EncodedString;
 	/*FTimerHandle Timer;
@@ -106,7 +113,7 @@ void UFileToBase64Uploader_Plugin::OnPostData(FHttpRequestPtr Request, FHttpResp
 	//}
 	//else
 	//{
-	//	// ¿äÃ» Àü¼Û »óÅÂ È®ÀÎ
+	//	// ìš”ì²­ ì „ì†¡ ìƒíƒœ í™•ì¸
 	//	EHttpRequestStatus::Type status = Request->GetStatus();
 	//	switch (status)
 	//	{
@@ -124,7 +131,7 @@ void UFileToBase64Uploader_Plugin::OnPostData(FHttpRequestPtr Request, FHttpResp
 	//		break;
 	//	}
 
-	//	// ÀÀ´ä ÄÚµå È®ÀÎ
+	//	// ì‘ë‹µ ì½”ë“œ í™•ì¸
 	//	int32 responseCode = Response->GetResponseCode();
 	//}
 }

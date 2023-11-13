@@ -16,4 +16,6 @@ public:
 	static FString MakeJson(const TMap<FString, FString> source);
 
 	static FString JsonParse(const FString& originData);
+
+	static TArray<FString> JsonParse3DImage(const FString& originData);
 };

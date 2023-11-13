@@ -74,7 +74,7 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 					+ SHorizontalBox::Slot()
 					.HAlign(HAlign_Center)
 					.VAlign(VAlign_Center)
-.Padding(5,0)
+						.Padding(5,0)
 					[
 						SNew(SButton)
 							.OnClicked(this, &SPostProductionWidget::OnKakaoLoginClicked)
@@ -92,7 +92,7 @@ void SPostProductionWidget::Construct(const FArguments& InArgs)
 					+SHorizontalBox::Slot()
 					.HAlign(HAlign_Center)
 					.VAlign(VAlign_Center)
-.Padding(5,0)
+						.Padding(5,0)
 					[
 						SNew(SButton)
 							.VAlign(VAlign_Center)
@@ -115,6 +115,7 @@ FReply SPostProductionWidget::OnKakaoLoginClicked()
 	// Open the new editor tab
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
 
 	// Close the old tab if it exists
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));
