@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
+#include "SGetWebAddress.h"
 #include "SoundConverterLogic.generated.h"
 
 
@@ -27,10 +28,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
 	void ConvertedSoundDownload(FString loadedAsset);
 
+	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
+	bool SuccessDownload(bool isSuccess);
+
 	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
 
+	void DownloadVoice(FString url);
 
 	FSlateBrush MySlateBrush;
 	// 이미지 테스트용
 	const FSlateBrush* SearchImageFromUE(FString imagePath);
+
+
+	TSharedPtr<SGetWebAddress> getWebAddress;
 };

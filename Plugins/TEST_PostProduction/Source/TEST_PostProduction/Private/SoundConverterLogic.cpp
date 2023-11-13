@@ -11,6 +11,9 @@
 #include "JsonParseLibrary_Plugin.h"
 #include "FileToStorageDownloader_Plugin.h"
 #include "UObject/ConstructorHelpers.h"
+#include "SGetWebAddress.h"
+#include "AudioDevice.h"
+#include "Engine/Engine.h"
 
 
 USoundConverterLogic::USoundConverterLogic()
@@ -62,6 +65,7 @@ void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset)
 
 }
 
+
 void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully)
 {
     if ( bConnectedSuccessfully )
@@ -70,19 +74,49 @@ void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Req
         FString res = Response->GetContentAsString();
         FString parsedData = jsonParser->JsonParse(res);
 
-        const FDateTime Now = FDateTime::Now();
-        const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;
-
-        UFileToStorageDownloader_Plugin* StorageDownload;
         FString url = parsedData;
-        
-        UE_LOG(LogTemp,Warning,TEXT("url : %s"),*url);
-        FString SavePath = "D:\\DownTest\\";
-        SavePath.Append(DateTimeString);
-        SavePath.Append(TEXT("_ConvertedVoice.wav"));
 
-        StorageDownload->DownloadFileToStorage(url , SavePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+        getWebAddress = MakeShared<SGetWebAddress>();
+        getWebAddress->ReloadAndGetURL(url);
+        
+		/*UE_LOG(LogTemp,Warning,TEXT("url : %s"),*url);
+
+		FString SavePath = "D:\\DownTest\\";
+		const FDateTime Now = FDateTime::Now();
+		const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;
+		SavePath.Append(DateTimeString);
+		SavePath.Append(TEXT("_ConvertedVoice.wav"));
+
+		UFileToStorageDownloader_Plugin* StorageDownload;
+
+		StorageDownload->DownloadFileToStorage(url , SavePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+
+		OnFileToStorageDownloadCompleteDelegate.BindUFunction(this , "SuccessDownload");*/
     }
+}
+
+void USoundConverterLogic::DownloadVoice(FString url)
+{
+    UE_LOG(LogTemp , Warning , TEXT("url : %s") , *url);
+
+    FString SavePath = "D:\\DownTest\\";
+    const FDateTime Now = FDateTime::Now();
+    const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;
+    SavePath.Append(DateTimeString);
+    SavePath.Append(TEXT("_ConvertedVoice.wav"));
+
+    UFileToStorageDownloader_Plugin* StorageDownload;
+
+    StorageDownload->DownloadFileToStorage(url , SavePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+
+    FAudioDevice* AudioDevice = GEngine->GetMainAudioDevice().GetAudioDevice();
+    AudioDevice->Flush(nullptr);
+}
+
+bool USoundConverterLogic::SuccessDownload(bool isSuccess)
+{
+    UE_LOG(LogTemp , Warning , TEXT("SuccessDownload"));
+	return true;
 }
 
 const FSlateBrush* USoundConverterLogic::SearchImageFromUE(FString imagePath)
