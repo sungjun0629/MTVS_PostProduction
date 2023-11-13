@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FileToStorageDownloader_Plugin.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "SGetWebAddress.h"
@@ -26,10 +27,10 @@ public:
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
 
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
-	void ConvertedSoundDownload(FString loadedAsset);
+	void ConvertedSoundDownload(FString loadedAsset, FString modelName);
 
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
-	bool SuccessDownload(bool isSuccess);
+	void SuccessDownload(EDownloadToStorageResult_Plugin Result);
 
 	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
 
@@ -39,6 +40,8 @@ public:
 	// 이미지 테스트용
 	const FSlateBrush* SearchImageFromUE(FString imagePath);
 
+	void GetSequenceAsset();
+	TArray<TSharedPtr<FString>> Options;
 
 	TSharedPtr<SGetWebAddress> getWebAddress;
 };

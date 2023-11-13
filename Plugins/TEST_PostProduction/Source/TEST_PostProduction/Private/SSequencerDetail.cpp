@@ -8,9 +8,15 @@
 #include "Engine/Texture2D.h"
 #include "UObject/ConstructorHelpers.h"
 #include "SoundConverterLogic.h"
+#include "IPConfig.h"
 
 void SSequencerDetail::Construct(const FArguments& InArgs)
 {
+	FString sequenceName = IPConfig::SequenceName;
+
+
+
+
 
 	USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
 

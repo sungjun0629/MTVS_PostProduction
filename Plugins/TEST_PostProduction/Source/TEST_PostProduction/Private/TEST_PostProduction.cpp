@@ -15,6 +15,7 @@
 #include "SequencerPractice.h"
 #include "SSequencerDetail.h"
 #include "SImageConverter.h"
+#include "SWriteContent.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -114,6 +115,9 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 
 	// Enroll memoTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Asset Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnImageTab)).SetDisplayName(FText::FromString("Asset Tab"));
+
+	// Enroll memoTab to GlobalTabmanager
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("MemoWrite Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnMemoWriteTab)).SetDisplayName(FText::FromString("MemoWrite Tab"));
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const FSpawnTabArgs& spawnArgs)
@@ -166,6 +170,15 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoTab(const FSpawnTabA
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
 		[
 			SNew(SSequencePractice)
+		];
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoWriteTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+		[
+			SNew(SWriteContent)
 		];
 }
 
