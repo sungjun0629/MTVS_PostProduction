@@ -24,8 +24,8 @@ public:
 	UPROPERTY(EditAnywhere , BlueprintReadWrite , meta = ( BindWidget ) , Category = ScriptData)
 	class UTextBlock* T_Describtion;
 	
-	UPROPERTY(EditAnywhere , BlueprintReadWrite , meta = ( BindWidget ) , Category = ScriptData)
-	class UImage* I_Thumbnail;
+	//UPROPERTY(EditAnywhere , BlueprintReadWrite , meta = ( BindWidget ) , Category = ScriptData)
+	//class UImage* I_Thumbnail;
 
 
 	// Source

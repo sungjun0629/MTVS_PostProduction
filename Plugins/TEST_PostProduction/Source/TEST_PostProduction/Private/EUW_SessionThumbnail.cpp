@@ -20,10 +20,10 @@ void UEUW_SessionThumbnail::SetThumbnailInfo(FString sceneName, FString descript
 	//YourTexture = LoadObject<UTexture2D>(nullptr , TEXT("YourTexturePath"));
 
 
-	if ( thumbnailSource )
-	{
-		// Set the image
-		I_Thumbnail->SetBrushFromTexture(YourTexture);
-	}
+	//if ( thumbnailSource )
+	//{
+	//	// Set the image
+	//	I_Thumbnail->SetBrushFromTexture(YourTexture);
+	//}
 }
 
