@@ -8,6 +8,8 @@
 #include "MemoDataTable.h"
 
 #define LOCTEXT_NAMESPACE "DataTableEditorPractice"
+
+
 /**
  *
  */
@@ -24,6 +26,8 @@ public:
 	FString sequenceName;
 	FString content;
 	FString comboBoxContent = "sequencer";
+	FString SelectedItem;
+
 
 	FString filterSequenceName = "";
 	TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
@@ -31,6 +35,7 @@ public:
 
 	TArray<TSharedPtr<FString>> Options;
 	TSharedPtr<SComboBox<TSharedPtr<FString>>> ComboBoxWidget;
+
 	TSharedPtr<STextBlock> contentTitle;
 	TArray<TSharedPtr<FString>> Items;
 	TArray<TSharedPtr<FMemoDataTable>> memoItems;
@@ -40,6 +45,7 @@ public:
 
 	/** Header row containing entries for each column in AvailableColumns */
 	TSharedPtr<SHeaderRow> ColumnNamesHeaderRow;
+
 public:
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);

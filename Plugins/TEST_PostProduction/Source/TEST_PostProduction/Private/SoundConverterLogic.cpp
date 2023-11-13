@@ -14,6 +14,9 @@
 #include "SGetWebAddress.h"
 #include "AudioDevice.h"
 #include "Engine/Engine.h"
+#include "AssetRegistry/IAssetRegistry.h"
+#include "AssetRegistry/AssetRegistryModule.h"
+#include "LevelSequence/Public/LevelSequence.h"
 
 
 USoundConverterLogic::USoundConverterLogic()
@@ -31,7 +34,7 @@ USoundConverterLogic::~USoundConverterLogic()
 
 }
 
-void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset)
+void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset, FString modelName)
 {
     UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
     FString base64Info = FileUpload->UploadFile(loadedAsset);
@@ -40,7 +43,7 @@ void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset)
 
     TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
 
-    FString ModelName = "dahyun";
+    FString ModelName = modelName;
     RequestObj->SetStringField("fileName" , *base64Info);
     RequestObj->SetStringField("modelName" , *ModelName);
 
@@ -70,6 +73,8 @@ void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Req
 {
     if ( bConnectedSuccessfully )
     {
+        OnFileToStorageDownloadCompleteDelegate.BindDynamic(this , &USoundConverterLogic::SuccessDownload);
+
         UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
         FString res = Response->GetContentAsString();
         FString parsedData = jsonParser->JsonParse(res);
@@ -113,10 +118,16 @@ void USoundConverterLogic::DownloadVoice(FString url)
     AudioDevice->Flush(nullptr);
 }
 
-bool USoundConverterLogic::SuccessDownload(bool isSuccess)
+void USoundConverterLogic::SuccessDownload(EDownloadToStorageResult_Plugin Result)
 {
-    UE_LOG(LogTemp , Warning , TEXT("SuccessDownload"));
-	return true;
+    if ( Result == EDownloadToStorageResult_Plugin::Success )
+    {
+		UE_LOG(LogTemp , Warning , TEXT("Success"));
+	}
+    else
+    {
+		UE_LOG(LogTemp , Warning , TEXT("Fail"));
+	}
 }
 
 const FSlateBrush* USoundConverterLogic::SearchImageFromUE(FString imagePath)
@@ -141,4 +152,26 @@ const FSlateBrush* USoundConverterLogic::SearchImageFromUE(FString imagePath)
     const FSlateBrush* MyBrush = &MySlateBrush;
 
     return MyBrush;
+}
+
+void USoundConverterLogic::GetSequenceAsset()
+{
+    IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry").Get();
+
+
+    TArray<FAssetData> AssetList;
+    //AssetRegistry.GetAssetsByClass(ULevelSequence::StaticClass()->GetFName(), AssetList);
+    AssetRegistry.GetAssetsByPath(FName("/Game/Sungjun/Sequence/") , AssetList);
+
+    for ( const FAssetData& Asset : AssetList )
+    {
+        // Use the asset as needed
+        ULevelSequence* LevelSequence = Cast<ULevelSequence>(Asset.GetAsset());
+        if ( LevelSequence )
+        {
+            // Perform operations on the Level Sequence
+            UE_LOG(LogTemp , Warning , TEXT("LevelSequence : %s") , *LevelSequence->GetName());
+            Options.Add(MakeShareable(new FString(LevelSequence->GetName())));
+        }
+    }
 }

@@ -3,9 +3,18 @@
 
 #include "SWriteContent.h"
 #include "MemoDataTable.h"
+#include "SequencerPractice.h"
+#include "Templates/SharedPointer.h"
+#include "SoundConverterLogic.h"
 
 void SWriteContent::Construct(const FArguments& InArgs)
 {
+	USoundConverterLogic* soundConverterLogic = NewObject<USoundConverterLogic>();
+	soundConverterLogic->GetSequenceAsset();
+	Options = soundConverterLogic->Options;
+
+	comboBoxContent = SNew(STextBlock).Text(FText::FromString("Sequencer"));
+
 	ChildSlot
 		[
 			SNew(SVerticalBox)
@@ -13,14 +22,28 @@ void SWriteContent::Construct(const FArguments& InArgs)
 				+ SVerticalBox::Slot()
 				.AutoHeight()
 				[
-					SNew(SEditableText)
-						.Text(FText::FromString("Sequence Name"))
-						.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
+					SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
+						.OptionsSource(&Options)
+						.Content()
+						[
+							comboBoxContent.ToSharedRef()
+						]
+						.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
+						{
 
-						sequenceName = InText.ToString();
-						UE_LOG(LogTemp , Warning , TEXT("sequenceName : %s") , *InText.ToString());
+							return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
 						})
-
+						.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
+						{// 중요, ListView refresh Logic
+							if ( Item.IsValid() )
+							{
+								FString SelectedItem = *Item.Get();
+								// Handle the selection here.
+								UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
+								sequenceName = SelectedItem;
+								comboBoxContent->SetText(FText::FromString(SelectedItem));
+							}
+						})
 				]
 
 
@@ -69,17 +92,18 @@ FReply SWriteContent::OnSubmitClicked()
 
 	const FDateTime Now = FDateTime::Now();
 	const FString DateTimeString = Now.ToString(TEXT("%Y/%m/%d/%H:%M:%S"));
-
+	const FString UUID = Now.ToString(TEXT("%Y%m%d%H%M%S"));
 
 	FMemoDataTable MemoDataTable;
 	MemoDataTable.title = title;
 	MemoDataTable.content = content;
+	MemoDataTable.sequenceName = sequenceName;
 	MemoDataTable.createdAt = DateTimeString;
 
 	if ( LoadedDataTable )
 	{
 		// DataTable loaded successfully. You can now use the LoadedDataTable object.
-		LoadedDataTable->AddRow(FName(sequenceName) , MemoDataTable);
+		LoadedDataTable->AddRow(FName(UUID) , MemoDataTable);
 	}
 	else
 	{

@@ -15,6 +15,8 @@
 #include "Widgets/Views/SHeaderRow.h"
 #include "IDocumentation.h"
 #include "PropertyEditorModule.h"
+#include "Widgets/Input/SSearchBox.h"
+#include "IPConfig.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
@@ -58,7 +60,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	//
 	
 	
-	class FDataTablePractice* DataTablePractice = new FDataTablePractice();
+	//class FDataTablePractice* DataTablePractice = new FDataTablePractice();
 
 	for ( FMemoDataTable* TableRow : TableRows )
 	{
@@ -66,7 +68,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 		memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
 	}
 
-
+	contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
 
 	ColumnNamesHeaderRow = SNew(SHeaderRow);
 
@@ -86,8 +88,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 						.OptionsSource(&Options)
 						.Content()
 						[
-							SNew(STextBlock)
-								.Text(FText::FromString("Sequencer"))
+							contentTitle.ToSharedRef()
 						]
 						.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
 						{
@@ -98,10 +99,11 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 						{// 중요, ListView refresh Logic
 							if ( Item.IsValid() )
 							{
-								FString SelectedItem = *Item.Get();
+								SelectedItem = *Item.Get();
 								// Handle the selection here.
 								UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
 
+								contentTitle->SetText(FText::FromString(SelectedItem));
 								ChangeContent(SelectedItem);
 							}
 						})
@@ -219,12 +221,11 @@ void SSequencePractice::ChangeContent(FString contentString)
 	//ComboBoxWidget->SetContent(SNew(STextBlock).Text(FText::FromString(contentString)));
 
 	UE_LOG(LogTemp,Warning,TEXT("ChangeContent"));
-	contentTitle->SetText(FText::FromString(contentString));
 
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
-
+	IPConfig::SequenceName = contentString;
 	filterSequenceName = contentString;
 	TableRows.Empty();
 	LoadedDataTable->GetAllRows<FMemoDataTable>("random" , TableRows);
@@ -242,7 +243,9 @@ void SSequencePractice::ChangeContent(FString contentString)
 
 void SSequencePractice::OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item)
 {
-	UE_LOG(LogTemp , Warning , TEXT("OnMousebuttonDoubleClick : %s") , *Item->title);
+	UE_LOG(LogTemp , Warning , TEXT("OnMousebuttonDoubleClick : %s") , *Item->sequenceName);
+
+
 
 }
 
@@ -276,6 +279,7 @@ FReply SSequencePractice::OnSubmitClicked()
 
 FReply SSequencePractice::OnDetailClicked()
 {
+
 	TSharedPtr<SDockTab> checkTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Detail Tab"));
 
 	if ( !checkTab.IsValid() )
@@ -313,7 +317,10 @@ FReply SSequencePractice::OnWriteClicked()
 	//FDataTableEditor* DataTableEditor = new FDataTableEditor();
 	//DataTableEditor->SpawnTab_DataTable();
 
-	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("MemoWrite Tab"));
+
+	// Column Test
+	/*FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
 	TArray<FString> AvailableColumns = LoadedDataTable->GetColumnTitles();
@@ -354,7 +361,7 @@ FReply SSequencePractice::OnWriteClicked()
 					]
 			]
 		);
-	}
+	}*/
 
 	return FReply::Handled();
 }

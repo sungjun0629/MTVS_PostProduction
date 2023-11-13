@@ -18,6 +18,12 @@ public:
 	FString sequenceName;
 	FString content;
 
+	TArray<TSharedPtr<FString>> Options;
+
+	TSharedPtr<SComboBox<TSharedPtr<FString>>> ComboBoxWidget;
+
+	TSharedPtr<STextBlock> comboBoxContent;
+
 public:
 	void Construct(const FArguments& InArgs);
 

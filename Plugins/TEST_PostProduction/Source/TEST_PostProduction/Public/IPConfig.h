@@ -16,4 +16,6 @@ public:
 	inline static FString StaticVariable = "http://121.165.108.236:4492";
 
 	inline static FString Token;
+
+	inline static FString SequenceName;
 };
