@@ -36,9 +36,18 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SGetWebAddress::OnURLChanged : %s"), *InText.ToString());
 
-	if (!InText.ToString().Contains("https://storage.cloud.google.com") )
+	if (InText.ToString().Contains("https://storage.cloud.google.com") )
+	{
+		
+	}
+	else if ( InText.ToString().Contains("https://accounts.google.com"))
+	{
+
+	}
+	else
 	{
 		soundConverterLogic->DownloadVoice(InText.ToString());
+		if(loginWebBrowser)
 		loginWebBrowser->~SWebBrowser();
 	}
 }
