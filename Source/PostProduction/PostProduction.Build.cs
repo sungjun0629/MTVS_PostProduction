@@ -8,6 +8,6 @@ public class PostProduction : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "HTTP", "Blutility", "UMG", "Slate", "SlateCore", "Json", "JsonUtilities" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "HTTP", "Blutility", "UMG", "Slate", "SlateCore", "Json", "JsonUtilities", "TEST_PostProduction" });
 	}
 }

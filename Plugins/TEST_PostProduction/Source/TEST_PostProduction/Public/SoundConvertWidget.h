@@ -44,6 +44,10 @@ public:
 
 	FReply OnStopClicked();
 
+	FOnDownloadProgress OnDownloadProgressDelegate;
+
+	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
+
 	void OnCheckOriginalStateChanged(ECheckBoxState NewState);
 
 	void OnCheckConvertedStateChanged(ECheckBoxState NewState);
@@ -53,6 +57,9 @@ public:
 	void UpdateSlider(float deltaTime);
 
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
+
+	// After Upload Video, Wait for Response and Send Event
+	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
 
 	FVector GetMousePositionInEditor();
 

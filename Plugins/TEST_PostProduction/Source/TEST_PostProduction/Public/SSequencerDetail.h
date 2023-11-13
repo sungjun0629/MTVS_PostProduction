@@ -14,6 +14,7 @@ class SSequencerDetail : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+	TSharedPtr<SImage> image;
 	TSharedPtr<STextBlock> title;
 	TSharedPtr<STextBlock> period;
 	TSharedPtr<STextBlock> author;
@@ -23,5 +24,5 @@ public:
 public:
 	void Construct(const FArguments& InArgs);
 
-	void ReloadContent();
+	void ReloadContent(FString _title , FString _period , FString _author , FString _sceneInfo);
 };

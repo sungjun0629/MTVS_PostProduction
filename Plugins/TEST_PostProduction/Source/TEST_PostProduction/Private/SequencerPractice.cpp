@@ -11,6 +11,10 @@
 #include "Widgets/Views/STableViewBase.h"
 #include "Framework/Docking/TabManager.h"
 #include "SSequencerDetail.h"
+#include "DataTablePractice.h"
+#include "Widgets/Views/SHeaderRow.h"
+#include "IDocumentation.h"
+#include "PropertyEditorModule.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
@@ -25,11 +29,46 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	//TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 	LoadedDataTable->GetAllRows<FMemoDataTable>("random", TableRows);
 
+	// 
+	TArray<FName> RowNames = LoadedDataTable->GetRowNames();
+
+	//for(FName RowName : RowNames)
+	//{
+	//	FTableRowBase* RowData = LoadedDataTable->FindRow<FTableRowBase>(RowName , "");
+
+	//	// Create a property handle for the row data
+	//	TSharedPtr<IPropertyHandle> RowHandle = FPropertyEditorModule::GetModule().CreatePropertyHandle(
+	//		RowData->GetClass() ,
+	//		RowName ,
+	//		RowData);
+
+	//	// Create a details view to convert the row data to FDataTableEditorRowListViewDataPtr
+	//	TSharedRef<IDetailsView> DetailsView = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor").CreateDetailView(
+	//		FDetailsViewArgs()
+	//	);
+
+	//	DetailsView->SetObject(RowHandle->GetParentHandle()->GetProperty()->GetOwner());
+
+	//	// Create FDataTableEditorRowListViewDataPtr from the row data
+	//	FDataTableEditorRowListViewDataPtr RowListViewData = MakeShared<FDataTableEditorRowListViewData>();
+	//	RowListViewData->Initialize(RowHandle);
+
+	//} 
+
+	//
+	
+	
+	class FDataTablePractice* DataTablePractice = new FDataTablePractice();
+
 	for ( FMemoDataTable* TableRow : TableRows )
 	{
 		UE_LOG(LogTemp,Warning,TEXT("TableRow : %s"),*TableRow->title);
 		memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
 	}
+
+
+
+	ColumnNamesHeaderRow = SNew(SHeaderRow);
 
 	ChildSlot
 		[
@@ -86,21 +125,41 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 				]
 
 				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(SHorizontalBox)
+						+ SHorizontalBox::Slot()
+						[
+							SAssignNew(SearchBoxWidget , SSearchBox)
+								/*.InitialText(this , &FDataTablePractice::GetFilterText)
+								.OnTextChanged(this , &FDataTablePractice::OnFilterTextChanged)
+								.OnTextCommitted(this , &FDataTablePractice::OnFilterTextCommitted)*/
+						]
+				]
+
+
+
+				+ SVerticalBox::Slot()
 				[
 
 					// FMemoDataTable
 					SAssignNew(csvListView, SListView<TSharedPtr<FMemoDataTable>>)
+					.HeaderRow(ColumnNamesHeaderRow)
+					// Row의 자료형을 체크한다?
 					.ListItemsSource(&memoItems)
 					.OnMouseButtonDoubleClick(this, &SSequencePractice::OnMousebuttonDoubleClick)
+					.SelectionMode(ESelectionMode::Single)
 					.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
 					{
 						return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
 							.Padding(1)
+							.ShowWires(true)
 							.Content()
 							[
 								SNew(SHorizontalBox)
 
 									+ SHorizontalBox::Slot()
+									.AutoWidth()
 									[
 										SNew(STextBlock).Text(FText::FromString(Item->title))
 									]
@@ -110,7 +169,8 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 										SNew(STextBlock).Text(FText::FromString(Item->content))
 									]
 
-									+SHorizontalBox::Slot()
+									+ SHorizontalBox::Slot()
+									.AutoWidth()
 									[
 										SNew(SCheckBox)
 											.IsChecked(ECheckBoxState::Unchecked)
@@ -118,6 +178,12 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 							];
 					})
 				]
+
+				/*		+ SVerticalBox::Slot()
+						[
+							DataTablePractice->CreateContentBox()
+						]*/
+
 			
 		];
 
@@ -222,11 +288,79 @@ FReply SSequencePractice::OnDetailClicked()
 		customSharedPtr->ReloadContent();*/
 	}
 
+	// 해당 Scene에 대한 정보로 갱신을 해준다. 
+	// 해당 Scene에 대한 정보도 어딘가에 저장이 되어있어야 한다. -> Comment에 넣어주는 것보다 새로 DataTable을 만든다?
+
+
 	return FReply::Handled();
 }
 
 FReply SSequencePractice::OnWriteClicked()
 {
+	//FDataTableEditor* DataTableEditor = NewObject<FDataTableEditor>();
+
+	/*
+	DataTableEditor->RegisterTabSpawners(FGlobalTabmanager::Get());
+	DataTableEditor->InitDataTableEditor(EToolkitMode::Standalone, TSharedPtr<IToolkitHost>(), nullptr);*/
+
+	//FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	////TSharedPtr<IToolkitHost> ToolkitHost = FToolkitManager::Get().FindEditorForAsset(this);
+
+	//UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+	//FDataTableEditorModule* DataTableEditorModule = &FModuleManager::LoadModuleChecked<FDataTableEditorModule>("DataTableEditor");
+	//DataTableEditorModule->CreateDataTableEditor(EToolkitMode::Standalone , TSharedPtr<IToolkitHost>() , LoadedDataTable);
+
+	//FDataTableEditor* DataTableEditor = new FDataTableEditor();
+	//DataTableEditor->SpawnTab_DataTable();
+
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
+	TArray<FString> AvailableColumns = LoadedDataTable->GetColumnTitles();
+
+	ColumnNamesHeaderRow->AddColumn(
+				SHeaderRow::Column("RowDragDropColumnId")
+				[
+					SNew(SBox)
+						.VAlign(VAlign_Fill)
+						.HAlign(HAlign_Fill)
+						.ToolTip(IDocumentation::Get()->CreateToolTip(
+							LOCTEXT("DataTableRowHandleTooltip" , "Drag Drop Handles") ,
+							nullptr ,
+							*FDataTableEditorUtils::VariableTypesTooltipDocLink ,
+							TEXT("DataTableRowHandle")))
+						[
+							SNew(STextBlock)
+								.Text(FText::GetEmpty())
+						]
+				]
+	);
+
+	for ( int32 ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
+	{
+		const FString& ColumnData = AvailableColumns[ ColumnIndex ];
+
+		ColumnNamesHeaderRow->AddColumn(
+			SHeaderRow::Column(FName(ColumnData))
+			.OnSort(this, &SSequencePractice::OnColumnNumberSortModeChanged)
+			[
+				SNew(SBox)
+					.Padding(FMargin(0 , 4 , 0 , 4))
+					.VAlign(VAlign_Fill)
+					[
+						SNew(STextBlock)
+							.Justification(ETextJustify::Center)
+							.Text(FText::FromString(ColumnData))
+					]
+			]
+		);
+	}
+
 	return FReply::Handled();
+}
+
+void SSequencePractice::OnColumnNumberSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode)
+{
+	UE_LOG(LogTemp , Warning , TEXT("OnColumnNumberSortModeChanged"));
 }
 

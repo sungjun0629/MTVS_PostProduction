@@ -2,15 +2,27 @@
 
 
 #include "SSequencerDetail.h"
+#include "Framework/Text/SlateImageRun.h"
+#include "Framework/Text/IRun.h"
 
 void SSequencerDetail::Construct(const FArguments& InArgs)
 {
+
+	FSlateBrush MySlateBrush;
+	MySlateBrush.SetResourceObject(LoadObject<UObject>(nullptr , TEXT(" / Script / Engine.Texture2D'/Game/Sungjun/Images/storyBoard1.storyBoard1'")));
+	MySlateBrush.ImageSize = FVector2D(50.0f , 50.0f); // Set the size as needed
+	
+	const FSlateBrush* MyBrush = &MySlateBrush;
+
+	image = SNew(SImage)
+		.Image(MyBrush);
 
 	title = SNew(STextBlock);
 	period = SNew(STextBlock);
 	author = SNew(STextBlock);
 
 	sceneInfo = SNew(STextBlock);
+
 
 
 	ChildSlot
@@ -22,9 +34,10 @@ void SSequencerDetail::Construct(const FArguments& InArgs)
 			[
 				SNew(SHorizontalBox)
 
+				// 스토리보드 사진
 				+ SHorizontalBox::Slot()
 				[
-					SNew(SImage)
+					image.ToSharedRef()
 
 				]
 
@@ -66,11 +79,14 @@ void SSequencerDetail::Construct(const FArguments& InArgs)
 		];
 }
 
-void SSequencerDetail::ReloadContent()
+void SSequencerDetail::ReloadContent(FString _title, FString _period, FString _author, FString _sceneInfo)
 {
-	title->SetText(FText::FromString("Sequencer Info"));
-	period->SetText(FText::FromString("Sequencer Info"));
-	author->SetText(FText::FromString("Sequencer Info"));
+	
 
-	sceneInfo->SetText(FText::FromString("Sequencer Info"));
+
+	title->SetText(FText::FromString(_title));
+	period->SetText(FText::FromString(_period));
+	author->SetText(FText::FromString(_author));
+
+	sceneInfo->SetText(FText::FromString(_sceneInfo));
 }

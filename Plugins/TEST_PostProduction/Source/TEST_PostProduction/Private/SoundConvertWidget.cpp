@@ -29,6 +29,10 @@
 #include "Editor/UnrealEd/Public/UnrealEd.h"
 
 #include "Runtime/Engine/Public/AudioDevice.h"
+#include "FileToStorageDownloader_Plugin.h"
+#include "IPConfig.h"
+#include "FileToBase64Uploader_Plugin.h"
+#include "JsonParseLibrary_Plugin.h"
 //#include "Editor.h"
 //#include "Sequencer/Public/ISequencerModule.h"
 
@@ -324,8 +328,35 @@ FReply SSoundConvertWidget::OnLoadClicked()
 
 FReply SSoundConvertWidget::OnConvertClicked()
 {
+    
+    UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
+    FString base64Info = FileUpload->UploadFile(SeletedVoicePath);
+
+    FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+
+    TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
+
+    FString ModelName = "dahyun";
+    RequestObj->SetStringField("fileName" , *base64Info);
+    RequestObj->SetStringField("modelName" , *ModelName);
+
+    FString RequestBody;
+    FString URL = IPConfig::StaticVariable + "/view/voice";
 
 
+    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
+    FJsonSerializer::Serialize(RequestObj , Writer);
+
+    UE_LOG(LogTemp , Warning , TEXT("Token : %s") , *IPConfig::Token);
+    FString BearerToken = "Bearer " + IPConfig::Token;
+
+    Request->SetURL(URL);
+    Request->SetVerb("POST");
+    Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
+    Request->SetHeader(TEXT("Authorization") , BearerToken);
+    Request->SetContentAsString(RequestBody);
+    Request->OnProcessRequestComplete().BindRaw(this , &SSoundConvertWidget::OnDownloadConvertedVoice);
+    Request->ProcessRequest();
 
     return FReply::Handled();
 }
@@ -459,6 +490,25 @@ void SSoundConvertWidget::Tick(const FGeometry& AllottedGeometry, const double I
         {
 			CurrentPlaybackPosition = 0.0f;
 		}*/
+    }
+}
+
+void SSoundConvertWidget::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully)
+{
+    if ( bConnectedSuccessfully )
+    {
+
+        UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
+        FString res = Response->GetContentAsString();
+        FString parsedData = jsonParser->JsonParse(res);
+
+
+
+        UFileToStorageDownloader_Plugin* StorageDownload;
+        FString url = parsedData;
+        FString SavePath = "D:\\DownTest\\";
+
+        StorageDownload->DownloadFileToStorage(url , SavePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
     }
 }
 
