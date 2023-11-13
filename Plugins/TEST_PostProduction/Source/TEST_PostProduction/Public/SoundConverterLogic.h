@@ -28,4 +28,9 @@ public:
 	void ConvertedSoundDownload(FString loadedAsset);
 
 	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
+
+
+	FSlateBrush MySlateBrush;
+	// 이미지 테스트용
+	const FSlateBrush* SearchImageFromUE(FString imagePath);
 };
