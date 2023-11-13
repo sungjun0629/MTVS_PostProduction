@@ -16,7 +16,6 @@ void UEUW_SessionThumbnail::SetThumbnailInfo(FString sceneName, FString descript
 	T_SceneName->SetText(FText::FromString(sceneName));
 	T_Describtion->SetText(FText::FromString(description));
 	
-
 	//YourTexture = LoadObject<UTexture2D>(nullptr , TEXT("YourTexturePath"));
 
 
