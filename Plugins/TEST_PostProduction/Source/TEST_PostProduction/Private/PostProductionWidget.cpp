@@ -134,7 +134,7 @@ FReply SPostProductionWidget::OnGitHubLoginClicked()
 	// Open the new editor tab
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
-	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Memo Tab"));
 
 	
