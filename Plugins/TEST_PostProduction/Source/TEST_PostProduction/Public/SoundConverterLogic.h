@@ -9,6 +9,7 @@
 #include "SGetWebAddress.h"
 #include "SoundConverterLogic.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDownloadSuccessBlueprint, FString, savepath);
 
 /**
  * 
@@ -26,6 +27,9 @@ public:
 
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category = "SoundConverter")
+	FDownloadSuccessBlueprint OnDownloadSuccessBlueprint;
+
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
 	void ConvertedSoundDownload(FString loadedAsset, FString modelName);
 
@@ -36,6 +40,9 @@ public:
 
 	void DownloadVoice(FString url);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "SoundConverter")
+	void OnDownloadComplete();
+
 	/*UFUNCTION(BlueprintCallable, Category = "SoundConverter")
 	FString GetDownloadedVoicePath();*/
 	
@@ -43,6 +50,8 @@ public:
 	FString downloadedVoicePath;
 
 	FString SavePath;
+
+	UEUW_SpeechBlock* speechBlock;
 
 	FSlateBrush MySlateBrush;
 	// 이미지 테스트용

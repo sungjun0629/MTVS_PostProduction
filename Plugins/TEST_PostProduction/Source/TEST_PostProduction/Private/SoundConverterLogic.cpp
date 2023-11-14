@@ -17,6 +17,7 @@
 #include "AssetRegistry/IAssetRegistry.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "LevelSequence/Public/LevelSequence.h"
+#include "EUW_SpeechBlock.h"
 
 
 USoundConverterLogic::USoundConverterLogic()
@@ -29,6 +30,9 @@ USoundConverterLogic::USoundConverterLogic()
     }
 
     OnFileToStorageDownloadCompleteDelegate.BindDynamic(this , &USoundConverterLogic::SuccessDownload);
+
+    speechBlock = NewObject<UEUW_SpeechBlock>();
+ 
 }
 
 USoundConverterLogic::~USoundConverterLogic()
@@ -123,12 +127,44 @@ void USoundConverterLogic::SuccessDownload(EDownloadToStorageResult_Plugin Resul
     if ( Result == EDownloadToStorageResult_Plugin::Success )
     {
 		UE_LOG(LogTemp , Warning , TEXT("Success"));
-        downloadedVoicePath = SavePath;
 	}
-    else
+    else if ( Result == EDownloadToStorageResult_Plugin::SucceededByPayload )
     {
-		UE_LOG(LogTemp , Warning , TEXT("Fail"));
-	}
+		UE_LOG(LogTemp , Warning , TEXT("SucceededByPayload"));
+        
+    }
+    else if ( Result == EDownloadToStorageResult_Plugin::Cancelled )
+    {
+        UE_LOG(LogTemp , Warning , TEXT("Cancelled"));
+
+    }
+    else if ( Result == EDownloadToStorageResult_Plugin::DownloadFailed )
+    {
+        UE_LOG(LogTemp , Warning , TEXT("DownloadFailed"));
+
+    }
+    else if ( Result == EDownloadToStorageResult_Plugin::SaveFailed )
+    {
+        UE_LOG(LogTemp , Warning , TEXT("SaveFailed"));
+
+    }
+    else if ( Result == EDownloadToStorageResult_Plugin::DirectoryCreationFailed )
+    {
+        UE_LOG(LogTemp , Warning , TEXT("DirectoryCreationFailed"));
+
+    }
+    else if ( Result == EDownloadToStorageResult_Plugin::InvalidURL )
+    {
+        UE_LOG(LogTemp , Warning , TEXT("InvalidURL"));
+
+    }
+    else if ( Result == EDownloadToStorageResult_Plugin::InvalidSavePath )
+    {
+        UE_LOG(LogTemp , Warning , TEXT("InvalidSavePath"));
+
+    }
+    //OnDownloadSuccessBlueprint.Broadcast(SavePath);
+    speechBlock->SetAIVoicePath();
 }
 
 const FSlateBrush* USoundConverterLogic::SearchImageFromUE(FString imagePath)
