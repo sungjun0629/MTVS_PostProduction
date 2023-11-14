@@ -17,10 +17,15 @@ class TEST_POSTPRODUCTION_API UEUW_SpeechBlock : public UEditorUtilityWidget
 public:
 	UPROPERTY(EditAnywhere , BlueprintReadWrite)
 		FString aiVoicePath;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite)
+		USoundWave* aiVoiceWave;
 
 	void CallSetAIVoicePath(const FString& path);
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void SetAIVoicePath();
+	void SetAIVoicePath();
+
+	/*UFUNCTION(BlueprintCallable)
+	USoundWave* LoadSoundWaveFromFile(const FString& FilePath){}*/
 
 };
