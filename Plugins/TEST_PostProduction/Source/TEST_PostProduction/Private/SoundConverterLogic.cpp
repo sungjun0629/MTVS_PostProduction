@@ -27,11 +27,13 @@ USoundConverterLogic::USoundConverterLogic()
     {
         MySlateBrush.SetResourceObject(imageFinder.Object);
     }
+
+    OnFileToStorageDownloadCompleteDelegate.BindDynamic(this , &USoundConverterLogic::SuccessDownload);
 }
 
 USoundConverterLogic::~USoundConverterLogic()
 {
-
+    OnFileToStorageDownloadCompleteDelegate.Unbind();
 }
 
 void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset, FString modelName)
@@ -73,8 +75,6 @@ void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Req
 {
     if ( bConnectedSuccessfully )
     {
-        OnFileToStorageDownloadCompleteDelegate.BindDynamic(this , &USoundConverterLogic::SuccessDownload);
-
         UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
         FString res = Response->GetContentAsString();
         FString parsedData = jsonParser->JsonParse(res);
@@ -104,7 +104,7 @@ void USoundConverterLogic::DownloadVoice(FString url)
 {
     UE_LOG(LogTemp , Warning , TEXT("url : %s") , *url);
 
-    FString SavePath = "D:\\DownTest\\";
+    SavePath = "D:\\DownTest\\";
     const FDateTime Now = FDateTime::Now();
     const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;
     SavePath.Append(DateTimeString);
@@ -123,6 +123,7 @@ void USoundConverterLogic::SuccessDownload(EDownloadToStorageResult_Plugin Resul
     if ( Result == EDownloadToStorageResult_Plugin::Success )
     {
 		UE_LOG(LogTemp , Warning , TEXT("Success"));
+        downloadedVoicePath = SavePath;
 	}
     else
     {

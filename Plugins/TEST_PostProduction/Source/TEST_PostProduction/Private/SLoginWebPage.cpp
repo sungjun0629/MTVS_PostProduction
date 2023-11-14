@@ -64,6 +64,7 @@ void SLoginWebPage::OnGetToken()
 	auto Callback = [=](const FString& SourceURL) {
 		// Handle the source URL as needed
 		ParsingHtml(SourceURL);
+		UE_LOG(LogTemp, Warning, TEXT("SourceURL : %s"), *SourceURL);
 		};
 
 	loginWebBrowser->GetSource(Callback);
@@ -73,6 +74,8 @@ void SLoginWebPage::OnGetToken()
 void SLoginWebPage::ParsingHtml(FString HtmlString)
 {
 	
+	UE_LOG(LogTemp, Warning, TEXT("Before Parseing : %s"), *HtmlString);
+
 	HtmlString.Split(TEXT("{"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
 	HtmlString.Split(TEXT(":"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
 	HtmlString.Split(TEXT("\""), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
@@ -81,7 +84,7 @@ void SLoginWebPage::ParsingHtml(FString HtmlString)
 	UE_LOG(LogTemp, Warning, TEXT("Access Token : %s"), *HtmlString);
 	IPConfig::Token = HtmlString;
 
-	// È­¸é ÀüÈ¯
+	// í™”ë©´ ì „í™˜
 	ConvertTab();
 }
 

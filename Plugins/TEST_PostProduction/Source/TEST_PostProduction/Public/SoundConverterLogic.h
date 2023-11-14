@@ -19,7 +19,6 @@ class USoundConverterLogic : public UObject
 	GENERATED_BODY()
 	
 public:
-	USoundConverterLogic(FString imagePath);
 	USoundConverterLogic();
 	~USoundConverterLogic();
 	
@@ -36,6 +35,14 @@ public:
 	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
 
 	void DownloadVoice(FString url);
+
+	/*UFUNCTION(BlueprintCallable, Category = "SoundConverter")
+	FString GetDownloadedVoicePath();*/
+	
+	UPROPERTY(BlueprintReadWrite, Category = "SoundConverter")
+	FString downloadedVoicePath;
+
+	FString SavePath;
 
 	FSlateBrush MySlateBrush;
 	// 이미지 테스트용

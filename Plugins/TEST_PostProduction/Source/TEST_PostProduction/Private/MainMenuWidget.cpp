@@ -232,7 +232,7 @@ FReply SMainMenuWidget::OnVideoUploadFileClicked()
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
-	Request->SetHeader(TEXT("Authorization"), BearerToken);
+	//Request->SetHeader(TEXT("Authorization"), BearerToken);
 	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
 	Request->ProcessRequest();
@@ -248,7 +248,7 @@ void SMainMenuWidget::OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<I
 		//if(OnGetResponse.IsBound()) OnGetResponse.Execute();
 		UE_LOG(LogTemp, Warning, TEXT("Successfully Get Response : %d"), Response->GetResponseCode());
 
-		dropText->SetText(FText::FromString("Downloading Completed, Drop item here again!"));
+		//dropText->SetText(FText::FromString("Downloading Completed, Drop item here again!"));
 
 
 		  // 다른 방식
