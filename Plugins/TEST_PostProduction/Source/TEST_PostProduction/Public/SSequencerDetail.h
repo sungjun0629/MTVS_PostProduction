@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Widgets/SCompoundWidget.h"
+#include "MemoDetailTable.h"
 /**
  * 
  */
@@ -16,13 +17,16 @@ class SSequencerDetail : public SCompoundWidget
 public:
 	TSharedPtr<SImage> image;
 	TSharedPtr<STextBlock> title;
-	TSharedPtr<STextBlock> period;
-	TSharedPtr<STextBlock> author;
+	TSharedPtr<STextBlock> participants;
+	TSharedPtr<STextBlock> content;
 
 	TSharedPtr<STextBlock> sceneInfo;
+	TArray<FMemoDetailTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 
 public:
 	void Construct(const FArguments& InArgs);
 
-	void ReloadContent(FString _title , FString _period , FString _author , FString _sceneInfo);
+	void ReloadContent(FString sequenceName);
+
+	FString GetImagePath(FString sequenceName);
 };

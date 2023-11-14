@@ -17,6 +17,7 @@ UFileToStorageDownloader_Plugin* UFileToStorageDownloader_Plugin::DownloadFileTo
 		}), FOnFileToStorageDownloadCompleteNative::CreateLambda([OnComplete](EDownloadToStorageResult_Plugin Result)
 			{
 				OnComplete.ExecuteIfBound(Result);
+				UE_LOG(LogTemp, Warning, TEXT("OnComplete"))
 			}));
 }
 

@@ -21,7 +21,7 @@
 
 USoundConverterLogic::USoundConverterLogic()
 {
-    ConstructorHelpers::FObjectFinder<UTexture2D> imageFinder(TEXT("/Game/Sungjun/Images/storyBoard1"));
+    ConstructorHelpers::FObjectFinder<UTexture2D> imageFinder(*(IPConfig::ImagePath));
 
     if ( imageFinder.Succeeded() )
     {
@@ -134,7 +134,7 @@ const FSlateBrush* USoundConverterLogic::SearchImageFromUE(FString imagePath)
 {
     //MySlateBrush.SetResourceObject(LoadObject<UObject>(nullptr , TEXT(" / Script / Engine.Texture2D'/Game/Sungjun/Images/storyBoard1.storyBoard1'")));
 
-    ConstructorHelpers::FObjectFinder<UTexture2D> imageFinder(TEXT("/Game/Sungjun/Images/storyBoard1"));
+    ConstructorHelpers::FObjectFinder<UTexture2D> imageFinder(*imagePath);
 
     if ( imageFinder.Succeeded() )
     {
