@@ -19,6 +19,7 @@ class USoundConverterLogic : public UObject
 	GENERATED_BODY()
 	
 public:
+	USoundConverterLogic(FString imagePath);
 	USoundConverterLogic();
 	~USoundConverterLogic();
 	

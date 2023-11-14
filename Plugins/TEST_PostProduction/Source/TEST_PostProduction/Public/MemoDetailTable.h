@@ -17,7 +17,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString sequenceTitle;
-	UPROPERTY(BlueprintReadWrite , EditAnywhere)
+		UPROPERTY(BlueprintReadWrite , EditAnywhere)
 		FString participants;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString content;

@@ -18,4 +18,6 @@ public:
 	inline static FString Token;
 
 	inline static FString SequenceName;
+
+	inline static FString ImagePath;
 };
