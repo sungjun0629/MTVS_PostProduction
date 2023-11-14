@@ -49,7 +49,7 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 		soundConverterLogic->DownloadVoice(InText.ToString());
 		if(loginWebBrowser)
 		{
-			loginWebBrowser->~SWebBrowser();
+			//loginWebBrowser->~SWebBrowser();
 		}
 	}
 }
