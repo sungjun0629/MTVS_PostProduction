@@ -17,6 +17,7 @@
 #include "PropertyEditorModule.h"
 #include "Widgets/Input/SSearchBox.h"
 #include "IPConfig.h"
+#include "ImportExportDataTable.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
@@ -181,10 +182,14 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 					})
 				]
 
-				/*		+ SVerticalBox::Slot()
-						[
-							DataTablePractice->CreateContentBox()
-						]*/
+				+ SVerticalBox::Slot()
+.AutoHeight()
+.HAlign(HAlign_Right)
+				[
+					SNew(SButton)
+						.Text(FText::FromString("Export"))
+						.OnClicked(this , &SSequencePractice::OnExportClicked)
+				]
 
 			
 		];
@@ -362,6 +367,19 @@ FReply SSequencePractice::OnWriteClicked()
 			]
 		);
 	}*/
+
+	return FReply::Handled();
+}
+
+FReply SSequencePractice::OnExportClicked()
+{
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+
+	UE_LOG(LogTemp , Warning , TEXT("OnExportClicked"));
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+	bool isSuccess = false;
+	FString OutInfoMessage;
+	UExcelImportExportDataTable::ExportDataTableToCSV("D:\\DownTest\\Test.csv", LoadedDataTable, isSuccess, OutInfoMessage);
 
 	return FReply::Handled();
 }

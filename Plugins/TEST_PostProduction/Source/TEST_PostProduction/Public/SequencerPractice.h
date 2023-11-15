@@ -62,5 +62,7 @@ public:
 
 	FReply OnWriteClicked();
 
+	FReply OnExportClicked();
+
 	void OnColumnNumberSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode);
 };

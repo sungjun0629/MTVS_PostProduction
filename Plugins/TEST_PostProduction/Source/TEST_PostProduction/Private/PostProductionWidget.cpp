@@ -113,9 +113,10 @@ FReply SPostProductionWidget::OnKakaoLoginClicked()
 	UE_LOG(LogTemp, Warning, TEXT("Kakao Login Clicked"));
 
 	// Open the new editor tab
-	/*FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));*/
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
 
 	// Close the old tab if it exists

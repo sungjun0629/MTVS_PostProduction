@@ -59,7 +59,8 @@ public class TEST_PostProduction : ModuleRules
 				"UMG",
                 "DataTableEditor",
                 "ApplicationCore",
-                "PropertyEditor"
+                "PropertyEditor",
+				"AssetTools"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
