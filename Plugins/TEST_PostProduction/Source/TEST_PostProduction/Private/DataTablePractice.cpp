@@ -1414,6 +1414,8 @@ TSharedRef<SDockTab> FDataTablePractice::SpawnTab_DataTableDetails(const FSpawnT
 
 void FDataTablePractice::SetHighlightedRow(FName Name)
 {
+
+	// New Selection이 아닌 경우
 	if ( Name == HighlightedRowName )
 	{
 		return;
@@ -1432,6 +1434,7 @@ void FDataTablePractice::SetHighlightedRow(FName Name)
 		FDataTableEditorRowListViewDataPtr* NewSelectionPtr = NULL;
 		for ( HighlightedVisibleRowIndex = 0; HighlightedVisibleRowIndex < VisibleRows.Num(); ++HighlightedVisibleRowIndex )
 		{
+			// 전체를 순회
 			if ( VisibleRows[ HighlightedVisibleRowIndex ]->RowId == Name )
 			{
 				NewSelectionPtr = &( VisibleRows[ HighlightedVisibleRowIndex ] );

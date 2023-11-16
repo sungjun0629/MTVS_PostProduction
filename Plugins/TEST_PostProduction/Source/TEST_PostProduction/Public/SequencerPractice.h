@@ -8,7 +8,7 @@
 #include "MemoDataTable.h"
 
 #define LOCTEXT_NAMESPACE "DataTableEditorPractice"
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
 
 /**
  *
@@ -46,6 +46,8 @@ public:
 	/** Header row containing entries for each column in AvailableColumns */
 	TSharedPtr<SHeaderRow> ColumnNamesHeaderRow;
 
+	FOnSequencerNameChanged sequnencerNameChanged;
+
 public:
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);
@@ -55,6 +57,8 @@ public:
 	void ChangeContent(FString content);
 
 	void OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item);
+
+	void SetHeaderRow();
 
 	FReply OnSubmitClicked();
 

@@ -15,6 +15,9 @@ void SSequencerDetail::Construct(const FArguments& InArgs)
 {
 	FString sequenceName = IPConfig::SequenceName;
 
+	IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this,&SSequencerDetail::ReloadDetailPage);
+
+
 	FString imagePath = GetImagePath(sequenceName);
 	IPConfig::ImagePath = imagePath;
 
@@ -149,4 +152,15 @@ FString SSequencerDetail::GetImagePath(FString sequenceName)
 	}
 
 	return "";
+}
+
+void SSequencerDetail::ReloadDetailPage(FString sequenceName)
+{
+	UE_LOG(LogTemp,Warning,TEXT("ReloadDetailPage Execute"));
+	ReloadContent(sequenceName);
+	IPConfig::ImagePath = GetImagePath(sequenceName);
+
+	USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
+	const FSlateBrush* MyBrush = &(ImageLibrary->MySlateBrush);
+	image->SetImage(MyBrush);
 }

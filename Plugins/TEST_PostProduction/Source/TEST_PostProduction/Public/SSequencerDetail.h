@@ -23,10 +23,14 @@ public:
 	TSharedPtr<STextBlock> sceneInfo;
 	TArray<FMemoDetailTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 
+
+
 public:
 	void Construct(const FArguments& InArgs);
 
 	void ReloadContent(FString sequenceName);
 
 	FString GetImagePath(FString sequenceName);
+
+	void ReloadDetailPage(FString sequenceName);
 };

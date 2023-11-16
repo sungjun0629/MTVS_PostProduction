@@ -6,14 +6,25 @@
 #include "SequencerPractice.h"
 #include "Templates/SharedPointer.h"
 #include "SoundConverterLogic.h"
+#include "IPConfig.h"
 
 void SWriteContent::Construct(const FArguments& InArgs)
 {
+	//TSharedPtr<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
+	IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this, &SWriteContent::ReloadSequenceName);
+	
+
+
 	USoundConverterLogic* soundConverterLogic = NewObject<USoundConverterLogic>();
 	soundConverterLogic->GetSequenceAsset();
 	Options = soundConverterLogic->Options;
 
 	comboBoxContent = SNew(STextBlock).Text(FText::FromString("Sequencer"));
+
+	FSlateBrush* textBlockBG = new FSlateBrush();
+	textBlockBG->DrawAs = ESlateBrushDrawType::Border;
+	textBlockBG->TintColor = FSlateColor(FLinearColor::Gray);
+
 
 	ChildSlot
 		[
@@ -49,31 +60,45 @@ void SWriteContent::Construct(const FArguments& InArgs)
 
 				+ SVerticalBox::Slot()
 				.AutoHeight()
-				[
-					SNew(SEditableText)
-						.Text(FText::FromString("Title"))
-						.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
+				.Padding(10,10)
+				[	
+					SNew(SBorder)
+						.BorderBackgroundColor(FLinearColor::Black)
+						.ColorAndOpacity(FLinearColor::Green)
+						[ 
+							SNew(SEditableText)
+								.HintText(FText::FromString("Title"))
+								.BackgroundImageSelected(textBlockBG)
+								.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
 
-						title = InText.ToString();
-						UE_LOG(LogTemp , Warning , TEXT("Title : %s") , *InText.ToString());
-						})
+								title = InText.ToString();
+								UE_LOG(LogTemp , Warning , TEXT("Title : %s") , *InText.ToString());
+								})
+						]
 
 				]
 
 				+ SVerticalBox::Slot()
-				.MaxHeight(30.f)
+				.Padding(10,0)
 				[
-					SNew(SEditableText)
-						.Text(FText::FromString("Content"))
-						.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
+					SNew(SBorder)
+						.BorderBackgroundColor(FLinearColor::Black)
+						.ForegroundColor(FLinearColor::Gray)
+						.RenderOpacity(0.7)
+						[ 
+							SNew(SEditableText)
+								.HintText(FText::FromString("Content"))
+								.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
 
-						content = InText.ToString();
-						UE_LOG(LogTemp , Warning , TEXT("Content : %s") , *InText.ToString());
-						})
+								content = InText.ToString();
+								UE_LOG(LogTemp , Warning , TEXT("Content : %s") , *InText.ToString());
+								})
+						]
 				]
 
 				+ SVerticalBox::Slot()
 				.AutoHeight()
+				.Padding(10)
 				.VAlign(VAlign_Center)
 				.HAlign(HAlign_Right)
 				[
@@ -82,6 +107,13 @@ void SWriteContent::Construct(const FArguments& InArgs)
 						.OnClicked(this , &SWriteContent::OnSubmitClicked)
 				]
 		];
+}
+
+void SWriteContent::ReloadSequenceName(FString SequenceName)
+{
+	UE_LOG(LogTemp,Warning, TEXT("Sequencer Name Changed Delegate Execute"))	
+	comboBoxContent->SetText(FText::FromString(IPConfig::SequenceName));
+	sequenceName = IPConfig::SequenceName;
 }
 
 FReply SWriteContent::OnSubmitClicked()

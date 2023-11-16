@@ -7,7 +7,7 @@
 /**
  * 
  */
-class SWriteContent : public SCompoundWidget
+static class SWriteContent : public SCompoundWidget
 {
 	SLATE_BEGIN_ARGS(SWriteContent) {}
 
@@ -26,6 +26,8 @@ public:
 
 public:
 	void Construct(const FArguments& InArgs);
+
+	void ReloadSequenceName(FString SequenceName);
 
 	FReply OnSubmitClicked();
 };

@@ -18,6 +18,7 @@
 #include "Widgets/Input/SSearchBox.h"
 #include "IPConfig.h"
 #include "ImportExportDataTable.h"
+#include "Widgets/Text/STextBlock.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
@@ -26,6 +27,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	contentTitle = SNew(STextBlock)
 		.Text(FText::FromString("Sequencer"));
 
+	IPConfig::sequencerMemo = this;
 
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
@@ -72,59 +74,62 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
 
 	ColumnNamesHeaderRow = SNew(SHeaderRow);
-
+	SetHeaderRow();
 	ChildSlot
 		[
-			SNew(SVerticalBox)
 			
+				SNew(SVerticalBox)
 
-				+SVerticalBox::Slot()
+
+				+ SVerticalBox::Slot()
 				.AutoHeight()
 				[
 					SNew(SHorizontalBox)
 
-					+ SHorizontalBox::Slot()
-					[ 
-						SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
-						.OptionsSource(&Options)
-						.Content()
+						+ SHorizontalBox::Slot()
 						[
-							contentTitle.ToSharedRef()
+							SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
+								.OptionsSource(&Options)
+								.Content()
+								[
+									contentTitle.ToSharedRef()
+								]
+								.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
+								{
+
+												return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
+								})
+								.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
+								{// 중요, ListView refresh Logic
+												if ( Item.IsValid() )
+												{
+													SelectedItem = *Item.Get();
+													// Handle the selection here.
+													UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
+
+													contentTitle->SetText(FText::FromString(SelectedItem));
+													ChangeContent(SelectedItem);
+
+													sequnencerNameChanged.Broadcast(SelectedItem);
+												}
+								})
 						]
-						.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
-						{
 
-							return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
-						})
-						.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
-						{// 중요, ListView refresh Logic
-							if ( Item.IsValid() )
-							{
-								SelectedItem = *Item.Get();
-								// Handle the selection here.
-								UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
-
-								contentTitle->SetText(FText::FromString(SelectedItem));
-								ChangeContent(SelectedItem);
-							}
-						})
-					]
-
-					+SHorizontalBox::Slot()
+						+ SHorizontalBox::Slot()
 						.AutoWidth()
-					[
-						SNew(SButton)
-							.Text(FText::FromString("Detail"))
-							.OnClicked(this , &SSequencePractice::OnDetailClicked)
-					]
+						[
+							SNew(SButton)
+								.Text(FText::FromString("Detail"))
+								.OnClicked(this , &SSequencePractice::OnDetailClicked)
+						]
 
-					+ SHorizontalBox::Slot()
+						+ SHorizontalBox::Slot()
 						.AutoWidth()
-					[
-						SNew(SButton)
-							.Text(FText::FromString("Write"))
-							.OnClicked(this , &SSequencePractice::OnWriteClicked)
-					]
+						[
+							SNew(SButton)
+								.Text(FText::FromString("Write"))
+								.OnClicked(this , &SSequencePractice::OnWriteClicked)
+						]
 				]
 
 				+ SVerticalBox::Slot()
@@ -142,58 +147,58 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 
 
 
-				+ SVerticalBox::Slot()
+				+SVerticalBox::Slot()
 				[
 
 					// FMemoDataTable
-					SAssignNew(csvListView, SListView<TSharedPtr<FMemoDataTable>>)
-					.HeaderRow(ColumnNamesHeaderRow)
-					// Row의 자료형을 체크한다?
-					.ListItemsSource(&memoItems)
-					.OnMouseButtonDoubleClick(this, &SSequencePractice::OnMousebuttonDoubleClick)
-					.SelectionMode(ESelectionMode::Single)
-					.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
-					{
-						return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
-							.Padding(1)
-							.ShowWires(true)
-							.Content()
-							[
-								SNew(SHorizontalBox)
+					SAssignNew(csvListView , SListView<TSharedPtr<FMemoDataTable>>)
+						.HeaderRow(ColumnNamesHeaderRow)
+						// Row의 자료형을 체크한다?
+						.ListItemsSource(&memoItems)
+						.OnMouseButtonDoubleClick(this , &SSequencePractice::OnMousebuttonDoubleClick)
+						.SelectionMode(ESelectionMode::Single)
+						.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
+						{
+									return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
+										.Padding(1)
+										.ShowWires(true)
+										.Content()
+										[
+											SNew(SHorizontalBox)
 
-									+ SHorizontalBox::Slot()
-									.AutoWidth()
-									[
-										SNew(STextBlock).Text(FText::FromString(Item->title))
-									]
+												+ SHorizontalBox::Slot()
+												.AutoWidth()
+												[
+													SNew(STextBlock).Text(FText::FromString(Item->title))
+												]
 
-									+ SHorizontalBox::Slot()
-									[
-										SNew(STextBlock).Text(FText::FromString(Item->content))
-									]
+												+ SHorizontalBox::Slot()
+												[
+													SNew(STextBlock).Text(FText::FromString(Item->content))
+												]
 
-									+ SHorizontalBox::Slot()
-									.AutoWidth()
-									[
-										SNew(SCheckBox)
-											.IsChecked(ECheckBoxState::Unchecked)
-									]
-							];
-					})
+												+ SHorizontalBox::Slot()
+												.AutoWidth()
+												[
+													SNew(SCheckBox)
+														.IsChecked(ECheckBoxState::Unchecked)
+												]
+										];
+						})
 				]
 
 				+ SVerticalBox::Slot()
-.AutoHeight()
-.HAlign(HAlign_Right)
+				.AutoHeight()
+				.HAlign(HAlign_Right)
 				[
 					SNew(SButton)
 						.Text(FText::FromString("Export"))
 						.OnClicked(this , &SSequencePractice::OnExportClicked)
 				]
 
-			
-		];
 
+			];
+			
 
 }
 
@@ -252,6 +257,47 @@ void SSequencePractice::OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item
 
 
 
+}
+
+void SSequencePractice::SetHeaderRow()
+{
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
+	TArray<FString> AvailableColumns = LoadedDataTable->GetColumnTitles();
+
+	ColumnNamesHeaderRow->AddColumn(
+				SHeaderRow::Column("RowDragDropColumnId")
+				[
+					SNew(SBox)
+						.VAlign(VAlign_Fill)
+						.HAlign(HAlign_Fill)
+						[
+							SNew(STextBlock)
+								.Text(FText::GetEmpty())
+						]
+				]
+	);
+
+	for ( int32 ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
+	{
+		const FString& ColumnData = AvailableColumns[ ColumnIndex ];
+
+		ColumnNamesHeaderRow->AddColumn(
+			SHeaderRow::Column(FName(ColumnData))
+			.OnSort(this, &SSequencePractice::OnColumnNumberSortModeChanged)
+			[
+				SNew(SBox)
+					.Padding(FMargin(0 , 4 , 0 , 4))
+					.VAlign(VAlign_Fill)
+					[
+						SNew(STextBlock)
+							.Justification(ETextJustify::Center)
+							.Text(FText::FromString(ColumnData))
+					]
+			]
+		);
+	}
 }
 
 FReply SSequencePractice::OnSubmitClicked()
@@ -323,50 +369,6 @@ FReply SSequencePractice::OnWriteClicked()
 	//DataTableEditor->SpawnTab_DataTable();
 
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("MemoWrite Tab"));
-
-	// Column Test
-	/*FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
-	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
-
-	TArray<FString> AvailableColumns = LoadedDataTable->GetColumnTitles();
-
-	ColumnNamesHeaderRow->AddColumn(
-				SHeaderRow::Column("RowDragDropColumnId")
-				[
-					SNew(SBox)
-						.VAlign(VAlign_Fill)
-						.HAlign(HAlign_Fill)
-						.ToolTip(IDocumentation::Get()->CreateToolTip(
-							LOCTEXT("DataTableRowHandleTooltip" , "Drag Drop Handles") ,
-							nullptr ,
-							*FDataTableEditorUtils::VariableTypesTooltipDocLink ,
-							TEXT("DataTableRowHandle")))
-						[
-							SNew(STextBlock)
-								.Text(FText::GetEmpty())
-						]
-				]
-	);
-
-	for ( int32 ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
-	{
-		const FString& ColumnData = AvailableColumns[ ColumnIndex ];
-
-		ColumnNamesHeaderRow->AddColumn(
-			SHeaderRow::Column(FName(ColumnData))
-			.OnSort(this, &SSequencePractice::OnColumnNumberSortModeChanged)
-			[
-				SNew(SBox)
-					.Padding(FMargin(0 , 4 , 0 , 4))
-					.VAlign(VAlign_Fill)
-					[
-						SNew(STextBlock)
-							.Justification(ETextJustify::Center)
-							.Text(FText::FromString(ColumnData))
-					]
-			]
-		);
-	}*/
 
 	return FReply::Handled();
 }

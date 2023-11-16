@@ -16,6 +16,7 @@
 #include "SSequencerDetail.h"
 #include "SImageConverter.h"
 #include "SWriteContent.h"
+#include "Framework/Docking/TabManager.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -92,6 +93,8 @@ void FTEST_PostProductionModule::RegisterMenus()
 
 void FTEST_PostProductionModule::RegisterCustomEditorTab()
 {
+	//TSharedRef<class FTabManager> InTabManager = MakeShared<FTabManager>();
+
 	// Enroll NomadTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("PostProduction"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnPostProductionTab)).SetDisplayName(FText::FromString("PostProduiction Tab"));
 
@@ -112,6 +115,8 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 
 	// Enroll memoTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Detail Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnDetailTab)).SetDisplayName(FText::FromString("Detail Tab"));
+
+	//InTabManager->RegisterTabSpawner(FName("Detail Tab") , FOnSpawnTab::CreateSP(this , &FTEST_PostProductionModule::OnSpawnDetailTab));
 
 	// Enroll memoTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Asset Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnImageTab)).SetDisplayName(FText::FromString("Asset Tab"));
@@ -176,7 +181,7 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoTab(const FSpawnTabA
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoWriteTab(const FSpawnTabArgs& spawnArgs)
 {
 	// NomadTab : can be dragged out
-	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+	return SNew(SDockTab).TabRole(ETabRole::PanelTab)
 		[
 			SNew(SWriteContent)
 		];
@@ -185,7 +190,7 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoWriteTab(const FSpaw
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnDetailTab(const FSpawnTabArgs& spawnArgs)
 {
 	// NomadTab : can be dragged out
-	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
+	return SNew(SDockTab).TabRole(ETabRole::PanelTab)
 		[
 			SNew(SSequencerDetail)
 		];

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SequencerPractice.h"
 
 /**
  * 
@@ -20,4 +21,6 @@ public:
 	inline static FString SequenceName;
 
 	inline static FString ImagePath;
+
+	inline static SSequencePractice* sequencerMemo;
 };
