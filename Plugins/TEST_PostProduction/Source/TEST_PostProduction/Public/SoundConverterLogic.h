@@ -51,7 +51,7 @@ public:
 
 	FString SavePath;
 
-	UEUW_SpeechBlock* speechBlock;
+	class UEUW_SpeechBlock* speechBlock;
 
 	FSlateBrush MySlateBrush;
 	// 이미지 테스트용
