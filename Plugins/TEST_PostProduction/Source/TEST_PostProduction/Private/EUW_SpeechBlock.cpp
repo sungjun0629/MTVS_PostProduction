@@ -12,7 +12,6 @@ void UEUW_SpeechBlock::CallSetAIVoicePath(const FString& path)
 	SetAIVoicePath();
 }
 
-
 //USoundWave* UEUW_SpeechBlock::LoadSoundWaveFromFile(const FString& FilePath)
 //{
 //    // Create an instance of the sound wave
