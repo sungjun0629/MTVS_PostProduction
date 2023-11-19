@@ -46,7 +46,12 @@ public:
 	/** Header row containing entries for each column in AvailableColumns */
 	TSharedPtr<SHeaderRow> ColumnNamesHeaderRow;
 
+	/** UI for the "Data Table" tab */
+	TSharedPtr<SWidget> DataTableTabWidget;
+
 	FOnSequencerNameChanged sequnencerNameChanged;
+
+	class FMemoTableEditor* MemoTableEditorInstance = nullptr;
 
 public:
 	/** Constructs this widget with InArgs */
@@ -59,6 +64,8 @@ public:
 	void OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item);
 
 	void SetHeaderRow();
+
+	FReply RowChange();
 
 	FReply OnSubmitClicked();
 

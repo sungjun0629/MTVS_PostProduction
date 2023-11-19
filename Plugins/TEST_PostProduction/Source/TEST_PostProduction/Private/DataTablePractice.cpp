@@ -1194,6 +1194,7 @@ void FDataTablePractice::UpdateVisibleRows(const FName InCachedSelection , const
 {
 	if ( ActiveFilterText.IsEmptyOrWhitespace() )
 	{
+		//AvailableROW!!!
 		VisibleRows = AvailableRows;
 	}
 	else

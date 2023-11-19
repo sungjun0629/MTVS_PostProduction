@@ -19,10 +19,13 @@
 #include "IPConfig.h"
 #include "ImportExportDataTable.h"
 #include "Widgets/Text/STextBlock.h"
+#include "SMemoTableListViewRow.h"
+#include "MemoTableEditor.h"
+#include "Chaos/Map.h"
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
-	GetSequenceAsset();
+	/*GetSequenceAsset();
 
 	contentTitle = SNew(STextBlock)
 		.Text(FText::FromString("Sequencer"));
@@ -30,13 +33,14 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	IPConfig::sequencerMemo = this;
 
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
-	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));*/
 	//TArray<FMemoDataTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
-	LoadedDataTable->GetAllRows<FMemoDataTable>("random", TableRows);
+	//LoadedDataTable->GetAllRows<FMemoDataTable>("random", TableRows);
 
 	// 
-	TArray<FName> RowNames = LoadedDataTable->GetRowNames();
+	//TArray<FName> RowNames = LoadedDataTable->GetRowNames();
 
+	//DataTableTabWidget = FMemoTableEditor::CreateContentBox();
 	//for(FName RowName : RowNames)
 	//{
 	//	FTableRowBase* RowData = LoadedDataTable->FindRow<FTableRowBase>(RowName , "");
@@ -63,140 +67,150 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	//
 	
 	
-	//class FDataTablePractice* DataTablePractice = new FDataTablePractice();
+	DataTableTabWidget = SNew(SVerticalBox);
+	//DataTableTabWidget = MemoTableEditorInstance->CreateContentBox();
 
-	for ( FMemoDataTable* TableRow : TableRows )
-	{
-		UE_LOG(LogTemp,Warning,TEXT("TableRow : %s"),*TableRow->title);
-		memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
-	}
+	//for ( FMemoDataTable* TableRow : TableRows )
+	//{
+	//	UE_LOG(LogTemp,Warning,TEXT("TableRow : %s"),*TableRow->title);
+	//	memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
+	//}
 
-	contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
+	//contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
 
-	ColumnNamesHeaderRow = SNew(SHeaderRow);
-	SetHeaderRow();
+	//ColumnNamesHeaderRow = SNew(SHeaderRow);
+	//SetHeaderRow();
 	ChildSlot
 		[
 			
 				SNew(SVerticalBox)
 
 
-				+ SVerticalBox::Slot()
-				.AutoHeight()
+				//+ SVerticalBox::Slot()
+				//.AutoHeight()
+				//[
+				//	SNew(SHorizontalBox)
+
+				//		+ SHorizontalBox::Slot()
+				//		[
+				//			SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
+				//				.OptionsSource(&Options)
+				//				.Content()
+				//				[
+				//					contentTitle.ToSharedRef()
+				//				]
+				//				.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
+				//				{
+
+				//								return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
+				//				})
+				//				.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
+				//				{// 중요, ListView refresh Logic
+				//								if ( Item.IsValid() )
+				//								{
+				//									SelectedItem = *Item.Get();
+				//									// Handle the selection here.
+				//									UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
+
+				//									contentTitle->SetText(FText::FromString(SelectedItem));
+				//									ChangeContent(SelectedItem);
+
+				//									sequnencerNameChanged.Broadcast(SelectedItem);
+				//								}
+				//				})
+				//		]
+
+				//		+ SHorizontalBox::Slot()
+				//		.AutoWidth()
+				//		[
+				//			SNew(SButton)
+				//				.Text(FText::FromString("Detail"))
+				//				.OnClicked(this , &SSequencePractice::OnDetailClicked)
+				//		]
+
+				//		+ SHorizontalBox::Slot()
+				//		.AutoWidth()
+				//		[
+				//			SNew(SButton)
+				//				.Text(FText::FromString("Write"))
+				//				.OnClicked(this , &SSequencePractice::OnWriteClicked)
+				//		]
+				//]
+
+				//+ SVerticalBox::Slot()
+				//.AutoHeight()
+				//[
+				//	SNew(SHorizontalBox)
+				//		+ SHorizontalBox::Slot()
+				//		[
+				//			SAssignNew(SearchBoxWidget , SSearchBox)
+				//				/*.InitialText(this , &FDataTablePractice::GetFilterText)
+				//				.OnTextChanged(this , &FDataTablePractice::OnFilterTextChanged)
+				//				.OnTextCommitted(this , &FDataTablePractice::OnFilterTextCommitted)*/
+				//		]
+				//]
+
+
+
+				//+SVerticalBox::Slot()
+				//[
+
+				//	// FMemoDataTable
+				//	SAssignNew(csvListView , SListView<TSharedPtr<FMemoDataTable>>)
+				//		.HeaderRow(ColumnNamesHeaderRow)
+				//		// DataTable의 Row를 가져온다. 
+				//		.ListItemsSource(&memoItems)
+				//		.OnMouseButtonDoubleClick(this , &SSequencePractice::OnMousebuttonDoubleClick)
+				//		.SelectionMode(ESelectionMode::Single)
+				//		.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
+				//		{
+				//					return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
+				//						.Padding(1)
+				//						.ShowWires(true)
+				//						.Content()
+				//						[
+				//							SNew(SHorizontalBox)
+
+				//								+ SHorizontalBox::Slot()
+				//								.AutoWidth()
+				//								[
+				//									SNew(STextBlock).Text(FText::FromString(Item->title))
+				//								]
+
+				//								+ SHorizontalBox::Slot()
+				//								[
+				//									SNew(STextBlock).Text(FText::FromString(Item->content))
+				//								]
+
+				//								+ SHorizontalBox::Slot()
+				//								.AutoWidth()
+				//								[
+				//									SNew(SCheckBox)
+				//										.IsChecked(ECheckBoxState::Unchecked)
+				//								]
+				//						];
+
+				//					//return SNew(SMemoTableListViewRow, OwnerTable)
+				//					//	//.DataTableEditor(SharedThis(this))
+				//					//	.RowDataPtr(Item)
+				//					//	.IsEditable(true);
+				//		})
+				//]
+
++SVerticalBox::Slot()
+.AutoHeight()
+.HAlign(HAlign_Right)
+[
+	SNew(SButton)
+		.Text(FText::FromString("Export"))
+		.OnClicked(this , &SSequencePractice::RowChange)
+]
+
+				/*+ SVerticalBox::Slot()
 				[
-					SNew(SHorizontalBox)
-
-						+ SHorizontalBox::Slot()
-						[
-							SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
-								.OptionsSource(&Options)
-								.Content()
-								[
-									contentTitle.ToSharedRef()
-								]
-								.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
-								{
-
-												return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
-								})
-								.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
-								{// 중요, ListView refresh Logic
-												if ( Item.IsValid() )
-												{
-													SelectedItem = *Item.Get();
-													// Handle the selection here.
-													UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
-
-													contentTitle->SetText(FText::FromString(SelectedItem));
-													ChangeContent(SelectedItem);
-
-													sequnencerNameChanged.Broadcast(SelectedItem);
-												}
-								})
-						]
-
-						+ SHorizontalBox::Slot()
-						.AutoWidth()
-						[
-							SNew(SButton)
-								.Text(FText::FromString("Detail"))
-								.OnClicked(this , &SSequencePractice::OnDetailClicked)
-						]
-
-						+ SHorizontalBox::Slot()
-						.AutoWidth()
-						[
-							SNew(SButton)
-								.Text(FText::FromString("Write"))
-								.OnClicked(this , &SSequencePractice::OnWriteClicked)
-						]
-				]
-
-				+ SVerticalBox::Slot()
-				.AutoHeight()
-				[
-					SNew(SHorizontalBox)
-						+ SHorizontalBox::Slot()
-						[
-							SAssignNew(SearchBoxWidget , SSearchBox)
-								/*.InitialText(this , &FDataTablePractice::GetFilterText)
-								.OnTextChanged(this , &FDataTablePractice::OnFilterTextChanged)
-								.OnTextCommitted(this , &FDataTablePractice::OnFilterTextCommitted)*/
-						]
-				]
-
-
-
-				+SVerticalBox::Slot()
-				[
-
-					// FMemoDataTable
-					SAssignNew(csvListView , SListView<TSharedPtr<FMemoDataTable>>)
-						.HeaderRow(ColumnNamesHeaderRow)
-						// Row의 자료형을 체크한다?
-						.ListItemsSource(&memoItems)
-						.OnMouseButtonDoubleClick(this , &SSequencePractice::OnMousebuttonDoubleClick)
-						.SelectionMode(ESelectionMode::Single)
-						.OnGenerateRow_Lambda([] (TSharedPtr<FMemoDataTable> Item , const TSharedRef<STableViewBase>& OwnerTable)
-						{
-									return SNew(STableRow<TSharedPtr<FMemoDataTable>> , OwnerTable)
-										.Padding(1)
-										.ShowWires(true)
-										.Content()
-										[
-											SNew(SHorizontalBox)
-
-												+ SHorizontalBox::Slot()
-												.AutoWidth()
-												[
-													SNew(STextBlock).Text(FText::FromString(Item->title))
-												]
-
-												+ SHorizontalBox::Slot()
-												[
-													SNew(STextBlock).Text(FText::FromString(Item->content))
-												]
-
-												+ SHorizontalBox::Slot()
-												.AutoWidth()
-												[
-													SNew(SCheckBox)
-														.IsChecked(ECheckBoxState::Unchecked)
-												]
-										];
-						})
-				]
-
-				+ SVerticalBox::Slot()
-				.AutoHeight()
-				.HAlign(HAlign_Right)
-				[
-					SNew(SButton)
-						.Text(FText::FromString("Export"))
-						.OnClicked(this , &SSequencePractice::OnExportClicked)
-				]
-
-
+					DataTableTabWidget.ToSharedRef()	
+				]*/
+				
 			];
 			
 
@@ -298,6 +312,24 @@ void SSequencePractice::SetHeaderRow()
 			]
 		);
 	}
+}
+
+FReply SSequencePractice::RowChange()
+{
+	MemoTableEditorInstance = new FMemoTableEditor();
+	DataTableTabWidget = MemoTableEditorInstance->CreateContentBox();
+	DataTableTabWidget->Invalidate(EInvalidateWidgetReason::LayoutAndVolatility);
+
+
+	const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();;
+	MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
+
+	UE_LOG(LogTemp,Warning,TEXT("RowChange"))
+
+
+	return FReply::Handled();
+
+
 }
 
 FReply SSequencePractice::OnSubmitClicked()
