@@ -9,6 +9,12 @@
 #include "EditorUndoClient.h"
 #include "Kismet2/StructureEditorUtils.h"
 #include "DataTableEditorUtils.h"
+#include "Widgets/Views/SHeaderRow.h"
+
+DECLARE_DELEGATE_OneParam(FOnRowHighlighted , FName /*Row name*/);
+
+
+
 /**
  * 
  */
@@ -44,7 +50,12 @@ public:
 	virtual void SelectionChange(const UDataTable* Changed , FName RowName) override;
 
 
+	FText GetCellText(TSharedPtr<FMemoDataTable> InRowDataPointer , int32 ColumnIndex) const;
 
+	FText GetFilterText() const;
+
+	void OnFilterTextChanged(const FText& InFilterText);
+	void OnFilterTextCommitted(const FText& NewText , ETextCommit::Type CommitInfo);
 
 	/** Struct holding information about the current column widths */
 	struct FColumnWidth
@@ -60,6 +71,7 @@ public:
 		/** The width of the column, either sized by the user, or auto-sized */
 		float CurrentWidth;
 	};
+
 
 	void SetHighlightedRow(FName Name);
 
@@ -79,6 +91,8 @@ public:
 
 	/** Make the widget for a row entry in the data table row list view */
 	TSharedRef<ITableRow> MakeRowWidget(TSharedPtr<FMemoDataTable> InRowDataPtr , const TSharedRef<STableViewBase>& OwnerTable);
+
+	void OnRowSelectionChanged(TSharedPtr<FMemoDataTable> InNewSelection , ESelectInfo::Type InSelectInfo);
 
 	void RefreshCachedDataTable(const FName InCachedSelection = NAME_None , const bool bUpdateEvenIfValid = false);
 
@@ -107,6 +121,9 @@ public:
 	/** Widths of data table cell columns */
 	TArray<FColumnWidth> ColumnWidths;
 
+	/** The visible row index of the currently selected row */
+	int32 HighlightedVisibleRowIndex;
+
 	/** The current filter text applied to the data table */
 	FText ActiveFilterText;
 
@@ -121,5 +138,22 @@ public:
 
 	/** The column id for the drag drop column */
 	 const FName RowDragDropColumnId = FName("RowDragDropColumnId");
+
+	 /** The name of the currently selected row */
+	 FName HighlightedRowName;
+
+	 FOnRowHighlighted CallbackOnRowHighlighted;
+
+	 EColumnSortMode::Type GetColumnSortMode(const FName ColumnId) const;
+
+	 void OnColumnSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode);
+
+	 void OnColumnNameSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode);
+
+	 /** Specify which column to sort with */
+	 FName SortByColumn;
+
+	 /** Currently selected sorting mode */
+	 EColumnSortMode::Type SortMode;
 
 };

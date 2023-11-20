@@ -49,8 +49,11 @@ private:
 	TSharedPtr<FName> CurrentName;
 
 	TSharedPtr<FMemoDataTable> RowDataPtr;
+
 	TWeakPtr<FMemoTableEditor> DataTableEditor;
 
+	TSharedRef<SWidget> MakeCellWidget(const int32 InRowIndex , const FName& InColumnId);
+	
 	virtual const FSlateBrush* GetBorder() const;
 
 	bool IsEditable;

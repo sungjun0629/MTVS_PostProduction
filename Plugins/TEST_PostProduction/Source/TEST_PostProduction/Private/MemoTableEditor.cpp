@@ -15,6 +15,9 @@
 #include "Widgets/Input/SSearchBox.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Views/ITableRow.h"
+#include "Editor.h"
+#include "Subsystems/AssetEditorSubsystem.h"
+#include "Widgets/Views/SHeaderRow.h"
 
 FMemoTableEditor::FMemoTableEditor()
 {
@@ -23,7 +26,7 @@ FMemoTableEditor::FMemoTableEditor()
 
 FMemoTableEditor::~FMemoTableEditor()
 {
-
+	
 }
 
 FName FMemoTableEditor::GetToolkitFName() const
@@ -86,9 +89,78 @@ void FMemoTableEditor::SelectionChange(const UDataTable* Changed , FName RowName
 
 }
 
+FText FMemoTableEditor::GetCellText(TSharedPtr<FMemoDataTable> InRowDataPointer , int32 ColumnIndex) const
+{
+	if ( InRowDataPointer.IsValid() && ColumnIndex < InRowDataPointer->CellData.Num() )
+	{
+		//UE_LOG(LogTemp,Warning,TEXT("GetCellText : %d : %s"), ColumnIndex, *(InRowDataPointer->CellData[ ColumnIndex ].ToString()));
+		return InRowDataPointer->CellData[ ColumnIndex ];
+	}
+
+	return FText();
+}
+
+FText FMemoTableEditor::GetFilterText() const
+{
+	return ActiveFilterText;
+}
+
+void FMemoTableEditor::OnFilterTextChanged(const FText& InFilterText)
+{
+	ActiveFilterText = InFilterText;
+	UpdateVisibleRows();
+}
+
+void FMemoTableEditor::OnFilterTextCommitted(const FText& NewText , ETextCommit::Type CommitInfo)
+{
+	if ( CommitInfo == ETextCommit::OnCleared )
+	{
+		SearchBoxWidget->SetText(FText::GetEmpty());
+		OnFilterTextChanged(FText::GetEmpty());
+	}
+}
+
 void FMemoTableEditor::SetHighlightedRow(FName Name)
 {
+	if ( Name == HighlightedRowName )
+	{
+		return;
+	}
 
+	if ( Name.IsNone() )
+	{
+		HighlightedRowName = NAME_None;
+		CellsListView->ClearSelection();
+		HighlightedVisibleRowIndex = INDEX_NONE;
+	}
+	else
+	{
+		HighlightedRowName = Name;
+
+		TSharedPtr<FMemoDataTable>* NewSelectionPtr = NULL;
+		for ( HighlightedVisibleRowIndex = 0; HighlightedVisibleRowIndex < VisibleRows.Num(); ++HighlightedVisibleRowIndex )
+		{
+			if ( VisibleRows[ HighlightedVisibleRowIndex ]->RowId == Name )
+			{
+				NewSelectionPtr = &( VisibleRows[ HighlightedVisibleRowIndex ] );
+
+				break;
+			}
+		}
+
+
+		// Synchronize the list views
+		if ( NewSelectionPtr )
+		{
+			CellsListView->SetSelection(*NewSelectionPtr);
+
+			CellsListView->RequestScrollIntoView(*NewSelectionPtr);
+		}
+		else
+		{
+			CellsListView->ClearSelection();
+		}
+	}
 }
 
 TSharedRef<SDockTab> FMemoTableEditor::SpawnTab_DataTable(const FSpawnTabArgs& Args)
@@ -121,9 +193,10 @@ void FMemoTableEditor::CreateAndRegisterDataTableTab(const TSharedRef<class FTab
 	DataTableTabWidget = CreateContentBox();
 
 	InTabManager->RegisterTabSpawner(DataTableTabId , FOnSpawnTab::CreateRaw(this , &FMemoTableEditor::SpawnTab_DataTable))
-		.SetDisplayName(LOCTEXT("DataTableTab" , "Data Table"))
+		//.SetDisplayName(LOCTEXT("DataTableTab" , "Data Table"))
 		.SetGroup(WorkspaceMenuCategory.ToSharedRef());
-	//InTabManager->TryInvokeTab(DataTableTabId);
+	InTabManager->TryInvokeTab(DataTableTabId);
+
 }
 
 TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
@@ -138,17 +211,13 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 
 	ColumnNamesHeaderRow = SNew(SHeaderRow);
 
-	VisibleRows.Add(TSharedPtr<FMemoDataTable>());
+	//VisibleRows.Add(TSharedPtr<FMemoDataTable>());
 
 	CellsListView = SNew(SListView<TSharedPtr<FMemoDataTable>>)
 		.ListItemsSource(&VisibleRows)
 		.HeaderRow(ColumnNamesHeaderRow)
-		//.OnGenerateRow(this , &FMemoTableEditor::MakeRowWidget)
-		.OnGenerateRow_Lambda([ & ] (TSharedPtr<FMemoDataTable> InRowDataPtr , const TSharedRef<STableViewBase>& OwnerTable) {
-		return
-			MakeRowWidget(InRowDataPtr, OwnerTable);
-		})
-		//.OnSelectionChanged(this , &FDataTableEditor::OnRowSelectionChanged)
+		.OnGenerateRow(this , &FMemoTableEditor::MakeRowWidget)
+		.OnSelectionChanged(this , &FMemoTableEditor::OnRowSelectionChanged)
 		.ExternalScrollbar(VerticalScrollBar)
 		.ConsumeMouseWheel(EConsumeMouseWheel::Always)
 		.SelectionMode(ESelectionMode::Single)
@@ -164,29 +233,33 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 				+ SHorizontalBox::Slot()
 				[
 					SAssignNew(SearchBoxWidget , SSearchBox)
-						/*.InitialText(this , &FDataTableEditor::GetFilterText)
-						.OnTextChanged(this , &FDataTableEditor::OnFilterTextChanged)
-						.OnTextCommitted(this , &FDataTableEditor::OnFilterTextCommitted)*/
+						.InitialText(this , &FMemoTableEditor::GetFilterText)
+						.OnTextChanged(this , &FMemoTableEditor::OnFilterTextChanged)
+						.OnTextCommitted(this , &FMemoTableEditor::OnFilterTextCommitted)
 				]
 		]
 		+ SVerticalBox::Slot()
 		[
-			SNew(SHorizontalBox)
-				+ SHorizontalBox::Slot()
-				[
-					SNew(SScrollBox)
-						.Orientation(Orient_Horizontal)
-						.ExternalScrollbar(HorizontalScrollBar)
-						+ SScrollBox::Slot()
-						[
-							CellsListView.ToSharedRef()
-						]
-				]
-				+ SHorizontalBox::Slot()
-				.AutoWidth()
-				[
-					VerticalScrollBar
-				]
+
+			CellsListView.ToSharedRef()
+
+			//SNew(SHorizontalBox)
+			//	+ SHorizontalBox::Slot()
+
+			//	[
+			//		SNew(SScrollBox)
+			//			.Orientation(Orient_Horizontal)
+			//			.ExternalScrollbar(HorizontalScrollBar)
+			//			+ SScrollBox::Slot()
+			//			[
+			//				CellsListView.ToSharedRef()
+			//			]
+			//	]
+			//	+ SHorizontalBox::Slot()
+			//	//.AutoWidth()
+			//	[
+			//		VerticalScrollBar
+			//	]
 		]
 		+ SVerticalBox::Slot()
 		.AutoHeight()
@@ -212,6 +285,21 @@ TSharedRef<ITableRow> FMemoTableEditor::MakeRowWidget(TSharedPtr<FMemoDataTable>
 }
 
 
+void FMemoTableEditor::OnRowSelectionChanged(TSharedPtr<FMemoDataTable> InNewSelection , ESelectInfo::Type InSelectInfo)
+{
+
+	UE_LOG(LogTemp,Warning,TEXT("OnRowSelectionChanged"))
+	const bool bSelectionChanged = !InNewSelection.IsValid() || InNewSelection->RowId != HighlightedRowName;
+	const FName NewRowName = ( InNewSelection.IsValid() ) ? InNewSelection->RowId : NAME_None;
+
+	SetHighlightedRow(NewRowName);
+
+	if ( bSelectionChanged )
+	{
+		CallbackOnRowHighlighted.ExecuteIfBound(HighlightedRowName);
+	}
+}
+
 void FMemoTableEditor::RefreshCachedDataTable(const FName InCachedSelection /*= NAME_None */ , const bool bUpdateEvenIfValid /*= false*/)
 {
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
@@ -236,58 +324,58 @@ void FMemoTableEditor::RefreshCachedDataTable(const FName InCachedSelection /*= 
 
 	ColumnNamesHeaderRow->ClearColumns();
 
-	if ( true )
-	{
-		ColumnNamesHeaderRow->AddColumn(
-			SHeaderRow::Column(RowDragDropColumnId)
-			[
-				SNew(SBox)
-					.VAlign(VAlign_Fill)
-					.HAlign(HAlign_Fill)
-				/*	.ToolTip(IDocumentation::Get()->CreateToolTip(
-						LOCTEXT("DataTableRowHandleTooltip" , "Drag Drop Handles") ,
-						nullptr ,
-						*FDataTableEditorUtils::VariableTypesTooltipDocLink ,
-						TEXT("DataTableRowHandle")))*/
-					[
-						SNew(STextBlock)
-							.Text(FText::GetEmpty())
-					]
-			]
-		);
-	}
+	//if ( true )
+	//{
+	//	ColumnNamesHeaderRow->AddColumn(
+	//		SHeaderRow::Column(RowDragDropColumnId)
+	//		[
+	//			SNew(SBox)
+	//				.VAlign(VAlign_Fill)
+	//				.HAlign(HAlign_Fill)
+	//			/*	.ToolTip(IDocumentation::Get()->CreateToolTip(
+	//					LOCTEXT("DataTableRowHandleTooltip" , "Drag Drop Handles") ,
+	//					nullptr ,
+	//					*FDataTableEditorUtils::VariableTypesTooltipDocLink ,
+	//					TEXT("DataTableRowHandle")))*/
+	//				[
+	//					SNew(STextBlock)
+	//						.Text(FText::GetEmpty())
+	//				]
+	//		]
+	//	);
+	//}
 
-	ColumnNamesHeaderRow->AddColumn(
-		SHeaderRow::Column(RowNumberColumnId)
-		/*.SortMode(this , &FDataTableEditor::GetColumnSortMode , RowNumberColumnId)
-		.OnSort(this , &FDataTableEditor::OnColumnNumberSortModeChanged)
-		.ManualWidth(this , &FDataTableEditor::GetRowNumberColumnWidth)
-		.OnWidthChanged(this , &FDataTableEditor::OnRowNumberColumnResized)*/
-		[
-			SNew(SBox)
-				.VAlign(VAlign_Fill)
-				.HAlign(HAlign_Fill)
-				/*.ToolTip(IDocumentation::Get()->CreateToolTip(
-					LOCTEXT("DataTableRowIndexTooltip" , "Row Index") ,
-					nullptr ,
-					*FDataTableEditorUtils::VariableTypesTooltipDocLink ,
-					TEXT("DataTableRowIndex")))*/
-				[
-					SNew(STextBlock)
-						.Text(FText::GetEmpty())
-				]
-		]
+	//ColumnNamesHeaderRow->AddColumn(
+	//	SHeaderRow::Column(RowNumberColumnId)
+	//	/*.SortMode(this , &FDataTableEditor::GetColumnSortMode , RowNumberColumnId)
+	//	.OnSort(this , &FDataTableEditor::OnColumnNumberSortModeChanged)
+	//	.ManualWidth(this , &FDataTableEditor::GetRowNumberColumnWidth)
+	//	.OnWidthChanged(this , &FDataTableEditor::OnRowNumberColumnResized)*/
+	//	[
+	//		SNew(SBox)
+	//			.VAlign(VAlign_Fill)
+	//			.HAlign(HAlign_Fill)
+	//			/*.ToolTip(IDocumentation::Get()->CreateToolTip(
+	//				LOCTEXT("DataTableRowIndexTooltip" , "Row Index") ,
+	//				nullptr ,
+	//				*FDataTableEditorUtils::VariableTypesTooltipDocLink ,
+	//				TEXT("DataTableRowIndex")))*/
+	//			[
+	//				SNew(STextBlock)
+	//					.Text(FText::GetEmpty())
+	//			]
+	//	]
 
-	);
+	//);
 
-	ColumnNamesHeaderRow->AddColumn(
-		SHeaderRow::Column(RowNameColumnId)
-		/*.DefaultLabel(LOCTEXT("DataTableRowName" , "Row Name"))
-		.ManualWidth(this , &FDataTableEditor::GetRowNameColumnWidth)
-		.OnWidthChanged(this , &FDataTableEditor::OnRowNameColumnResized)
-		.SortMode(this , &FDataTableEditor::GetColumnSortMode , RowNameColumnId)
-		.OnSort(this , &FDataTableEditor::OnColumnNameSortModeChanged)*/
-	);
+	//ColumnNamesHeaderRow->AddColumn(
+	//	SHeaderRow::Column(RowNameColumnId)
+	//	/*.DefaultLabel(LOCTEXT("DataTableRowName" , "Row Name"))
+	//	.ManualWidth(this , &FDataTableEditor::GetRowNameColumnWidth)
+	//	.OnWidthChanged(this , &FDataTableEditor::OnRowNameColumnResized)
+	//	.SortMode(this , &FDataTableEditor::GetColumnSortMode , RowNameColumnId)
+	//	.OnSort(this , &FDataTableEditor::OnColumnNameSortModeChanged)*/
+	//);
 
 	for ( int32 ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
 	{
@@ -296,10 +384,10 @@ void FMemoTableEditor::RefreshCachedDataTable(const FName InCachedSelection /*= 
 		ColumnNamesHeaderRow->AddColumn(
 			SHeaderRow::Column(ColumnData->ColumnId)
 			.DefaultLabel(ColumnData->DisplayName)
-			/*.ManualWidth(TAttribute<float>::Create(TAttribute<float>::FGetter::CreateSP(this , &FDataTableEditor::GetColumnWidth , ColumnIndex)))
-			.OnWidthChanged(this , &FDataTableEditor::OnColumnResized , ColumnIndex)
-			.SortMode(this , &FDataTableEditor::GetColumnSortMode , ColumnData->ColumnId)
-			.OnSort(this , &FDataTableEditor::OnColumnSortModeChanged)*/
+		/*	.ManualWidth(TAttribute<float>::Create(TAttribute<float>::FGetter::CreateSP(this , &FDataTableEditor::GetColumnWidth , ColumnIndex)))
+			.OnWidthChanged(this , &FDataTableEditor::OnColumnResized , ColumnIndex)*/
+			.SortMode(this , &FMemoTableEditor::GetColumnSortMode , ColumnData->ColumnId)
+			.OnSort(this , &FMemoTableEditor::OnColumnSortModeChanged)
 			[
 				SNew(SBox)
 					.Padding(FMargin(0 , 4 , 0 , 4))
@@ -324,9 +412,11 @@ void FMemoTableEditor::UpdateVisibleRows(const FName InCachedSelection /*= NAME_
 	if ( ActiveFilterText.IsEmptyOrWhitespace() )
 	{
 		VisibleRows = AvailableRows;
+		UE_LOG(LogTemp,Warning,TEXT("UpdateVisibleRows_ActiveFilter"))
 	}
 	else
 	{
+		UE_LOG(LogTemp,Warning,TEXT("UpdateVisibleRows_ActiveFilter.else"))
 		VisibleRows.Empty(AvailableRows.Num());
 
 		const FString& ActiveFilterString = ActiveFilterText.ToString();
@@ -466,4 +556,89 @@ void FMemoTableEditor::GetDataForEditing(const UScriptStruct* RowStruct , const 
 
 		OutAvailableRows.Add(CachedRowData);
 	}
+}
+
+EColumnSortMode::Type FMemoTableEditor::GetColumnSortMode(const FName ColumnId) const
+{
+	if ( SortByColumn != ColumnId )
+	{
+		return EColumnSortMode::None;
+	}
+
+	return SortMode;
+}
+
+void FMemoTableEditor::OnColumnSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode)
+{
+	int32 ColumnIndex;
+
+	SortMode = InSortMode;
+	SortByColumn = ColumnId;
+
+	for ( ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
+	{
+		if ( AvailableColumns[ ColumnIndex ]->ColumnId == ColumnId )
+		{
+			break;
+		}
+	}
+
+	if ( AvailableColumns.IsValidIndex(ColumnIndex) )
+	{
+		if ( InSortMode == EColumnSortMode::Ascending )
+		{
+			VisibleRows.Sort([ ColumnIndex ] (const TSharedPtr<FMemoDataTable>& first , const TSharedPtr<FMemoDataTable>& second)
+			{
+				int32 Result = ( first->CellData[ ColumnIndex ].ToString() ).Compare(second->CellData[ ColumnIndex ].ToString());
+
+				if ( !Result )
+				{
+					return first->RowNum < second->RowNum;
+
+				}
+
+				return Result < 0;
+			});
+
+		}
+		else if ( InSortMode == EColumnSortMode::Descending )
+		{
+			VisibleRows.Sort([ ColumnIndex ] (const TSharedPtr<FMemoDataTable>& first , const TSharedPtr<FMemoDataTable>& second)
+			{
+				int32 Result = ( first->CellData[ ColumnIndex ].ToString() ).Compare(second->CellData[ ColumnIndex ].ToString());
+
+				if ( !Result )
+				{
+					return first->RowNum > second->RowNum;
+				}
+
+				return Result > 0;
+			});
+		}
+	}
+
+	CellsListView->RequestListRefresh();
+}
+
+void FMemoTableEditor::OnColumnNameSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode)
+{
+	SortMode = InSortMode;
+	SortByColumn = ColumnId;
+
+	if ( InSortMode == EColumnSortMode::Ascending )
+	{
+		VisibleRows.Sort([] (const TSharedPtr<FMemoDataTable>& first , const TSharedPtr<FMemoDataTable>& second)
+		{
+			return ( first->DisplayName ).ToString() < ( second->DisplayName ).ToString();
+		});
+	}
+	else if ( InSortMode == EColumnSortMode::Descending )
+	{
+		VisibleRows.Sort([] (const TSharedPtr<FMemoDataTable>& first , const TSharedPtr<FMemoDataTable>& second)
+		{
+			return ( first->DisplayName ).ToString() > ( second->DisplayName ).ToString();
+		});
+	}
+
+	CellsListView->RequestListRefresh();
 }

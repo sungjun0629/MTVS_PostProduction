@@ -6,6 +6,7 @@
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "WebBrowser/Public/SWebBrowserView.h"
 #include "MemoDataTable.h"
+#include "MemoTableEditor.h"
 
 #define LOCTEXT_NAMESPACE "DataTableEditorPractice"
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
@@ -21,6 +22,8 @@ class SSequencePractice : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+
+	~SSequencePractice();
 
 	FString title;
 	FString sequenceName;
@@ -51,7 +54,8 @@ public:
 
 	FOnSequencerNameChanged sequnencerNameChanged;
 
-	class FMemoTableEditor* MemoTableEditorInstance = nullptr;
+	TSharedPtr<FMemoTableEditor> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//class FMemoTableEditor* MemoTableEditorInstance = nullptr;
 
 public:
 	/** Constructs this widget with InArgs */

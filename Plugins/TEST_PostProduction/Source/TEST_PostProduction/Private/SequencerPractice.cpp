@@ -23,6 +23,11 @@
 #include "MemoTableEditor.h"
 #include "Chaos/Map.h"
 
+SSequencePractice::~SSequencePractice()
+{
+	
+}
+
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
 	/*GetSequenceAsset();
@@ -206,10 +211,10 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 		.OnClicked(this , &SSequencePractice::RowChange)
 ]
 
-				/*+ SVerticalBox::Slot()
-				[
-					DataTableTabWidget.ToSharedRef()	
-				]*/
++ SVerticalBox::Slot()
+[
+	DataTableTabWidget.ToSharedRef()
+]
 				
 			];
 			
@@ -316,10 +321,10 @@ void SSequencePractice::SetHeaderRow()
 
 FReply SSequencePractice::RowChange()
 {
-	MemoTableEditorInstance = new FMemoTableEditor();
-	DataTableTabWidget = MemoTableEditorInstance->CreateContentBox();
-	DataTableTabWidget->Invalidate(EInvalidateWidgetReason::LayoutAndVolatility);
-
+	//MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//MemoTableEditorInstance = new FMemoTableEditor();
+	/*DataTableTabWidget = MemoTableEditorInstance->CreateContentBox();
+	DataTableTabWidget->Invalidate(EInvalidateWidgetReason::LayoutAndVolatility);*/
 
 	const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();;
 	MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
