@@ -22,7 +22,7 @@ public:
 
 	void CallSetAIVoicePath(const FString& path);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintImplementableEvent)
 	void SetAIVoicePath();
 
 	/*UFUNCTION(BlueprintCallable)

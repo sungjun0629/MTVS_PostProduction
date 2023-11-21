@@ -108,10 +108,10 @@ void USoundConverterLogic::DownloadVoice(FString url)
 {
     UE_LOG(LogTemp , Warning , TEXT("url : %s") , *url);
 
-    SavePath = "D:\\DownTest\\";
-    const FDateTime Now = FDateTime::Now();
-    const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;
-    SavePath.Append(DateTimeString);
+    SavePath = "C:\\VoiceRecord\\";
+    /*const FDateTime Now = FDateTime::Now();
+    const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;*/
+    SavePath.Append(ConvertedFileName);
     SavePath.Append(TEXT("_ConvertedVoice.wav"));
 
     UFileToStorageDownloader_Plugin* StorageDownload;
