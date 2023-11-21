@@ -51,6 +51,10 @@ public:
 	FString downloadedVoicePath;
 
 	FString SavePath;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite)
+	FString ConvertedFileName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString OriginalFilePath;
 
 	class UEUW_SpeechBlock* speechBlock;
 

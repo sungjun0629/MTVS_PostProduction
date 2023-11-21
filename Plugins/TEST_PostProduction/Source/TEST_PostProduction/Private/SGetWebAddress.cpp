@@ -56,7 +56,7 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 
 void SGetWebAddress::ReloadAndGetURL(FString url)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SGetWebAddress::ReloadAndGetURL"),);
+	UE_LOG(LogTemp, Warning, TEXT("SGetWebAddress::ReloadAndGetURL : %s"), *url);
 
 	FString URL = "https://www.google.com";
 	loginWebBrowser = SNew(SWebBrowser)
