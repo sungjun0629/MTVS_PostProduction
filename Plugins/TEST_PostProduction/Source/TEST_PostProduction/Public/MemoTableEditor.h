@@ -12,7 +12,7 @@
 #include "Widgets/Views/SHeaderRow.h"
 
 DECLARE_DELEGATE_OneParam(FOnRowHighlighted , FName /*Row name*/);
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString)
 
 
 /**
@@ -156,4 +156,20 @@ public:
 	 /** Currently selected sorting mode */
 	 EColumnSortMode::Type SortMode;
 
+
+
+
+public:
+	TArray<TSharedPtr<FString>> Options;
+	TSharedPtr<SComboBox<TSharedPtr<FString>>> ComboBoxWidget;
+
+	void GetSequenceAsset();
+
+	TSharedPtr<STextBlock> contentTitle;
+
+	FOnSequencerNameChanged sequnencerNameChanged;
+
+	FReply OnDetailClicked();
+
+	FReply OnWriteClicked();
 };

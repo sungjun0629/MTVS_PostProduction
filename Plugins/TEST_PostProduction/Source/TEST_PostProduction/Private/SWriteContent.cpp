@@ -11,7 +11,7 @@
 void SWriteContent::Construct(const FArguments& InArgs)
 {
 	//TSharedPtr<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
-	IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this, &SWriteContent::ReloadSequenceName);
+	//IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this, &SWriteContent::ReloadSequenceName);
 	
 
 

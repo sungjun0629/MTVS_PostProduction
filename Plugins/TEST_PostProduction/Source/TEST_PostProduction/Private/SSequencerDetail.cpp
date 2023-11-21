@@ -15,7 +15,7 @@ void SSequencerDetail::Construct(const FArguments& InArgs)
 {
 	FString sequenceName = IPConfig::SequenceName;
 
-	IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this,&SSequencerDetail::ReloadDetailPage);
+	//IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this,&SSequencerDetail::ReloadDetailPage);
 
 
 	FString imagePath = GetImagePath(sequenceName);

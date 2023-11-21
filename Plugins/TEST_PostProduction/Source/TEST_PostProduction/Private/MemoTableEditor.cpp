@@ -18,6 +18,11 @@
 #include "Editor.h"
 #include "Subsystems/AssetEditorSubsystem.h"
 #include "Widgets/Views/SHeaderRow.h"
+#include "LevelSequence/Public/LevelSequence.h"
+#include "AssetRegistry/IAssetRegistry.h"
+#include "Modules/ModuleManager.h"
+#include "AssetRegistry/AssetRegistryModule.h"
+#include "Framework/Docking/TabManager.h"
 
 FMemoTableEditor::FMemoTableEditor()
 {
@@ -190,17 +195,21 @@ TSharedRef<SDockTab> FMemoTableEditor::SpawnTab_DataTable(const FSpawnTabArgs& A
 
 void FMemoTableEditor::CreateAndRegisterDataTableTab(const TSharedRef<class FTabManager>& InTabManager)
 {
+	UE_LOG(LogTemp,Warning,TEXT("CreateAndRegisterDataTableTab"));
 	DataTableTabWidget = CreateContentBox();
 
-	InTabManager->RegisterTabSpawner(DataTableTabId , FOnSpawnTab::CreateRaw(this , &FMemoTableEditor::SpawnTab_DataTable))
+	InTabManager->RegisterTabSpawner(DataTableTabId , FOnSpawnTab::CreateRaw(this , &FMemoTableEditor::SpawnTab_DataTable));
 		//.SetDisplayName(LOCTEXT("DataTableTab" , "Data Table"))
-		.SetGroup(WorkspaceMenuCategory.ToSharedRef());
+		//.SetGroup(WorkspaceMenuCategory.ToSharedRef());
 	InTabManager->TryInvokeTab(DataTableTabId);
 
 }
 
 TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 {
+	GetSequenceAsset();
+
+
 	TSharedRef<SScrollBar> HorizontalScrollBar = SNew(SScrollBar)
 		.Orientation(Orient_Horizontal)
 		.Thickness(FVector2D(12.0f , 12.0f));
@@ -210,7 +219,7 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 		.Thickness(FVector2D(12.0f , 12.0f));
 
 	ColumnNamesHeaderRow = SNew(SHeaderRow);
-
+	contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
 	//VisibleRows.Add(TSharedPtr<FMemoDataTable>());
 
 	CellsListView = SNew(SListView<TSharedPtr<FMemoDataTable>>)
@@ -226,6 +235,62 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 	RefreshCachedDataTable();
 
 	return SNew(SVerticalBox)
+
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		[
+			SNew(SHorizontalBox)
+
+				+ SHorizontalBox::Slot()
+				[
+					SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
+						.OptionsSource(&Options)
+						.Content()
+						[
+							contentTitle.ToSharedRef()
+						]
+						.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
+						{
+
+					return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
+						})
+						.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
+						{// 중요, ListView refresh Logic
+					if ( Item.IsValid() )
+					{
+						FString SelectedItem = *Item.Get();
+						// Handle the selection here.
+						UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
+
+						contentTitle->SetText(FText::FromString(SelectedItem));
+						//ChangeContent(SelectedItem);
+
+						sequnencerNameChanged.Broadcast(SelectedItem);
+					}
+						})
+				]
+
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				[
+					SNew(SButton)
+						.Text(FText::FromString("Detail"))
+						.OnClicked(this , &FMemoTableEditor::OnDetailClicked)
+				]
+
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				[
+					SNew(SButton)
+						.Text(FText::FromString("Write"))
+						.OnClicked(this , &FMemoTableEditor::OnWriteClicked)
+				]
+		]
+
+
+
+
+
 		+ SVerticalBox::Slot()
 		.AutoHeight()
 		[
@@ -641,4 +706,46 @@ void FMemoTableEditor::OnColumnNameSortModeChanged(const EColumnSortPriority::Ty
 	}
 
 	CellsListView->RequestListRefresh();
+}
+
+void FMemoTableEditor::GetSequenceAsset()
+{
+	// Search Test
+	IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry").Get();
+
+
+	TArray<FAssetData> AssetList;
+	//AssetRegistry.GetAssetsByClass(ULevelSequence::StaticClass()->GetFName(), AssetList);
+	AssetRegistry.GetAssetsByPath(FName("/Game/Sungjun/Sequence/") , AssetList);
+
+	for ( const FAssetData& Asset : AssetList )
+	{
+		// Use the asset as needed
+		ULevelSequence* LevelSequence = Cast<ULevelSequence>(Asset.GetAsset());
+		if ( LevelSequence )
+		{
+			// Perform operations on the Level Sequence
+			UE_LOG(LogTemp , Warning , TEXT("LevelSequence : %s") , *LevelSequence->GetName());
+			Options.Add(MakeShareable(new FString(LevelSequence->GetName())));
+		}
+	}
+}
+
+FReply FMemoTableEditor::OnDetailClicked()
+{
+	TSharedPtr<SDockTab> checkTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Detail Tab"));
+
+	if ( !checkTab.IsValid() )
+	{
+		TSharedPtr<SDockTab> sequencerDetail = FGlobalTabmanager::Get()->TryInvokeTab(FName("Detail Tab"));
+	}
+
+	return FReply::Handled();
+}
+
+FReply FMemoTableEditor::OnWriteClicked()
+{
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("MemoWrite Tab"));
+
+	return FReply::Handled();
 }

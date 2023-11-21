@@ -6,11 +6,12 @@
 #include "FileToStorageDownloader_Plugin.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
+#include "MemoTableEditor.h"
 #include "SGetWebAddress.h"
+#include "Templates/SharedPointer.h"
 #include "SoundConverterLogic.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDownloadSuccessBlueprint, FString, savepath);
-
 /**
  * 
  */
@@ -61,4 +62,7 @@ public:
 	TArray<TSharedPtr<FString>> Options;
 
 	TSharedPtr<SGetWebAddress> getWebAddress;
+
+	// 테스트 코드
+	TSharedPtr<FMemoTableEditor , ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
 };

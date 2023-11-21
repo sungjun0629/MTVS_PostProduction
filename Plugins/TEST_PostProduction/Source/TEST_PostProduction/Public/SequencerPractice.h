@@ -7,6 +7,8 @@
 #include "WebBrowser/Public/SWebBrowserView.h"
 #include "MemoDataTable.h"
 #include "MemoTableEditor.h"
+#include "Templates/SharedPointer.h"
+#include "SoundConverterLogic.h"
 
 #define LOCTEXT_NAMESPACE "DataTableEditorPractice"
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
@@ -53,8 +55,12 @@ public:
 	TSharedPtr<SWidget> DataTableTabWidget;
 
 	FOnSequencerNameChanged sequnencerNameChanged;
+	
+	class USoundConverterLogic* destructorTest = NewObject<USoundConverterLogic>();
 
-	TSharedPtr<FMemoTableEditor> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//TSharedPtr<FMemoTableEditor> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//TSharedPtr<FMemoTableEditor, ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//FMemoTableEditor* MemoTableEditorInstance = new FMemoTableEditor();
 	//class FMemoTableEditor* MemoTableEditorInstance = nullptr;
 
 public:

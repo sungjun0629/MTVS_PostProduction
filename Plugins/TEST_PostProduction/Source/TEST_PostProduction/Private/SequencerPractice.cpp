@@ -21,17 +21,19 @@
 #include "Widgets/Text/STextBlock.h"
 #include "SMemoTableListViewRow.h"
 #include "MemoTableEditor.h"
-#include "Chaos/Map.h"
+
+
+
+
 
 SSequencePractice::~SSequencePractice()
 {
-	
 }
 
 void SSequencePractice::Construct(const FArguments& InArgs)
 {
-	/*GetSequenceAsset();
-
+	//GetSequenceAsset();
+	/*
 	contentTitle = SNew(STextBlock)
 		.Text(FText::FromString("Sequencer"));
 
@@ -81,7 +83,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	//	memoItems.Add(MakeShareable(new FMemoDataTable(*TableRow)));
 	//}
 
-	//contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
+	contentTitle = SNew(STextBlock).Text(FText::FromString("Sequencer"));
 
 	//ColumnNamesHeaderRow = SNew(SHeaderRow);
 	//SetHeaderRow();
@@ -91,56 +93,56 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 				SNew(SVerticalBox)
 
 
-				//+ SVerticalBox::Slot()
-				//.AutoHeight()
-				//[
-				//	SNew(SHorizontalBox)
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(SHorizontalBox)
 
-				//		+ SHorizontalBox::Slot()
-				//		[
-				//			SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
-				//				.OptionsSource(&Options)
-				//				.Content()
-				//				[
-				//					contentTitle.ToSharedRef()
-				//				]
-				//				.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
-				//				{
+						+ SHorizontalBox::Slot()
+						[
+							SAssignNew(ComboBoxWidget , SComboBox<TSharedPtr<FString>>)
+								.OptionsSource(&Options)
+								.Content()
+								[
+									contentTitle.ToSharedRef()
+								]
+								.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
+								{
 
-				//								return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
-				//				})
-				//				.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
-				//				{// 중요, ListView refresh Logic
-				//								if ( Item.IsValid() )
-				//								{
-				//									SelectedItem = *Item.Get();
-				//									// Handle the selection here.
-				//									UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
+												return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
+								})
+								.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
+								{// 중요, ListView refresh Logic
+												if ( Item.IsValid() )
+												{
+													SelectedItem = *Item.Get();
+													// Handle the selection here.
+													UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
 
-				//									contentTitle->SetText(FText::FromString(SelectedItem));
-				//									ChangeContent(SelectedItem);
+													contentTitle->SetText(FText::FromString(SelectedItem));
+													ChangeContent(SelectedItem);
 
-				//									sequnencerNameChanged.Broadcast(SelectedItem);
-				//								}
-				//				})
-				//		]
+													sequnencerNameChanged.Broadcast(SelectedItem);
+												}
+								})
+						]
 
-				//		+ SHorizontalBox::Slot()
-				//		.AutoWidth()
-				//		[
-				//			SNew(SButton)
-				//				.Text(FText::FromString("Detail"))
-				//				.OnClicked(this , &SSequencePractice::OnDetailClicked)
-				//		]
+						+ SHorizontalBox::Slot()
+						.AutoWidth()
+						[
+							SNew(SButton)
+								.Text(FText::FromString("Detail"))
+								.OnClicked(this , &SSequencePractice::OnDetailClicked)
+						]
 
-				//		+ SHorizontalBox::Slot()
-				//		.AutoWidth()
-				//		[
-				//			SNew(SButton)
-				//				.Text(FText::FromString("Write"))
-				//				.OnClicked(this , &SSequencePractice::OnWriteClicked)
-				//		]
-				//]
+						+ SHorizontalBox::Slot()
+						.AutoWidth()
+						[
+							SNew(SButton)
+								.Text(FText::FromString("Write"))
+								.OnClicked(this , &SSequencePractice::OnWriteClicked)
+						]
+				]
 
 				//+ SVerticalBox::Slot()
 				//.AutoHeight()
@@ -195,27 +197,23 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 				//								]
 				//						];
 
-				//					//return SNew(SMemoTableListViewRow, OwnerTable)
-				//					//	//.DataTableEditor(SharedThis(this))
-				//					//	.RowDataPtr(Item)
-				//					//	.IsEditable(true);
 				//		})
 				//]
 
-+SVerticalBox::Slot()
-.AutoHeight()
-.HAlign(HAlign_Right)
-[
-	SNew(SButton)
-		.Text(FText::FromString("Export"))
-		.OnClicked(this , &SSequencePractice::RowChange)
-]
 
-+ SVerticalBox::Slot()
-[
-	DataTableTabWidget.ToSharedRef()
-]
-				
+				+ SVerticalBox::Slot()
+				[
+					DataTableTabWidget.ToSharedRef()
+				]
+
+				+SVerticalBox::Slot()
+				.AutoHeight()
+				.HAlign(HAlign_Right)
+				[
+					SNew(SButton)
+						.Text(FText::FromString("Export"))
+						.OnClicked(this , &SSequencePractice::RowChange)
+				]
 			];
 			
 
@@ -326,11 +324,12 @@ FReply SSequencePractice::RowChange()
 	/*DataTableTabWidget = MemoTableEditorInstance->CreateContentBox();
 	DataTableTabWidget->Invalidate(EInvalidateWidgetReason::LayoutAndVolatility);*/
 
-	const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();;
-	MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
 
+
+	const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();
+	//MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
+	destructorTest->MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
 	UE_LOG(LogTemp,Warning,TEXT("RowChange"))
-
 
 	return FReply::Handled();
 

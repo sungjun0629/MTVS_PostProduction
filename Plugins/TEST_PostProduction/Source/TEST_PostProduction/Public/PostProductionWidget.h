@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Widgets/SCompoundWidget.h"
+#include "MemoTableEditor.h"
 
 
 class SPostProductionWidget : public SCompoundWidget
@@ -23,4 +24,6 @@ public:
 	FReply OnKakaoLoginClicked();
 
 	FReply OnGitHubLoginClicked();
+
+	//TSharedPtr<FMemoTableEditor> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
 };
