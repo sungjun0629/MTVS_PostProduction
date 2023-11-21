@@ -10,8 +10,8 @@
 #include "Templates/SharedPointer.h"
 #include "SoundConverterLogic.h"
 
-#define LOCTEXT_NAMESPACE "DataTableEditorPractice"
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
+//#define LOCTEXT_NAMESPACE "DataTableEditorPractice"
+//DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
 
 /**
  *
@@ -54,7 +54,7 @@ public:
 	/** UI for the "Data Table" tab */
 	TSharedPtr<SWidget> DataTableTabWidget;
 
-	FOnSequencerNameChanged sequnencerNameChanged;
+	//FOnSequencerNameChanged sequnencerNameChanged;
 	
 	class USoundConverterLogic* destructorTest = NewObject<USoundConverterLogic>();
 

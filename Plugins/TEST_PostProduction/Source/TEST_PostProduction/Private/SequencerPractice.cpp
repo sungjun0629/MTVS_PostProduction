@@ -122,7 +122,7 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 													contentTitle->SetText(FText::FromString(SelectedItem));
 													ChangeContent(SelectedItem);
 
-													sequnencerNameChanged.Broadcast(SelectedItem);
+													//sequnencerNameChanged.Broadcast(SelectedItem);
 												}
 								})
 						]

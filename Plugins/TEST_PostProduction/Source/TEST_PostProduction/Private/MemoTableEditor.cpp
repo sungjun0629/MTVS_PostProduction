@@ -23,10 +23,11 @@
 #include "Modules/ModuleManager.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Framework/Docking/TabManager.h"
+#include "IPConfig.h"
 
 FMemoTableEditor::FMemoTableEditor()
 {
-
+	
 }
 
 FMemoTableEditor::~FMemoTableEditor()
@@ -171,7 +172,7 @@ void FMemoTableEditor::SetHighlightedRow(FName Name)
 TSharedRef<SDockTab> FMemoTableEditor::SpawnTab_DataTable(const FSpawnTabArgs& Args)
 {
 	//check(Args.GetTabId().TabType == DataTableTabId);
-
+	//IPConfig::MemoTableEditor = SharedThis(this);
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* Table = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
@@ -263,9 +264,10 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 						UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
 
 						contentTitle->SetText(FText::FromString(SelectedItem));
+						//IPConfig::SequenceName = SelectedItem;
 						//ChangeContent(SelectedItem);
-
-						sequnencerNameChanged.Broadcast(SelectedItem);
+						IPConfig::changeSequenceName(SelectedItem);
+						//sequnencerNameChanged.Broadcast(SelectedItem);
 					}
 						})
 				]

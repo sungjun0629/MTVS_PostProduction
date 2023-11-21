@@ -11,7 +11,7 @@
 void SWriteContent::Construct(const FArguments& InArgs)
 {
 	//TSharedPtr<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
-	//IPConfig::sequencerMemo->sequnencerNameChanged.AddRaw(this, &SWriteContent::ReloadSequenceName);
+	IPConfig::sequnencerNameChanged.AddRaw(this, &SWriteContent::ReloadSequenceName);
 	
 
 
@@ -113,7 +113,7 @@ void SWriteContent::ReloadSequenceName(FString SequenceName)
 {
 	UE_LOG(LogTemp,Warning, TEXT("Sequencer Name Changed Delegate Execute"))	
 	comboBoxContent->SetText(FText::FromString(IPConfig::SequenceName));
-	sequenceName = IPConfig::SequenceName;
+	//sequenceName = IPConfig::SequenceName;
 }
 
 FReply SWriteContent::OnSubmitClicked()
@@ -136,6 +136,10 @@ FReply SWriteContent::OnSubmitClicked()
 	{
 		// DataTable loaded successfully. You can now use the LoadedDataTable object.
 		LoadedDataTable->AddRow(FName(UUID) , MemoDataTable);
+		/*if ( IPConfig::MemoTableEditor != nullptr )
+		{
+			IPConfig::MemoTableEditor->CellsListView->RequestListRefresh();
+		}*/
 	}
 	else
 	{

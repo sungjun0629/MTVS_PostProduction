@@ -12,7 +12,7 @@
 #include "Widgets/Views/SHeaderRow.h"
 
 DECLARE_DELEGATE_OneParam(FOnRowHighlighted , FName /*Row name*/);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString)
+//DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString);
 
 
 /**
@@ -167,7 +167,7 @@ public:
 
 	TSharedPtr<STextBlock> contentTitle;
 
-	FOnSequencerNameChanged sequnencerNameChanged;
+	//FOnSequencerNameChanged sequnencerNameChanged;
 
 	FReply OnDetailClicked();
 

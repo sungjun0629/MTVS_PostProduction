@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SequencerPractice.h"
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString);
 /**
  * 
  */
@@ -22,5 +22,9 @@ public:
 
 	inline static FString ImagePath;
 
-	inline static SSequencePractice* sequencerMemo;
+	inline static TSharedPtr<FMemoTableEditor> MemoTableEditor;
+
+	inline static void changeSequenceName(FString sequenceName);
+
+	inline static FOnSequencerNameChanged sequnencerNameChanged;
 };
