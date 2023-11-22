@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "SequencerPractice.h"
+#include "MemoTableEditor.h"
 
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString)
+
+class FMemoTableEditor;
 /**
  * 
  */
@@ -24,7 +27,7 @@ public:
 
 	inline static FString ImagePath;
 
-	inline static TSharedPtr<FMemoTableEditor> MemoTableEditor;
+	inline static TSharedPtr<FMemoTableEditor> MemoTableEditor = MakeShared<FMemoTableEditor>();
 
 	inline static void changeSequenceName(FString sequenceName);
 

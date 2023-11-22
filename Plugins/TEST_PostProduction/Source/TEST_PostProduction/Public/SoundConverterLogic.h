@@ -71,5 +71,5 @@ public:
 	TSharedPtr<SGetWebAddress> getWebAddress;
 
 	// 테스트 코드
-	TSharedPtr<FMemoTableEditor , ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//TSharedPtr<FMemoTableEditor , ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
 };

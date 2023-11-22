@@ -328,7 +328,9 @@ FReply SSequencePractice::RowChange()
 
 	const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();
 	//MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
-	destructorTest->MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
+	
+	// UObject
+	IPConfig::MemoTableEditor->CreateAndRegisterDataTableTab(InTabManager);
 	UE_LOG(LogTemp,Warning,TEXT("RowChange"))
 
 	return FReply::Handled();
