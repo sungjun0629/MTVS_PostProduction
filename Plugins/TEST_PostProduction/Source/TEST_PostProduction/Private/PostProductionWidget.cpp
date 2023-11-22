@@ -118,7 +118,7 @@ FReply SPostProductionWidget::OnKakaoLoginClicked()
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 
-	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
 
 	// Close the old tab if it exists
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("PostProduction"));
