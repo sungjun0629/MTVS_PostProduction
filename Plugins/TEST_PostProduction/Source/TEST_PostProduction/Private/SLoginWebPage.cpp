@@ -98,7 +98,7 @@ void SLoginWebPage::ConvertTab()
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Login Tab"));
 	if (OldTab.IsValid())
 	{
-		OldTab->RequestCloseTab();
+		//OldTab->RequestCloseTab();
 	}
 }
 

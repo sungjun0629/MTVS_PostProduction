@@ -198,7 +198,7 @@ FReply SMainMenuWidget::OnUploadFileClicked()
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
-	//Request->SetHeader(TEXT("Authorization"), BearerToken);
+	Request->SetHeader(TEXT("Authorization"), BearerToken);
 	Request->SetContentAsString(RequestBody);
 	//Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
 	Request->ProcessRequest();
@@ -226,13 +226,13 @@ FReply SMainMenuWidget::OnVideoUploadFileClicked()
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj , Writer);
 
-	UE_LOG(LogTemp , Warning , TEXT("Token : %s") , *IPConfig::Token);
+	UE_LOG(LogTemp , Warning , TEXT("OnVideoUploadFileClicked Token : %s") , *IPConfig::Token);
 	FString BearerToken = "Bearer " + IPConfig::Token;
 
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
-	//Request->SetHeader(TEXT("Authorization"), BearerToken);
+	Request->SetHeader(TEXT("Authorization"), BearerToken);
 	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindRaw(this, &SMainMenuWidget::OnGetMMDone);
 	Request->ProcessRequest();

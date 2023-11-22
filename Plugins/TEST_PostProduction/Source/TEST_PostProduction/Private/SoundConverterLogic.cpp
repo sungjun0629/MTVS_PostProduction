@@ -61,14 +61,14 @@ void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset, FString m
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
     FJsonSerializer::Serialize(RequestObj , Writer);
 
-    UE_LOG(LogTemp , Warning , TEXT("Token : %s") , *IPConfig::Token);
-    UE_LOG(LogTemp , Warning , TEXT("Base64 : %s") , *base64Info);
+    UE_LOG(LogTemp , Warning , TEXT("ConvertedSoundDownload Token : %s") , *IPConfig::Token);
+    UE_LOG(LogTemp , Warning , TEXT("ConvertedSoundDownload Base64 : %s") , *base64Info);
     FString BearerToken = "Bearer " + IPConfig::Token;
 
     Request->SetURL(URL);
     Request->SetVerb("POST");
     Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
-    //Request->SetHeader(TEXT("Authorization") , BearerToken);
+    Request->SetHeader(TEXT("Authorization") , BearerToken);
     Request->SetContentAsString(RequestBody);
     Request->OnProcessRequestComplete().BindUObject(this , &USoundConverterLogic::OnDownloadConvertedVoice);
     Request->ProcessRequest();
