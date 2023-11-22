@@ -27,5 +27,7 @@ public:
 
 	void OnURLChanged(const FText& InText);
 
-	void ReloadAndGetURL(FString url);
+	void ReloadAndGetURL(FString url, FString ConvertedName);
+
+	FString convertedName;
 };

@@ -42,7 +42,7 @@ public:
 
 	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
 
-	void DownloadVoice(FString url);
+	void DownloadVoice(FString url, FString ConvertedName);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "SoundConverter")
 	void OnDownloadComplete();

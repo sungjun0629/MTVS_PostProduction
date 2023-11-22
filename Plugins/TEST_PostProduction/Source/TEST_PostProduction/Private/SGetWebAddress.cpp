@@ -46,7 +46,7 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 	}
 	else
 	{
-		soundConverterLogic->DownloadVoice(InText.ToString());
+		soundConverterLogic->DownloadVoice(InText.ToString(), convertedName);
 		if(loginWebBrowser)
 		{
 			//loginWebBrowser->~SWebBrowser();
@@ -54,9 +54,11 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 	}
 }
 
-void SGetWebAddress::ReloadAndGetURL(FString url)
+void SGetWebAddress::ReloadAndGetURL(FString url, FString ConvertedName)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SGetWebAddress::ReloadAndGetURL : %s"), *url);
+
+	convertedName = ConvertedName;
 
 	FString URL = "https://www.google.com";
 	loginWebBrowser = SNew(SWebBrowser)

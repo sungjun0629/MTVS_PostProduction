@@ -93,7 +93,7 @@ void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Req
         FString url = parsedData;
 
         getWebAddress = MakeShared<SGetWebAddress>();
-        getWebAddress->ReloadAndGetURL(url);
+        getWebAddress->ReloadAndGetURL(url, ConvertedFileName);
         
 		/*UE_LOG(LogTemp,Warning,TEXT("url : %s"),*url);
 
@@ -111,13 +111,13 @@ void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Req
     }
 }
 
-void USoundConverterLogic::DownloadVoice(FString url)
+void USoundConverterLogic::DownloadVoice(FString url, FString ConvertedName)
 {
     UE_LOG(LogTemp , Warning , TEXT("url : %s") , *url);
 
-    UE_LOG(LogTemp , Warning , TEXT("Download File Name : %s") , *ConvertedFileName);
+    UE_LOG(LogTemp , Warning , TEXT("Download File Name : %s") , *ConvertedName);
 
-    FText ConvertTextFileName = FText::FromString(ConvertedFileName);
+    FText ConvertTextFileName = FText::FromString(ConvertedName);
 
     SampleName = ConvertTextFileName.ToString();
 
