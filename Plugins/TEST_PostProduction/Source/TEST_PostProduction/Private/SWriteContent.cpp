@@ -112,8 +112,8 @@ void SWriteContent::Construct(const FArguments& InArgs)
 void SWriteContent::ReloadSequenceName(FString SequenceName)
 {
 	UE_LOG(LogTemp,Warning, TEXT("Sequencer Name Changed Delegate Execute"))	
-	comboBoxContent->SetText(FText::FromString(IPConfig::SequenceName));
-	//sequenceName = IPConfig::SequenceName;
+	/*comboBoxContent->SetText(FText::FromString(IPConfig::SequenceName));
+	sequenceName = IPConfig::SequenceName;*/
 }
 
 FReply SWriteContent::OnSubmitClicked()

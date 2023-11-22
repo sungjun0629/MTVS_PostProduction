@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "SequencerPractice.h"
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString);
+
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString)
 /**
  * 
  */

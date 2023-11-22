@@ -35,6 +35,9 @@ public:
 	void ConvertedSoundDownload(FString loadedAsset, FString modelName);
 
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
+	void SyncVoiceName(FString voiceName);
+
+	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
 	void SuccessDownload(EDownloadToStorageResult_Plugin Result);
 
 	void OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
