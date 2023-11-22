@@ -61,6 +61,29 @@ void FTEST_PostProductionModule::ShutdownModule()
 void FTEST_PostProductionModule::PluginButtonClicked()
 {
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
+
+	//FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
+	//IAssetTools& AssetTools = AssetToolsModule.Get();
+
+	//FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	//IAssetRegistry& AssetRegistry = AssetRegistryModule.Get();
+
+	//FString AssetPath = "/Game/Path/To/Your/Blueprint"; // Replace this with your actual path
+
+	//// Use the AssetTools to load the Editor Utility Widget Blueprint
+	//UObject* LoadedAsset = AssetTools.ImportAsset(AssetPath);
+
+	//if ( LoadedAsset )
+	//{
+	//	UEditorUtilityWidget* EditorUtilityWidget = Cast<UEditorUtilityWidget>(LoadedAsset);
+	//	if ( EditorUtilityWidget )
+	//	{
+	//		// Successfully loaded the Editor Utility Widget Blueprint
+	//		// Do something with EditorUtilityWidget
+	//		EditorUtilityWidget->
+	//	}
+	//}
+
 }
 
 void FTEST_PostProductionModule::RegisterMenus()

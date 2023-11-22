@@ -75,6 +75,11 @@ void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset, FString m
 }
 
 
+void USoundConverterLogic::SyncVoiceName(FString voiceName)
+{
+    ConvertedFileName = voiceName;
+}
+
 void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully)
 {
     if ( bConnectedSuccessfully )

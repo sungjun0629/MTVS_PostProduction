@@ -10,3 +10,10 @@ IPConfig::IPConfig()
 IPConfig::~IPConfig()
 {
 }
+
+
+void IPConfig::changeSequenceName(FString sequenceName)
+{
+	SequenceName = sequenceName;
+	sequnencerNameChanged.Broadcast(sequenceName);
+}

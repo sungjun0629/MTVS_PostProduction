@@ -6,11 +6,12 @@
 #include "FileToStorageDownloader_Plugin.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
+#include "MemoTableEditor.h"
 #include "SGetWebAddress.h"
+#include "Templates/SharedPointer.h"
 #include "SoundConverterLogic.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDownloadSuccessBlueprint, FString, savepath);
-
 /**
  * 
  */
@@ -32,6 +33,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
 	void ConvertedSoundDownload(FString loadedAsset, FString modelName);
+
+	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
+	void SyncVoiceName(FString voiceName);
 
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
 	void SuccessDownload(EDownloadToStorageResult_Plugin Result);
@@ -65,4 +69,7 @@ public:
 	TArray<TSharedPtr<FString>> Options;
 
 	TSharedPtr<SGetWebAddress> getWebAddress;
+
+	// 테스트 코드
+	//TSharedPtr<FMemoTableEditor , ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
 };

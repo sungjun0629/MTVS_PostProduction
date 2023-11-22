@@ -6,9 +6,12 @@
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "WebBrowser/Public/SWebBrowserView.h"
 #include "MemoDataTable.h"
+#include "MemoTableEditor.h"
+#include "Templates/SharedPointer.h"
+#include "SoundConverterLogic.h"
 
-#define LOCTEXT_NAMESPACE "DataTableEditorPractice"
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
+//#define LOCTEXT_NAMESPACE "DataTableEditorPractice"
+//DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged, FString)
 
 /**
  *
@@ -21,6 +24,8 @@ class SSequencePractice : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+
+	~SSequencePractice();
 
 	FString title;
 	FString sequenceName;
@@ -46,7 +51,17 @@ public:
 	/** Header row containing entries for each column in AvailableColumns */
 	TSharedPtr<SHeaderRow> ColumnNamesHeaderRow;
 
-	FOnSequencerNameChanged sequnencerNameChanged;
+	/** UI for the "Data Table" tab */
+	TSharedPtr<SWidget> DataTableTabWidget;
+
+	//FOnSequencerNameChanged sequnencerNameChanged;
+	
+	class USoundConverterLogic* destructorTest = NewObject<USoundConverterLogic>();
+
+	//TSharedPtr<FMemoTableEditor> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//TSharedPtr<FMemoTableEditor, ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+	//FMemoTableEditor* MemoTableEditorInstance = new FMemoTableEditor();
+	//class FMemoTableEditor* MemoTableEditorInstance = nullptr;
 
 public:
 	/** Constructs this widget with InArgs */
@@ -59,6 +74,8 @@ public:
 	void OnMousebuttonDoubleClick(TSharedPtr<FMemoDataTable> Item);
 
 	void SetHeaderRow();
+
+	FReply RowChange();
 
 	FReply OnSubmitClicked();
 
