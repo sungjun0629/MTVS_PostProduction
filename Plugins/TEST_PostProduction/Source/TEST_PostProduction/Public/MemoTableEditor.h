@@ -156,7 +156,7 @@ public:
 	 /** Currently selected sorting mode */
 	 EColumnSortMode::Type SortMode;
 
-
+	 FString comboBoxDefaultName = "All Seqeunce";
 
 
 public:

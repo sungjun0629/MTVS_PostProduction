@@ -253,22 +253,26 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 						.OnGenerateWidget_Lambda([] (TSharedPtr<FString> Item)
 						{
 
-					return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
+							return SNew(STextBlock).Text(FText::FromString(*Item.Get()));
 						})
 						.OnSelectionChanged_Lambda([ = ] (TSharedPtr<FString> Item , ESelectInfo::Type SelectType)
 						{// 중요, ListView refresh Logic
-					if ( Item.IsValid() )
-					{
-						FString SelectedItem = *Item.Get();
-						// Handle the selection here.
-						UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
+							if ( Item.IsValid() )
+							{
+								FString SelectedItem = *Item.Get();
+								// Handle the selection here.
+								UE_LOG(LogTemp , Warning , TEXT("Selected Item: %s") , *SelectedItem);
 
-						contentTitle->SetText(FText::FromString(SelectedItem));
-						//IPConfig::SequenceName = SelectedItem;
-						//ChangeContent(SelectedItem);
-						IPConfig::changeSequenceName(SelectedItem);
-						//sequnencerNameChanged.Broadcast(SelectedItem);
-					}
+
+								ActiveFilterText = (SelectedItem==comboBoxDefaultName) ? FText::GetEmpty() : FText::FromString(SelectedItem);
+
+								contentTitle->SetText(FText::FromString(SelectedItem));
+								//IPConfig::SequenceName = SelectedItem;
+								//ChangeContent(SelectedItem);
+								IPConfig::changeSequenceName(SelectedItem);
+								UpdateVisibleRows();
+								//sequnencerNameChanged.Broadcast(SelectedItem);
+							}
 						})
 				]
 
@@ -720,6 +724,7 @@ void FMemoTableEditor::GetSequenceAsset()
 	//AssetRegistry.GetAssetsByClass(ULevelSequence::StaticClass()->GetFName(), AssetList);
 	AssetRegistry.GetAssetsByPath(FName("/Game/Sungjun/Sequence/") , AssetList);
 
+	Options.Add(MakeShareable(new FString(comboBoxDefaultName)));
 	for ( const FAssetData& Asset : AssetList )
 	{
 		// Use the asset as needed
