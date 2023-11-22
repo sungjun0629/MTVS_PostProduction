@@ -59,6 +59,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString OriginalFilePath;
 
+	FString SampleName = "Audio_Test";
+
 	class UEUW_SpeechBlock* speechBlock;
 
 	FSlateBrush MySlateBrush;

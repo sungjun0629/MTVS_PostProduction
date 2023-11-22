@@ -18,6 +18,7 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "LevelSequence/Public/LevelSequence.h"
 #include "EUW_SpeechBlock.h"
+#include "Kismet/KismetStringLibrary.h"
 
 
 USoundConverterLogic::USoundConverterLogic()
@@ -78,6 +79,7 @@ void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset, FString m
 void USoundConverterLogic::SyncVoiceName(FString voiceName)
 {
     ConvertedFileName = voiceName;
+
 }
 
 void USoundConverterLogic::OnDownloadConvertedVoice(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully)
@@ -113,10 +115,16 @@ void USoundConverterLogic::DownloadVoice(FString url)
 {
     UE_LOG(LogTemp , Warning , TEXT("url : %s") , *url);
 
+    UE_LOG(LogTemp , Warning , TEXT("Download File Name : %s") , *ConvertedFileName);
+
+    FText ConvertTextFileName = FText::FromString(ConvertedFileName);
+
+    SampleName = ConvertTextFileName.ToString();
+
     SavePath = "C:\\VoiceRecord\\";
     /*const FDateTime Now = FDateTime::Now();
     const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));;*/
-    SavePath.Append(ConvertedFileName);
+    SavePath.Append(SampleName);
     SavePath.Append(TEXT("_ConvertedVoice.wav"));
 
     UFileToStorageDownloader_Plugin* StorageDownload;
@@ -125,6 +133,8 @@ void USoundConverterLogic::DownloadVoice(FString url)
 
     FAudioDevice* AudioDevice = GEngine->GetMainAudioDevice().GetAudioDevice();
     AudioDevice->Flush(nullptr);
+
+    UE_LOG(LogTemp , Warning , TEXT("Final Path : %s") , *SavePath);
 }
 
 void USoundConverterLogic::SuccessDownload(EDownloadToStorageResult_Plugin Result)
