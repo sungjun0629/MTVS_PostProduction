@@ -11,6 +11,11 @@
 #include "IPConfig.h"
 #include "MemoDetailTable.h"
 
+SSequencerDetail::~SSequencerDetail()
+{
+	IPConfig::sequnencerNameChanged.Clear();	
+}
+
 void SSequencerDetail::Construct(const FArguments& InArgs)
 {
 	FString sequenceName = IPConfig::SequenceName;

@@ -14,6 +14,7 @@ static class SWriteContent : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+	~SWriteContent();
 	FString title;
 	FString sequenceName;
 	FString content;

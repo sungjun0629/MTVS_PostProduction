@@ -7,6 +7,12 @@
 #include "Templates/SharedPointer.h"
 #include "SoundConverterLogic.h"
 #include "IPConfig.h"
+#include "Misc/FileHelper.h"
+
+SWriteContent::~SWriteContent()
+{
+	IPConfig::sequnencerNameChanged.Clear();
+}
 
 void SWriteContent::Construct(const FArguments& InArgs)
 {
@@ -136,10 +142,16 @@ FReply SWriteContent::OnSubmitClicked()
 	{
 		// DataTable loaded successfully. You can now use the LoadedDataTable object.
 		LoadedDataTable->AddRow(FName(UUID) , MemoDataTable);
-		/*if ( IPConfig::MemoTableEditor != nullptr )
-		{
-			IPConfig::MemoTableEditor->CellsListView->RequestListRefresh();
-		}*/
+
+	/*	const TSharedRef< TJsonWriter<FString , TPrettyJsonPrintPolicy<FString> >> JsonWriter;
+		UDataTable* ReLoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+		ReLoadedDataTable->WriteTableAsJSON(JsonWriter);
+
+
+		bool bsaveCompleted = FFileHelper::SaveStringToFile(ReLoadedDataTable->GetTableAsString(), *DataTablePath);
+		UE_LOG(LogTemp,Warning,TEXT("save %s"), bsaveCompleted)*/
+		if(IPConfig::MemoTableEditor)	IPConfig::MemoTableEditor->RefreshCachedDataTable();
+
 	}
 	else
 	{

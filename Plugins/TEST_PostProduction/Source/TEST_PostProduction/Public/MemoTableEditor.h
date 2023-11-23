@@ -53,9 +53,13 @@ public:
 	FText GetCellText(TSharedPtr<FMemoDataTable> InRowDataPointer , int32 ColumnIndex) const;
 
 	FText GetFilterText() const;
+	FSlateColor GetRowTextColor(FName RowName) const;
 
 	void OnFilterTextChanged(const FText& InFilterText);
 	void OnFilterTextCommitted(const FText& NewText , ETextCommit::Type CommitInfo);
+
+	/** Get the data table being edited */
+	const UDataTable* GetDataTable() const;
 
 	/** Struct holding information about the current column widths */
 	struct FColumnWidth
@@ -72,6 +76,8 @@ public:
 		float CurrentWidth;
 	};
 
+
+	UDataTable* selectedDataTable;
 
 	void SetHighlightedRow(FName Name);
 

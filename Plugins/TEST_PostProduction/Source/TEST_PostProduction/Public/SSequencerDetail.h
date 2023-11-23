@@ -15,6 +15,7 @@ class SSequencerDetail : public SCompoundWidget
 	SLATE_END_ARGS()
 
 public:
+	~SSequencerDetail();
 	TSharedPtr<SImage> image;
 	TSharedPtr<STextBlock> title;
 	TSharedPtr<STextBlock> participants;
