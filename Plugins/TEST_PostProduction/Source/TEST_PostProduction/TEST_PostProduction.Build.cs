@@ -57,6 +57,7 @@ public class TEST_PostProduction : ModuleRules
 				"Slate",
 				"SlateCore",
 				"UMG",
+				"UMGEditor",
                 "DataTableEditor",
                 "ApplicationCore",
                 "PropertyEditor",

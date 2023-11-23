@@ -17,6 +17,8 @@
 #include "SImageConverter.h"
 #include "SWriteContent.h"
 #include "Framework/Docking/TabManager.h"
+#include "Blutility/Classes/EditorUtilityWidgetBlueprint.h"
+#include "Blutility/Public/EditorUtilitySubsystem.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -39,7 +41,6 @@ void FTEST_PostProductionModule::StartupModule()
 		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FTEST_PostProductionModule::RegisterMenus));
-
 	
 	RegisterCustomEditorTab();
 }
@@ -62,27 +63,15 @@ void FTEST_PostProductionModule::PluginButtonClicked()
 {
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
 
-	//FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
-	//IAssetTools& AssetTools = AssetToolsModule.Get();
+	//// Find Editor Utility Widget in content Browser
+	FString widgetPath = "/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/DKW/EditorUI/EUW_MainPanel.EUW_MainPanel'";
+	LoadedEditorWidget = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr, *widgetPath);
 
-	//FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
-	//IAssetRegistry& AssetRegistry = AssetRegistryModule.Get();
-
-	//FString AssetPath = "/Game/Path/To/Your/Blueprint"; // Replace this with your actual path
-
-	//// Use the AssetTools to load the Editor Utility Widget Blueprint
-	//UObject* LoadedAsset = AssetTools.ImportAsset(AssetPath);
-
-	//if ( LoadedAsset )
-	//{
-	//	UEditorUtilityWidget* EditorUtilityWidget = Cast<UEditorUtilityWidget>(LoadedAsset);
-	//	if ( EditorUtilityWidget )
-	//	{
-	//		// Successfully loaded the Editor Utility Widget Blueprint
-	//		// Do something with EditorUtilityWidget
-	//		EditorUtilityWidget->
-	//	}
-	//}
+	UEditorUtilitySubsystem* utilSubsys = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();
+	if ( utilSubsys != nullptr && LoadedEditorWidget)
+	{
+		utilSubsys->SpawnAndRegisterTab(LoadedEditorWidget);
+	}
 
 }
 
@@ -152,9 +141,11 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnPostProductionTab(const 
 {
 	// NomadTab : can be dragged out
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
-	[
-		SNew(SPostProductionWidget)
-	]; 
+		[
+			//LoadedEditorWidget->MainPanelWidget->CreateUtilityWidget()
+			SNew(SPostProductionWidget)
+		];
+
 }
 
 TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMainMenuTab(const FSpawnTabArgs& spawnArgs)

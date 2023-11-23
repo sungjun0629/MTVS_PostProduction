@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
+#include "Blutility/Classes/EditorUtilityWidgetBlueprint.h"
 
 class FToolBarBuilder;
 class FMenuBuilder;
@@ -50,7 +51,7 @@ private:
 
 	TSharedRef<SDockTab> OnSpawnImageTab(const FSpawnTabArgs& spawnArgs);
 
-
+	class UEditorUtilityWidgetBlueprint* LoadedEditorWidget;
 
 #pragma endregion 
 

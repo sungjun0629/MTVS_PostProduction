@@ -10,6 +10,7 @@
 #include "TimerManager.h"
 #include "Containers/Ticker.h"
 #include "Framework/Docking/TabManager.h"
+#include "WebBrowser/Public/SWebBrowser.h"
 
 
 
@@ -20,7 +21,7 @@ void SLoginWebPage::Construct(const FArguments& InArgs)
 	loginWebBrowser = SNew(SWebBrowser)
 		.InitialURL(URL)
 		.ShowAddressBar(true)
-		.OnUrlChanged_Raw(this, &SLoginWebPage::OnURLChanged);
+		.OnUrlChanged(this, &SLoginWebPage::OnURLChanged);
 
 	ChildSlot
 		[
@@ -50,7 +51,7 @@ void SLoginWebPage::OnURLChanged(const FText& InText)
 
 	bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
 
-	if (NeedValueString && DoOnceBool == false)
+	//if (NeedValueString && DoOnceBool == false)
 	{
 		OnGetToken();
 	}
@@ -62,12 +63,16 @@ void SLoginWebPage::OnGetToken()
 {
 
 	auto Callback = [=](const FString& SourceURL) {
-		// Handle the source URL as needed
-		ParsingHtml(SourceURL);
-		UE_LOG(LogTemp, Warning, TEXT("SourceURL : %s"), *SourceURL);
+			// Handle the source URL as needed
+			rawHtml = SourceURL;
+			UE_LOG(LogTemp, Warning, TEXT("SourceURL : %s"), *SourceURL);
+			ParsingHtml(SourceURL);
 		};
 
-	loginWebBrowser->GetSource(Callback);
+	loginWebBrowser.Get()->GetSource(Callback);
+
+
+		UE_LOG(LogTemp, Warning, TEXT("rawHtml : %s"), *rawHtml);
 
 }
 
