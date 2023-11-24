@@ -20,7 +20,7 @@ public:
 	IPConfig();
 	~IPConfig();
 
-	inline static FString StaticVariable = "http://121.165.108.236:4492";
+	inline static FString StaticVariable = "http://postproduction.life";
 
 	inline static FString Token;
 

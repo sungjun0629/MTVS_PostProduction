@@ -24,6 +24,7 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Framework/Docking/TabManager.h"
 #include "IPConfig.h"
+#include "Engine/DataTable.h"
 
 FMemoTableEditor::FMemoTableEditor()
 {
@@ -122,12 +123,57 @@ FText FMemoTableEditor::GetFilterText() const
 	return ActiveFilterText;
 }
 
+
+TMap<FName, bool> FMemoTableEditor::GetSolvedComment(FName RowName) const
+{
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
+	TMap<FName, bool> rtn;
+
+	if(LoadedDataTable )
+	{
+		TArray<FMemoDataTable*> TableRows;
+		LoadedDataTable->GetAllRows<FMemoDataTable>("random" , TableRows);
+
+		for ( int i = 0; i < AvailableRows.Num(); i++ )
+		{
+			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->p_isSolved )
+			{
+				rtn.Add(AvailableRows[ i ]->RowId, true);
+				return rtn;
+			}
+		}
+
+		for ( int i = 0; i < AvailableRows.Num(); i++ )
+		{
+			if ( RowName == AvailableRows[ i ]->RowId && TableRows[ i ]->p_priority <= 1 )
+			{
+				rtn.Add(AvailableRows[ i ]->RowId, false);
+				return rtn;
+			}
+		}
+	}
+
+	rtn.Add("NONE", false);
+	return rtn;
+}
+
 FSlateColor FMemoTableEditor::GetRowTextColor(FName RowName) const
 {
+	const TMap<FName,bool> solvedComment = GetSolvedComment(RowName);
+
 	if ( RowName == HighlightedRowName )
 	{
 		return FSlateColor(FColorList::Orange);
 	}
+
+	if ( !solvedComment.begin().Key().IsNone() && RowName == solvedComment.begin().Key() )
+	{
+		return solvedComment.begin().Value() == true ? FSlateColor(FColorList::DarkBrown) : FSlateColor(FColorList::Red);
+	}
+
+	
 	return FSlateColor::UseForeground();
 }
 
@@ -740,6 +786,7 @@ void FMemoTableEditor::OnColumnNameSortModeChanged(const EColumnSortPriority::Ty
 
 	CellsListView->RequestListRefresh();
 }
+
 
 void FMemoTableEditor::GetSequenceAsset()
 {

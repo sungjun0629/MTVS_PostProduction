@@ -9,6 +9,7 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SEditableText.h"
 #include "SMemoTableListViewRow.h"
+#include "Fonts/SlateFontInfo.h"
 
 SCommentDetail::~SCommentDetail()
 {
@@ -34,7 +35,7 @@ void SCommentDetail::Construct(const FArguments& InArgs)
 		commentItems.Add(MakeShareable(new FMemoCommentTable(*TableRow)));
 	}
 
-	sequenceName = SNew(STextBlock);
+	sequenceName = SNew(STextBlock).Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 12));
 	title = SNew(STextBlock);
 	content = SNew(STextBlock);
 
