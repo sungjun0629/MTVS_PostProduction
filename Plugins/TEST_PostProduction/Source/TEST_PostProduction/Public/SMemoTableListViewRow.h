@@ -12,6 +12,7 @@
 class FMemoTableEditor;
 struct FMemoDataTable;
 
+DECLARE_DELEGATE_OneParam(FOnChangeComment, FString)
 
 
 /**
@@ -43,6 +44,8 @@ public:
 
 	virtual FReply 
 	OnMouseButtonDoubleClick(const FGeometry& InMyGeometry , const FPointerEvent& InMouseEvent);
+
+	FOnChangeComment OnChangeComment; 
 
 private:
 

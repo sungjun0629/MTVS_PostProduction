@@ -45,11 +45,14 @@ private:
 
 	TSharedRef<SDockTab> OnSpawnMemoTab(const FSpawnTabArgs& spawnArgs);
 
+	TSharedRef<SDockTab> OnSpawnMemoCommentDetailTab(const FSpawnTabArgs& spawnArgs);
+
 	TSharedRef<SDockTab> OnSpawnMemoWriteTab(const FSpawnTabArgs& spawnArgs);
 
 	TSharedRef<SDockTab> OnSpawnDetailTab(const FSpawnTabArgs& spawnArgs);
 
 	TSharedRef<SDockTab> OnSpawnImageTab(const FSpawnTabArgs& spawnArgs);
+
 
 	class UEditorUtilityWidgetBlueprint* LoadedEditorWidget;
 

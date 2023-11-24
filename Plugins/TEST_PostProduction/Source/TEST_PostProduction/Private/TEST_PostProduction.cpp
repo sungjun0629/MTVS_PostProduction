@@ -19,6 +19,7 @@
 #include "Framework/Docking/TabManager.h"
 #include "Blutility/Classes/EditorUtilityWidgetBlueprint.h"
 #include "Blutility/Public/EditorUtilitySubsystem.h"
+#include "SCommentDetail.h"
 
 static const FName TEST_PostProductionTabName("TEST_PostProduction");
 
@@ -125,6 +126,8 @@ void FTEST_PostProductionModule::RegisterCustomEditorTab()
 	// Enroll memoTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Memo Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnMemoTab)).SetDisplayName(FText::FromString("Memo Tab"));
 
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("CommentDetail Tab"), FOnSpawnTab::CreateRaw(this, &FTEST_PostProductionModule::OnSpawnMemoCommentDetailTab)).SetDisplayName(FText::FromString("CommentDetail Tab"));
+
 	// Enroll memoTab to GlobalTabmanager
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(FName("Detail Tab") , FOnSpawnTab::CreateRaw(this , &FTEST_PostProductionModule::OnSpawnDetailTab)).SetDisplayName(FText::FromString("Detail Tab"));
 
@@ -189,6 +192,15 @@ TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoTab(const FSpawnTabA
 	return SNew(SDockTab).TabRole(ETabRole::NomadTab)
 		[
 			SNew(SSequencePractice)
+		];
+}
+
+TSharedRef<SDockTab> FTEST_PostProductionModule::OnSpawnMemoCommentDetailTab(const FSpawnTabArgs& spawnArgs)
+{
+	// NomadTab : can be dragged out
+	return SNew(SDockTab).TabRole(ETabRole::PanelTab)
+		[
+			SNew(SCommentDetail)
 		];
 }
 

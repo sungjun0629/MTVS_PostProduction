@@ -4,6 +4,11 @@
 #include "SMemoTableListViewRow.h"
 #include "Widgets/SWidget.h"
 #include "DataTableEditor/Private/DataTableEditor.h"
+#include "Widgets/Text/SInlineEditableTextBlock.h"
+#include "DataTableEditor/Private/SDataTableListViewRow.h"
+#include "Widgets/Views/STableRow.h"
+#include "IPConfig.h"
+#include "Framework/Docking/TabManager.h"
 
 void SMemoTableListViewRow::Construct(const FArguments& InArgs , const TSharedRef<STableViewBase>& InOwnerTableView)
 {
@@ -25,19 +30,18 @@ void SMemoTableListViewRow::Construct(const FArguments& InArgs , const TSharedRe
 
 FReply SMemoTableListViewRow::OnMouseButtonUp(const FGeometry& MyGeometry , const FPointerEvent& MouseEvent)
 {
-
-	return FReply::Handled();
+	return STableRow::OnMouseButtonUp(MyGeometry , MouseEvent);
 }
 
 FReply SMemoTableListViewRow::OnKeyDown(const FGeometry& MyGeometry , const FKeyEvent& InKeyEvent)
 {
-
 	return FReply::Handled();
 }
 
 TSharedRef<SWidget> SMemoTableListViewRow::GenerateWidgetForColumn(const FName& ColumnName)
-{
+{	
 
+	UE_LOG(LogTemp,Warning,TEXT("GenerateWidgetForColumn : %s"), *ColumnName.ToString())
 	TSharedPtr<FMemoTableEditor> DataTableEditorPtr = DataTableEditor.Pin();
 	return ( DataTableEditorPtr.IsValid() )
 		? MakeCellWidget(IndexInList , ColumnName)
@@ -47,7 +51,14 @@ TSharedRef<SWidget> SMemoTableListViewRow::GenerateWidgetForColumn(const FName& 
 
 FReply SMemoTableListViewRow::OnMouseButtonDoubleClick(const FGeometry& InMyGeometry , const FPointerEvent& InMouseEvent)
 {
-	UE_LOG(LogTemp,Warning,TEXT("OnMouseButtonDoubleClick"))
+	IPConfig::MemoContentUUID = DataTableEditor.Pin().Get()->HighlightedRowName.ToString();
+
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("CommentDetail Tab"));
+
+	// 만약 열려있다면, Delegate를 통하여 내용만 바꿔준다. 
+	IPConfig::ListView->OnChangeComment.ExecuteIfBound(IPConfig::MemoContentUUID);
+
+
 	return FReply::Handled();
 }
 
@@ -90,33 +101,17 @@ TSharedRef<SWidget> SMemoTableListViewRow::MakeCellWidget(const int32 InRowIndex
 					.HighlightText(DataTableEdit , &FDataTableEditor::GetFilterText)
 			];
 	}
-
-	const FName RowNameColumnId("RowName");
-
-	if ( InColumnId.IsEqual(RowNameColumnId) )
-	{
-		return SNew(SBox)
-			.Padding(FMargin(4 , 2 , 4 , 2))
-			[
-				SAssignNew(InlineEditableText , SInlineEditableTextBlock)
-					.Text(RowDataPtr->DisplayName)
-					.OnTextCommitted(this , &SDataTableListViewRow::OnRowRenamed)
-					.HighlightText(DataTableEdit , &FDataTableEditor::GetFilterText)
-					.ColorAndOpacity(DataTableEdit , &FDataTableEditor::GetRowTextColor , RowDataPtr->RowId)
-					.IsReadOnly(!IsEditable)
-			];
-	}*/
+	*/
 
 	for ( ; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
 	{
 		const TSharedPtr<FMemoDataTableColumn>& ColumnData = AvailableColumns[ ColumnIndex ];
-		UE_LOG(LogTemp,Warning,TEXT("Column Name : %s"), InColumnId)
 		if ( ColumnData->ColumnId == InColumnId )
 		{
 			break;
 		}
 	}
-
+	
 	// Valid column ID?
 	if ( AvailableColumns.IsValidIndex(ColumnIndex) && RowDataPtr->CellData.IsValidIndex(ColumnIndex) )
 	{
@@ -125,7 +120,7 @@ TSharedRef<SWidget> SMemoTableListViewRow::MakeCellWidget(const int32 InRowIndex
 			[
 				SNew(STextBlock)
 					.TextStyle(FAppStyle::Get() , "DataTableEditor.CellText")
-					//.ColorAndOpacity(DataTableEdit , &FMemoTableEditor::GetRowTextColor , RowDataPtr->RowId)
+					.ColorAndOpacity(DataTableEdit , &FMemoTableEditor::GetRowTextColor , RowDataPtr->RowId)
 					.Text(DataTableEdit , &FMemoTableEditor::GetCellText , RowDataPtr , ColumnIndex)
 					.HighlightText(DataTableEdit , &FMemoTableEditor::GetFilterText)
 					//.ToolTipText(DataTableEdit , &FMemoTableEditor::GetCellToolTipText , RowDataPtr , ColumnIndex)

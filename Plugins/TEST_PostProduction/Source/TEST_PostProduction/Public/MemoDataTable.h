@@ -25,7 +25,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString content;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FString author;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString createdAt;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		int32 p_priority;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool p_isSolved;
+	
 
 public:
 	/** Unique ID used to identify this row */

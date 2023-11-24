@@ -92,7 +92,18 @@ void FMemoTableEditor::PostChange(const UDataTable* Changed , FDataTableEditorUt
 
 void FMemoTableEditor::SelectionChange(const UDataTable* Changed , FName RowName)
 {
+	const UDataTable* Table = selectedDataTable;
 
+	if ( Changed == Table )
+	{
+		const bool bSelectionChanged = HighlightedRowName != RowName;
+		SetHighlightedRow(RowName);
+
+		if ( bSelectionChanged )
+		{
+			CallbackOnRowHighlighted.ExecuteIfBound(HighlightedRowName);
+		}
+	}
 }
 
 FText FMemoTableEditor::GetCellText(TSharedPtr<FMemoDataTable> InRowDataPointer , int32 ColumnIndex) const
@@ -111,6 +122,15 @@ FText FMemoTableEditor::GetFilterText() const
 	return ActiveFilterText;
 }
 
+FSlateColor FMemoTableEditor::GetRowTextColor(FName RowName) const
+{
+	if ( RowName == HighlightedRowName )
+	{
+		return FSlateColor(FColorList::Orange);
+	}
+	return FSlateColor::UseForeground();
+}
+
 void FMemoTableEditor::OnFilterTextChanged(const FText& InFilterText)
 {
 	ActiveFilterText = InFilterText;
@@ -124,6 +144,11 @@ void FMemoTableEditor::OnFilterTextCommitted(const FText& NewText , ETextCommit:
 		SearchBoxWidget->SetText(FText::GetEmpty());
 		OnFilterTextChanged(FText::GetEmpty());
 	}
+}
+
+const UDataTable* FMemoTableEditor::GetDataTable() const
+{
+	return selectedDataTable;
 }
 
 void FMemoTableEditor::SetHighlightedRow(FName Name)
@@ -171,8 +196,6 @@ void FMemoTableEditor::SetHighlightedRow(FName Name)
 
 TSharedRef<SDockTab> FMemoTableEditor::SpawnTab_DataTable(const FSpawnTabArgs& Args)
 {
-	//check(Args.GetTabId().TabType == DataTableTabId);
-	//IPConfig::MemoTableEditor = SharedThis(this);
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* Table = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
@@ -230,7 +253,7 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 		.OnSelectionChanged(this , &FMemoTableEditor::OnRowSelectionChanged)
 		.ExternalScrollbar(VerticalScrollBar)
 		.ConsumeMouseWheel(EConsumeMouseWheel::Always)
-		.SelectionMode(ESelectionMode::Single)
+		//.SelectionMode(ESelectionMode::Single)
 		.AllowOverscroll(EAllowOverscroll::No);
 
 	RefreshCachedDataTable();
@@ -359,7 +382,6 @@ TSharedRef<ITableRow> FMemoTableEditor::MakeRowWidget(TSharedPtr<FMemoDataTable>
 void FMemoTableEditor::OnRowSelectionChanged(TSharedPtr<FMemoDataTable> InNewSelection , ESelectInfo::Type InSelectInfo)
 {
 
-	UE_LOG(LogTemp,Warning,TEXT("OnRowSelectionChanged"))
 	const bool bSelectionChanged = !InNewSelection.IsValid() || InNewSelection->RowId != HighlightedRowName;
 	const FName NewRowName = ( InNewSelection.IsValid() ) ? InNewSelection->RowId : NAME_None;
 
@@ -375,7 +397,7 @@ void FMemoTableEditor::RefreshCachedDataTable(const FName InCachedSelection /*= 
 {
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
 	UDataTable* Table = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
-
+	selectedDataTable = Table;
 	// Table Column과 Row를 가져온다. 
 	if ( Table )
 	{
@@ -448,9 +470,14 @@ void FMemoTableEditor::RefreshCachedDataTable(const FName InCachedSelection /*= 
 	//	.OnSort(this , &FDataTableEditor::OnColumnNameSortModeChanged)*/
 	//);
 
+
+	// Get Column
 	for ( int32 ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
 	{
 		const TSharedPtr<FMemoDataTableColumn>& ColumnData = AvailableColumns[ ColumnIndex ];
+
+		// Passing particular Column 
+		if(AvailableColumns[ColumnIndex]->ColumnId.ToString().Contains("p_")) continue;
 
 		ColumnNamesHeaderRow->AddColumn(
 			SHeaderRow::Column(ColumnData->ColumnId)
