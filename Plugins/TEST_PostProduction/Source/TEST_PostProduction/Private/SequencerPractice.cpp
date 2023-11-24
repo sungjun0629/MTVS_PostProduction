@@ -47,35 +47,9 @@ void SSequencePractice::Construct(const FArguments& InArgs)
 	// 
 	//TArray<FName> RowNames = LoadedDataTable->GetRowNames();
 
-	//DataTableTabWidget = FMemoTableEditor::CreateContentBox();
-	//for(FName RowName : RowNames)
-	//{
-	//	FTableRowBase* RowData = LoadedDataTable->FindRow<FTableRowBase>(RowName , "");
-
-	//	// Create a property handle for the row data
-	//	TSharedPtr<IPropertyHandle> RowHandle = FPropertyEditorModule::GetModule().CreatePropertyHandle(
-	//		RowData->GetClass() ,
-	//		RowName ,
-	//		RowData);
-
-	//	// Create a details view to convert the row data to FDataTableEditorRowListViewDataPtr
-	//	TSharedRef<IDetailsView> DetailsView = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor").CreateDetailView(
-	//		FDetailsViewArgs()
-	//	);
-
-	//	DetailsView->SetObject(RowHandle->GetParentHandle()->GetProperty()->GetOwner());
-
-	//	// Create FDataTableEditorRowListViewDataPtr from the row data
-	//	FDataTableEditorRowListViewDataPtr RowListViewData = MakeShared<FDataTableEditorRowListViewData>();
-	//	RowListViewData->Initialize(RowHandle);
-
-	//} 
-
-	//
-	
 	
 	DataTableTabWidget = SNew(SVerticalBox);
-	//DataTableTabWidget = MemoTableEditorInstance->CreateContentBox();
+
 
 	//for ( FMemoDataTable* TableRow : TableRows )
 	//{

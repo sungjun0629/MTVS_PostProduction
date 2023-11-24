@@ -7,6 +7,8 @@
 #include "Widgets/Text/SInlineEditableTextBlock.h"
 #include "DataTableEditor/Private/SDataTableListViewRow.h"
 #include "Widgets/Views/STableRow.h"
+#include "IPConfig.h"
+#include "Framework/Docking/TabManager.h"
 
 void SMemoTableListViewRow::Construct(const FArguments& InArgs , const TSharedRef<STableViewBase>& InOwnerTableView)
 {
@@ -37,8 +39,9 @@ FReply SMemoTableListViewRow::OnKeyDown(const FGeometry& MyGeometry , const FKey
 }
 
 TSharedRef<SWidget> SMemoTableListViewRow::GenerateWidgetForColumn(const FName& ColumnName)
-{
+{	
 
+	UE_LOG(LogTemp,Warning,TEXT("GenerateWidgetForColumn : %s"), *ColumnName.ToString())
 	TSharedPtr<FMemoTableEditor> DataTableEditorPtr = DataTableEditor.Pin();
 	return ( DataTableEditorPtr.IsValid() )
 		? MakeCellWidget(IndexInList , ColumnName)
@@ -48,7 +51,14 @@ TSharedRef<SWidget> SMemoTableListViewRow::GenerateWidgetForColumn(const FName& 
 
 FReply SMemoTableListViewRow::OnMouseButtonDoubleClick(const FGeometry& InMyGeometry , const FPointerEvent& InMouseEvent)
 {
-	UE_LOG(LogTemp,Warning,TEXT("OnMouseButtonDoubleClick"))
+	IPConfig::MemoContentUUID = DataTableEditor.Pin().Get()->HighlightedRowName.ToString();
+
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("CommentDetail Tab"));
+
+	// 만약 열려있다면, Delegate를 통하여 내용만 바꿔준다. 
+	IPConfig::ListView->OnChangeComment.ExecuteIfBound(IPConfig::MemoContentUUID);
+
+
 	return FReply::Handled();
 }
 

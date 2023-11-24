@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "SequencerPractice.h"
 #include "MemoTableEditor.h"
+#include "SMemoTableListViewRow.h"
 
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString)
@@ -29,7 +30,11 @@ public:
 
 	inline static TSharedPtr<FMemoTableEditor> MemoTableEditor = MakeShared<FMemoTableEditor>();
 
+	inline static TSharedPtr<SMemoTableListViewRow> ListView = MakeShared<SMemoTableListViewRow>();
+
 	inline static void changeSequenceName(FString sequenceName);
 
 	inline static FOnSequencerNameChanged sequnencerNameChanged;
+
+	inline static FString MemoContentUUID;
 };

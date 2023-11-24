@@ -470,9 +470,14 @@ void FMemoTableEditor::RefreshCachedDataTable(const FName InCachedSelection /*= 
 	//	.OnSort(this , &FDataTableEditor::OnColumnNameSortModeChanged)*/
 	//);
 
+
+	// Get Column
 	for ( int32 ColumnIndex = 0; ColumnIndex < AvailableColumns.Num(); ++ColumnIndex )
 	{
 		const TSharedPtr<FMemoDataTableColumn>& ColumnData = AvailableColumns[ ColumnIndex ];
+
+		// Passing particular Column 
+		if(AvailableColumns[ColumnIndex]->ColumnId.ToString().Contains("p_")) continue;
 
 		ColumnNamesHeaderRow->AddColumn(
 			SHeaderRow::Column(ColumnData->ColumnId)
