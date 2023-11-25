@@ -19,6 +19,8 @@ public:
 	
 	/** This function will be bound to Command. */
 	void PluginButtonClicked();
+
+	inline static bool isLoginSuccess = true;
 	
 private:
 

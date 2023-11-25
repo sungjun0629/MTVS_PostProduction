@@ -72,6 +72,12 @@ public:
 
 	TSharedPtr<SGetWebAddress> getWebAddress;
 
-	// 테스트 코드
-	//TSharedPtr<FMemoTableEditor , ESPMode::ThreadSafe> MemoTableEditorInstance = MakeShared<FMemoTableEditor>();
+public:
+	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
+	void SpawnMemoTab();
+
+	UFUNCTION(BlueprintCallable, Category = "SoundConverter")
+	void SpawnSearchTab();
+
+
 };

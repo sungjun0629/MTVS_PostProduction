@@ -77,7 +77,7 @@ private:
 	//void ReadCsvFile();
 
 	UPROPERTY()
-	class AHttpRequestActor* httpReqActor;
+	class UHttpRequestActor* httpReqActor;
 
 	UPROPERTY(EditAnywhere, Category=MySettings)
 	class UDataTable* playerInfoTable;

@@ -3,6 +3,9 @@
 
 #include "JsonParseLibrary_Plugin.h"
 #include "Json.h"
+#include "Serialization/JsonSerializer.h"
+#include "Serialization/JsonReader.h"
+#include "Dom/JsonObject.h"
 
 FString UJsonParseLibrary_Plugin::MakeJson(const TMap<FString, FString> source)
 {
@@ -19,6 +22,7 @@ FString UJsonParseLibrary_Plugin::MakeJson(const TMap<FString, FString> source)
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	return JsonData;
 }
+
 
 FString UJsonParseLibrary_Plugin::JsonParse(const FString& originData)
 {
@@ -42,6 +46,43 @@ FString UJsonParseLibrary_Plugin::JsonParse(const FString& originData)
 
 	return parsedData;
 }
+
+TArray<FProjectUnit> UJsonParseLibrary_Plugin::JsonProjectParse(const FString& originData)
+{
+	TArray<FProjectUnit> parsedProjectData;
+
+
+	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
+	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());;
+
+	if ( FJsonSerializer::Deserialize(reader , result) )
+	{
+		// Json 해독 
+		UE_LOG(LogTemp,Warning,TEXT("Deserialize"));
+		const TArray<TSharedPtr<FJsonValue>>* JsonArray;
+		if ( result->TryGetArrayField(TEXT("readProjectsResponses") , JsonArray) )
+		{
+			UE_LOG(LogTemp,Warning,TEXT("get Array"));
+			for ( const TSharedPtr<FJsonValue>& JsonValue : *JsonArray )
+			{
+				const TSharedPtr<FJsonObject>& ProjectObject = JsonValue->AsObject();
+				UE_LOG(LogTemp,Warning,TEXT("hi"));
+				if ( ProjectObject.IsValid() )
+				{
+					FProjectUnit Project;
+					Project.projectId = ProjectObject->GetIntegerField(TEXT("projectId"));
+					Project.projectName = ProjectObject->GetStringField(TEXT("projectName"));
+					Project.projectUrl = ProjectObject->GetStringField(TEXT("posterUrl"));
+
+					parsedProjectData.Add(Project);
+				}
+			}
+		}
+	}
+
+	return parsedProjectData;
+}
+
 
 TArray<FString> UJsonParseLibrary_Plugin::JsonParse3DImage(const FString& originData)
 {

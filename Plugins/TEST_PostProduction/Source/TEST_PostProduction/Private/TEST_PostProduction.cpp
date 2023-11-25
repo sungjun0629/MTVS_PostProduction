@@ -62,17 +62,22 @@ void FTEST_PostProductionModule::ShutdownModule()
 
 void FTEST_PostProductionModule::PluginButtonClicked()
 {
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
 
 	//// Find Editor Utility Widget in content Browser
-	FString widgetPath = "/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/DKW/EditorUI/EUW_MainPanel.EUW_MainPanel'";
-	LoadedEditorWidget = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr, *widgetPath);
-
-	UEditorUtilitySubsystem* utilSubsys = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();
-	if ( utilSubsys != nullptr && LoadedEditorWidget)
+	if(isLoginSuccess)
 	{
-		utilSubsys->SpawnAndRegisterTab(LoadedEditorWidget);
+		FString widgetPath = "/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/DKW/EditorUI/EUW_MainPanel.EUW_MainPanel'";
+		LoadedEditorWidget = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr , *widgetPath);
+
+		UEditorUtilitySubsystem* utilSubsys = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();
+		if ( utilSubsys != nullptr && LoadedEditorWidget )
+		{
+			utilSubsys->SpawnAndRegisterTab(LoadedEditorWidget);
+		}
 	}
+	else {
+	}
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
 
 }
 

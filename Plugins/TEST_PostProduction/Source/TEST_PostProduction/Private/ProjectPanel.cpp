@@ -26,7 +26,7 @@ void UProjectPanel::NativeConstruct()
 	btn_csvFile->OnClicked.AddDynamic(this , &UProjectPanel::ReadCsvFile);*/
 
 	//httpReqActor = GetWorld()->SpawnActor<AHttpRequestActor>(AHttpRequestActor::StaticClass());
-	httpReqActor = NewObject<AHttpRequestActor>();
+	httpReqActor = NewObject<UHttpRequestActor>();
 
 	if( httpReqActor )UE_LOG(LogTemp , Warning , TEXT("httphttp"));
 	//for ( TActorIterator<AHttpRequestActor> it(GetWorld()); it; ++it )

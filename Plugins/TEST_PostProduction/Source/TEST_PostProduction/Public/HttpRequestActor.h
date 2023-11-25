@@ -6,27 +6,53 @@
 #include "GameFramework/Actor.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
+#include "JsonParseLibrary_Plugin.h"
 #include "HttpRequestActor.generated.h"
 
-UCLASS()
-class TEST_POSTPRODUCTION_API AHttpRequestActor : public AActor
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetAllProjectDelegate);
+
+USTRUCT(BlueprintType)
+struct FWorkerInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+	FString email = TEXT("");
+	FString role = TEXT("");
+
+	FORCEINLINE void SetInfo(FString uID, FString uName) { email = uID ; role = uName; }
+};
+
+
+UCLASS(BlueprintType, Category = "PPHttp")
+class UHttpRequestActor : public UObject
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
-	AHttpRequestActor();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
+	FOnGetAllProjectDelegate OnreciveAllProjectDeletage; 
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FProjectUnit> projectArray;
 
 	void SendRequest(const FString url);
 	void PostRequest(const FString url);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	struct FWorkerInfo workerInfo;
+
+	UFUNCTION(BlueprintCallable)
+	void PostProjectRequest(const FString ProjectName, const FString ProjectDes, TArray<FWorkerInfo> StaffInfo, const FString ImageBase64);
+	UFUNCTION(BlueprintCallable)
+	void GetAllProject();
+	UFUNCTION(BlueprintCallable)
+	void GetParticularProject(int32 number);
+
+	void OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnReciveParticularProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	//void SaveJson(const FString jsonData);
 	//void GetImage(const FString url);
 	//void SaveImage(const UTexture2D* tex);
