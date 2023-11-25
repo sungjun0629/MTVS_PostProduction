@@ -76,8 +76,9 @@ DerivedDataCache/*
 # MetaHuman
 Content/MetaHumans/Common/Face/Face_Archetype.uasset
 Content/MetaHumans/*MetaHumanIdentity/Face/*FaceMesh.uasset
+Content/MetaHumans/*/Face/*FaceMesh.uasset
 Content/MetaHumans/RoundMetaHumanIdentity/BP_RoundMetaHumanIdentity.uasset
-Content/MetaHumans/RoundMetaHumanIdentity/BP_RoundMetaHumanIdentity.uasset
+
 
 # Take Recorder
 Content/Cinematics/Takes/*
