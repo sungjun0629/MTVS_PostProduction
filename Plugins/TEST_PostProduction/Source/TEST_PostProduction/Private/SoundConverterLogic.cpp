@@ -19,6 +19,8 @@
 #include "LevelSequence/Public/LevelSequence.h"
 #include "EUW_SpeechBlock.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Framework/Docking/TabManager.h"
+#include "Templates/SharedPointer.h"
 
 
 USoundConverterLogic::USoundConverterLogic()
@@ -226,4 +228,18 @@ void USoundConverterLogic::GetSequenceAsset()
             Options.Add(MakeShareable(new FString(LevelSequence->GetName())));
         }
     }
+}
+
+void USoundConverterLogic::SpawnMemoTab()
+{
+    const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();
+    //MemoTableEditorInstance->CreateAndRegisterDataTableTab(InTabManager);
+
+    // UObject
+    IPConfig::MemoTableEditor->CreateAndRegisterDataTableTab(InTabManager);
+}   
+
+void USoundConverterLogic::SpawnSearchTab()
+{
+    FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 }
