@@ -47,7 +47,7 @@ public:
 
 	FOnChangeComment OnChangeComment; 
 
-private:
+public:
 
 	TSharedPtr<FName> CurrentName;
 

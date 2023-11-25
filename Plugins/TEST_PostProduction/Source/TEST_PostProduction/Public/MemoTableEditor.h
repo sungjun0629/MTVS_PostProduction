@@ -11,6 +11,8 @@
 #include "DataTableEditorUtils.h"
 #include "Widgets/Views/SHeaderRow.h"
 
+struct FMemoDataTable;
+
 DECLARE_DELEGATE_OneParam(FOnRowHighlighted , FName /*Row name*/);
 //DECLARE_MULTICAST_DELEGATE_OneParam(FOnSequencerNameChanged , FString);
 
@@ -155,6 +157,10 @@ public:
 	 void OnColumnSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode);
 
 	 void OnColumnNameSortModeChanged(const EColumnSortPriority::Type SortPriority , const FName& ColumnId , const EColumnSortMode::Type InSortMode);
+
+	 TMap<FName , bool> GetSolvedComment(FName RowName) const;
+
+	 bool isSolved;
 
 	 /** Specify which column to sort with */
 	 FName SortByColumn;
