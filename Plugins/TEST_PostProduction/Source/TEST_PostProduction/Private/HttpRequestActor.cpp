@@ -16,65 +16,6 @@
 #include "Dom/JsonValue.h"
 
 
-void UHttpRequestActor::SendRequest(const FString url)
-{
-	// 모듈을 생성하고 request 인스턴스를 생성한다.
-	FHttpModule& httpModule = FHttpModule::Get();
-	TSharedPtr<IHttpRequest> req = httpModule.CreateRequest();
-
-	// 요청하기 위한 정보를 설정한다.
-	req->SetURL(url);
-	req->SetVerb(TEXT("GET"));
-	req->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
-
-	// 요청이 완료되었을 때 실행될 함수를 바인딩한다.
-	//req->OnProcessRequestComplete().BindUFunction(this, FName("OnReceivedData"));
-	req->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnReceivedData);
-
-	// 서버에 요청을 보낸다.
-	req->ProcessRequest();
-}
-
-void UHttpRequestActor::OnReceivedData(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
-{
-	UE_LOG(LogTemp , Warning , TEXT("Received Data!"));
-
-	if ( bConnectedSuccessfully )
-	{
-		FString res = Response->GetContentAsString();
-		FString parsedData = UJsonParseLibrary_Plugin::JsonParse(res);
-		//gm->SetLogText(parsedData);
-		UE_LOG(LogTemp , Warning , TEXT("%s"), *parsedData);
-	}
-	else
-	{
-		//gm->SetLogText("Failed Response from server...");
-		UE_LOG(LogTemp , Warning , TEXT("Failed Response from server..."));
-	}
-}
-
-// POST 메소드 요청하기
-void UHttpRequestActor::PostRequest(const FString url)
-{
-	//TMap<FString , FString> studentData;
-	//studentData.Add("Name" , "AAA");
-	//studentData.Add("Age" , "50");
-	//studentData.Add("Height" , "200");
-
-	//FString myJsonData = UJsonParseLibrary::MakeJson(studentData);
-	////gm->SetLogText(myJsonData);
-
-	//// 요청 설정
-	//FHttpModule& httpModule = FHttpModule::Get();
-	//TSharedRef<IHttpRequest> req = httpModule.CreateRequest();
-	//req->SetURL(url);
-	//req->SetVerb(TEXT("POST"));
-	//req->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
-	//req->SetContentAsString(myJsonData);
-	//req->OnProcessRequestComplete().BindUObject(this , &AHttpRequestActor::OnPostData);
-	//req->ProcessRequest();
-}
-
 void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FString ProjectDes , TArray<FWorkerInfo> StaffInfo , const FString ImagePath)
 {
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
@@ -147,6 +88,16 @@ void UHttpRequestActor::GetParticularProject(int32 number)
 }
 
 
+void UHttpRequestActor::GetImageTexture(FString url)
+{
+	/*FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+
+	Request->SetURL(url);
+	Request->SetHeader(TEXT("Content-Type") , TEXT("image/jpg"));
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetImageTexture);
+	Request->ProcessRequest();*/
+}
+
 void UHttpRequestActor::OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
 {
 	if ( bConnectedSuccessfully )
@@ -181,45 +132,22 @@ void UHttpRequestActor::OnReciveParticularProject(FHttpRequestPtr Request , FHtt
 	}
 }
 
-// POST 요청 함수
-void UHttpRequestActor::OnPostData(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully)
+void UHttpRequestActor::OnGetImageTexture(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
 {
-	//if ( bConnectedSuccessfully )
-	//{
-	//	FString receivedData = Response->GetContentAsString();
+	if ( bConnectedSuccessfully )
+	{
+		TArray<uint8> texBites = Response->GetContent();
 
-	//	// 받은 데이터를 화면에 출력한다.
-	//	gm->SetLogText(receivedData);
+		realTex = FImageUtils::ImportBufferAsTexture2D(texBites);
+		
+		OnGetImageTextureDelegate.Broadcast();
+	}
+	else
+	{
 
-	//	// 받은 데이터를 파일로 저장한다.
-	//	SaveJson(receivedData);
-	//}
-	//else
-	//{
-	//	// 요청 전송 상태 확인
-	//	EHttpRequestStatus::Type status = Request->GetStatus();
-	//	switch ( status )
-	//	{
-	//	case EHttpRequestStatus::NotStarted:
-	//		break;
-	//	case EHttpRequestStatus::Processing:
-	//		break;
-	//	case EHttpRequestStatus::Failed:
-	//		break;
-	//	case EHttpRequestStatus::Failed_ConnectionError:
-	//		break;
-	//	case EHttpRequestStatus::Succeeded:
-	//		break;
-	//	default:
-	//		break;
-	//	}
-
-	//	// 응답 코드 확인
-	//	int32 responseCode = Response->GetResponseCode();
-	//	gm->SetLogText(FString::Printf(TEXT("Response Code: %d") , responseCode));
-
-	//}
+	}
 }
+
 
 
 

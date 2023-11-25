@@ -12,8 +12,11 @@ struct FProjectUnit
 	GENERATED_USTRUCT_BODY()
 
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 projectId = 9999;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString projectName = TEXT("untitled");
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString projectUrl = TEXT("untitled");
 
 };

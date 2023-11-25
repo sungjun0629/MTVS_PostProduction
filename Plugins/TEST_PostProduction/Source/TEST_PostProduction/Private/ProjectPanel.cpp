@@ -52,7 +52,6 @@ void UProjectPanel::SendRequest()
 
 	if(httpReqActor!= nullptr)
 	{	
-		httpReqActor->SendRequest(projectAllUrl);
 		UE_LOG(LogTemp , Warning , TEXT("Send Request!"));
 		UE_LOG(LogTemp , Warning , TEXT("%s") , *projectAllUrl);
 	}
@@ -64,7 +63,6 @@ void UProjectPanel::PostRequest()
 	{*/
 		FString myName = TEXT("Park%20Won%20Seok");
 		FString fullPath = baseURL2 + "/post" + "?username=" + myName;
-		httpReqActor->PostRequest(fullPath);
 	/*}*/
 }
 

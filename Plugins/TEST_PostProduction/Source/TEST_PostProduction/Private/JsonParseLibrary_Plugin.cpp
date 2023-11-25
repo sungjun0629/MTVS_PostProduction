@@ -71,6 +71,11 @@ TArray<FProjectUnit> UJsonParseLibrary_Plugin::JsonProjectParse(const FString& o
 					Project.projectName = ProjectObject->GetStringField(TEXT("projectName"));
 					Project.projectUrl = ProjectObject->GetStringField(TEXT("posterUrl"));
 
+					// 이미지의 경우 UTexture2D로 변환해주어야 한다. 
+					// url을 통해 get을 요청하고
+					// -> Utexture2D로 변환을 해준다.  
+
+
 					parsedProjectData.Add(Project);
 				}
 			}
