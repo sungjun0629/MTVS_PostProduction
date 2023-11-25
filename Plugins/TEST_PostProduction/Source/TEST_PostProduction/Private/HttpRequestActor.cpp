@@ -155,9 +155,6 @@ void UHttpRequestActor::OnReciveAllProject(FHttpRequestPtr Request , FHttpRespon
 		FString response = Response->GetContentAsString();
 		TArray<FProjectUnit> allProjectParsedData = UJsonParseLibrary_Plugin::JsonProjectParse(response);
 
-		UE_LOG(LogTemp,Warning,TEXT("%s"), *response);
-		UE_LOG(LogTemp,Warning,TEXT("%d"), allProjectParsedData.Num());
-
 		// 프로젝트은 배열 형태로 Object를 갖는다.
 		// 리턴을 해서 블루프린트에서 처리를 해준다. 
 		projectArray = allProjectParsedData;
