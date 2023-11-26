@@ -76,8 +76,8 @@ void FTEST_PostProductionModule::PluginButtonClicked()
 		}
 	}
 	else {
+		FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
 	}
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("PostProduction"));
 
 }
 

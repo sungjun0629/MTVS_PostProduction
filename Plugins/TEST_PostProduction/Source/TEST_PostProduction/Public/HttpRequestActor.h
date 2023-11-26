@@ -22,7 +22,9 @@ struct FWorkerInfo
 	GENERATED_USTRUCT_BODY()
 
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString email = TEXT("");
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString role = TEXT("");
 
 	FORCEINLINE void SetInfo(FString uID, FString uName) { email = uID ; role = uName; }
@@ -56,7 +58,7 @@ public:
 	struct FWorkerInfo workerInfo;
 
 	UFUNCTION(BlueprintCallable)
-	void PostProjectRequest(const FString ProjectName, const FString ProjectDes, TArray<FWorkerInfo> StaffInfo, const FString ImageBase64);
+	void PostProjectRequest(const FString ProjectName, const FString scriptPath , const FString ProjectDes, TArray<FWorkerInfo> StaffInfo, const FString ImagePath);
 	UFUNCTION(BlueprintCallable)
 	void GetAllProject();
 	UFUNCTION(BlueprintCallable)
@@ -68,7 +70,12 @@ public:
 	void OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnReciveParticularProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnGetImageTexture(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnPostProjectInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 
 
-
+public:
+	UFUNCTION(BlueprintCallable)	
+	FString OnImportButtonClicked();
+	UFUNCTION(BlueprintCallable)	
+	UTexture2D* Base64ToImage(FString Base64);
 };
