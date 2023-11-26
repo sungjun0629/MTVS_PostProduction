@@ -69,7 +69,7 @@ TArray<FProjectUnit> UJsonParseLibrary_Plugin::JsonProjectParse(const FString& o
 					FProjectUnit Project;
 					Project.projectId = ProjectObject->GetIntegerField(TEXT("projectId"));
 					Project.projectName = ProjectObject->GetStringField(TEXT("projectName"));
-					Project.projectUrl = ProjectObject->GetStringField(TEXT("posterUrl"));
+					Project.projectBase64 = ProjectObject->GetStringField(TEXT("posterUrl"));
 
 					// 이미지의 경우 UTexture2D로 변환해주어야 한다. 
 					// url을 통해 get을 요청하고
@@ -118,7 +118,7 @@ FProjectInfo UJsonParseLibrary_Plugin::JsonPraticularProjectParse(const FString&
 
 					parsedAvartarInfo.avartarID = AvatarId;
 					parsedAvartarInfo.avartarName = AvatarName;
-					parsedAvartarInfo.avartarImage = AvatarImage;
+					parsedAvartarInfo.avartarBase64 = AvatarImage;
 
 					parsedProjectInfo.avartarInfo.Add(parsedAvartarInfo);
 				}
@@ -143,7 +143,7 @@ FProjectInfo UJsonParseLibrary_Plugin::JsonPraticularProjectParse(const FString&
 					( *AvatarInfoObject )->TryGetStringField("staffRole" , staffRole);
 
 					parsedStaffInfo.staffName = staffName;
-					parsedStaffInfo.staffImage = staffImage;
+					parsedStaffInfo.staffBase64 = staffImage;
 					parsedStaffInfo.staffRole = staffRole;
 
 					parsedProjectInfo.staffInfo.Add(parsedStaffInfo);

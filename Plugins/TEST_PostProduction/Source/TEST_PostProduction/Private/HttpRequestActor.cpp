@@ -18,9 +18,14 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Texture2D.h"
 #include "SoundConverterLogic.h"
+#include "DesktopPlatform/Public/DesktopPlatformModule.h"
+#include "IImageWrapper.h"
+#include "IImageWrapperModule.h"
+#include "Modules/ModuleManager.h"
+#include "Misc/Base64.h"
 
 
-void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FString ProjectDes , TArray<FWorkerInfo> StaffInfo , const FString ImagePath)
+void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FString scriptPath, const FString ProjectDes , TArray<FWorkerInfo> StaffInfo , const FString ImagePath)
 {
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
 
@@ -36,20 +41,26 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	{
 		TSharedPtr<FJsonObject> StructObject = MakeShared<FJsonObject>();
 		StructObject->SetStringField(TEXT("email") , *StaffInfo[i].email);
-		StructObject->SetStringField(TEXT("staffRole") , *StaffInfo[i].role);
-
-		FString JsonString;
-		TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
-		FJsonSerializer::Serialize(StructObject.ToSharedRef() , Writer);
-
-		TSharedPtr<FJsonValueString> JsonValue = MakeShared<FJsonValueString>(JsonString);
+		StructObject->SetStringField(TEXT("staffRole") , "director");
+		UE_LOG(LogTemp,Warning,TEXT("staffRole : %s"), *StaffInfo[i].role);
+		TSharedPtr<FJsonValueObject> JsonValue = MakeShared<FJsonValueObject>(StructObject);
 		JsonArray.Add(JsonValue);
 	}
+
+	// Create an array for avatarName
+	TArray<TSharedPtr<FJsonValue>> AvatarNamesArray;
+
+	// Add individual strings to the array
+	AvatarNamesArray.Add(MakeShareable(new FJsonValueString(TEXT("for"))));
+	AvatarNamesArray.Add(MakeShareable(new FJsonValueString(TEXT("stream"))));
+
 
 	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
 	RequestObj->SetStringField("projectName" , *ProjectName);
 	RequestObj->SetStringField("description" , *ProjectDes);
 	RequestObj->SetArrayField("staffs", JsonArray);
+	RequestObj->SetArrayField("avatarName", AvatarNamesArray);
+	RequestObj->SetStringField("script", *scriptPath);
 	RequestObj->SetStringField("poster" , *ImageBase64);
 
 
@@ -57,11 +68,11 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj , Writer);
 
-	Request->SetURL("URL");
+	Request->SetURL(URL);
 	Request->SetVerb(TEXT("POST"));
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
 	Request->SetContentAsString(RequestBody);
-	//Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostData);
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostProjectInfo);
 	Request->ProcessRequest();
 }
 
@@ -118,10 +129,12 @@ FSlateBrush UHttpRequestActor::GetImageTexture(int32 projectID)
 				MySlateBrush.SetResourceObject(imageFinder.Object);
 			}*/
 
+			// 테이블을 통한 이미지 관리
 			IPConfig::ImagePath = TableRow->imagePath;
 
 			USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
 			MySlateBrush = (ImageLibrary->MySlateBrush );
+
 
 			return MySlateBrush;
 		}
@@ -184,6 +197,95 @@ void UHttpRequestActor::OnGetImageTexture(FHttpRequestPtr Request , FHttpRespons
 
 
 
+void UHttpRequestActor::OnPostProjectInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
+{
+	if ( bConnectedSuccessfully )
+	{
+
+	}
+	else 
+	{
+
+	}
+}
+
+FString UHttpRequestActor::OnImportButtonClicked()
+{
+	FString path = "";
+
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	if ( DesktopPlatform )
+	{
+		// Set the default path to the project directory
+		FString DefaultPath = FPaths::ProjectDir();
+
+		// Open the folder picker dialog
+		const void* ParentWindowPtr = FSlateApplication::Get().GetActiveTopLevelWindow()->GetNativeWindow()->GetOSWindowHandle();
+		TArray<FString> OutFolderNames;
+
+		bool bOpened = DesktopPlatform->OpenFileDialog(
+			ParentWindowPtr ,
+			TEXT("Select a folder") ,
+			DefaultPath ,
+			TEXT("") ,
+			TEXT("All Files (*.*)|*.*") ,
+			EFileDialogFlags::None ,
+			OutFolderNames
+		);
+
+		// Process the selected folder
+		if ( bOpened && OutFolderNames.Num() > 0 )
+		{
+			FString SelectedDirectory = OutFolderNames[ 0 ];
+			UE_LOG(LogTemp , Display , TEXT("Selected Directory: %s") , *SelectedDirectory);
+			path = SelectedDirectory;
+			// You can perform further actions with the selected directory here.
+		}
+	}
+
+
+	return path;
+}
+
+UTexture2D* UHttpRequestActor::Base64ToImage(FString Base64String)
+{
+	TArray<uint8> ByteArray;
+
+	// Convert FString to UTF-8 encoded string
+	FString UTF8String = Base64String; // Make a copy to ensure the original string isn't modified
+	FTCHARToUTF8 UTF8Converter(*UTF8String); // Use FTCHARToUTF8 to convert FString to UTF-8
+
+	// Check if the conversion succeeded
+	if ( UTF8Converter.Length() > 0 )
+	{
+		const uint8* Data = reinterpret_cast< const uint8* >( UTF8Converter.Get() ); // Get the UTF-8 data
+		ByteArray.Append(Data , UTF8Converter.Length()); // Append the data to the byte array
+	}
+
+
+	UE_LOG(LogTemp,Warning,TEXT("%s"), *Base64String);
+	UTexture2D* Texture = nullptr;
+	FString Base64DecodedString;
+	bool isDecode = FBase64::Decode(*Base64String , ByteArray , EBase64Mode::Standard);
+	if(isDecode)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Decoding"))
+		Texture = FImageUtils::ImportBufferAsTexture2D(ByteArray);
+		Texture->MipGenSettings = TMGS_NoMipmaps;
+		Texture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+		Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+		Texture->SRGB = false;
+		Texture->Filter = TextureFilter::TF_Nearest;
+		Texture->UpdateResource();
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Decoding fail"))
+	}
+
+	return Texture;
+}
+
 #pragma region other
 
 //// Json 파일 저장하기
@@ -226,7 +328,7 @@ void UHttpRequestActor::OnGetImageTexture(FHttpRequestPtr Request , FHttpRespons
 //		FFileHelper::SaveArrayToFile(texBites , *imagePath);
 //		UTexture2D* realTex = FImageUtils::ImportBufferAsTexture2D(texBites);
 //		gm->SetImageTexture(realTex);
-//		gm->SetLogText("Get Image Successfully!");
+//		gm->SetLogText("Successfully!");
 //	}
 //	else
 //	{

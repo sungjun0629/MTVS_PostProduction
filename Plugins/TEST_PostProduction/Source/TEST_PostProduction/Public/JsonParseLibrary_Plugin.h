@@ -17,7 +17,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString projectName = TEXT("untitled");
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString projectUrl = TEXT("untitled");
+	FString projectBase64 = TEXT("untitled");
 
 };
 
@@ -32,7 +32,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString avartarName = TEXT("untitled");
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString avartarImage = TEXT("untitled");
+	FString avartarBase64 = TEXT("untitled");
 
 };
 
@@ -45,7 +45,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString staffName = "NoName";
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString staffImage = TEXT("untitled");
+	FString staffBase64 = TEXT("untitled");
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString staffRole = TEXT("untitled");
 };
