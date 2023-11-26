@@ -58,21 +58,23 @@ TArray<FProjectUnit> UJsonParseLibrary_Plugin::JsonProjectParse(const FString& o
 	if ( FJsonSerializer::Deserialize(reader , result) )
 	{
 		// Json 해독 
-		UE_LOG(LogTemp,Warning,TEXT("Deserialize"));
 		const TArray<TSharedPtr<FJsonValue>>* JsonArray;
 		if ( result->TryGetArrayField(TEXT("readProjectsResponses") , JsonArray) )
 		{
-			UE_LOG(LogTemp,Warning,TEXT("get Array"));
 			for ( const TSharedPtr<FJsonValue>& JsonValue : *JsonArray )
 			{
 				const TSharedPtr<FJsonObject>& ProjectObject = JsonValue->AsObject();
-				UE_LOG(LogTemp,Warning,TEXT("hi"));
 				if ( ProjectObject.IsValid() )
 				{
 					FProjectUnit Project;
 					Project.projectId = ProjectObject->GetIntegerField(TEXT("projectId"));
 					Project.projectName = ProjectObject->GetStringField(TEXT("projectName"));
 					Project.projectUrl = ProjectObject->GetStringField(TEXT("posterUrl"));
+
+					// 이미지의 경우 UTexture2D로 변환해주어야 한다. 
+					// url을 통해 get을 요청하고
+					// -> Utexture2D로 변환을 해준다.  
+
 
 					parsedProjectData.Add(Project);
 				}

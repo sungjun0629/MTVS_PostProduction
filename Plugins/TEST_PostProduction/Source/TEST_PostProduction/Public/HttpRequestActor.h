@@ -7,10 +7,12 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "JsonParseLibrary_Plugin.h"
+#include "Engine/Texture2D.h"
 #include "HttpRequestActor.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetAllProjectDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetImageTextureDelegate);
 
 USTRUCT(BlueprintType)
 struct FWorkerInfo
@@ -34,12 +36,14 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnGetAllProjectDelegate OnreciveAllProjectDeletage; 
+	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
+	FOnGetImageTextureDelegate OnGetImageTextureDelegate;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* realTex;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FProjectUnit> projectArray;
-
-	void SendRequest(const FString url);
-	void PostRequest(const FString url);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	struct FWorkerInfo workerInfo;
@@ -50,19 +54,14 @@ public:
 	void GetAllProject();
 	UFUNCTION(BlueprintCallable)
 	void GetParticularProject(int32 number);
+	UFUNCTION(BlueprintCallable)
+	void GetImageTexture(FString url);
+
 
 	void OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnReciveParticularProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
-	//void SaveJson(const FString jsonData);
-	//void GetImage(const FString url);
-	//void SaveImage(const UTexture2D* tex);
-	//void PostImage(const FString url , const UTexture2D* tex);
+	void OnGetImageTexture(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 
-private:
-	void OnReceivedData(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
-	void OnPostData(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
-	//void OnGetImageData(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
-	//void OnPostTextureData(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
 
 
 };
