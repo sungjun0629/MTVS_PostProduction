@@ -19,6 +19,7 @@
 #include "Styling/SlateStyleMacros.h"
 #include "Framework/Docking/TabManager.h"
 #include "IPConfig.h"
+#include "SoundConverterLogic.h"
 
 
 void SMainMenuWidget::Construct(const FArguments& InArgs)
@@ -34,6 +35,14 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	title = SNew(STextBlock)
 			.Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 15))
 			.Text(FText::FromString("AI Motion Search"));
+	
+	IPConfig::ImagePath = "/Script/Engine.Texture2D'/Game/Sungjun/mixamo.mixamo'";
+	USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
+	//ImageLibrary->SearchImageFromUE("/Script/Engine.Texture2D'/Game/Sungjun/mixamo.mixamo'");
+
+	const FSlateBrush* MyBrush = &( ImageLibrary->MySlateBrush );
+	contentImage = SNew(SImage)
+		.Image(MyBrush);
 	/*TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("TEST_PostProductionStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("TEST_PostProduction")->GetBaseDir() / TEXT("Resources"));
 	Style->GetBrush("TEST_PostProduction.PluginAction");
@@ -75,10 +84,9 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		SNew(SHorizontalBox)
 		
 		+SHorizontalBox::Slot()
-.Padding(40)
+		.Padding(40)
 		[
-			SNew(SImage) 
-				//.Image(WhiteImageBrush)
+			contentImage.ToSharedRef()
 		]
 
 		+SHorizontalBox::Slot()
@@ -272,6 +280,7 @@ FReply SMainMenuWidget::OnVideoUploadFileClicked()
 
 	return FReply::Handled();
 }
+
 
 void SMainMenuWidget::OnGetMMDone(TSharedPtr<IHttpRequest> Request, TSharedPtr<IHttpResponse> Response, bool bConnectedSuccessfully)
 {
