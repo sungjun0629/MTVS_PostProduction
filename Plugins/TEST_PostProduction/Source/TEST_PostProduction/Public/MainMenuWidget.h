@@ -23,6 +23,9 @@ public:
 	TSharedPtr<STextBlock> dropVideoText;
 
 	TSharedPtr<STextBlock> title;
+
+	TSharedPtr<SImage> contentImage;
+
 	
 	FOnGetResponse OnGetResponse;
 

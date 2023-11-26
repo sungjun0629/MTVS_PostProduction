@@ -26,6 +26,12 @@ void SImageConverter::Construct(const FArguments& InArgs)
 		.Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 15))
 		.Text(FText::FromString("3D Generator"));
 
+	IPConfig::ImagePath = "/Script/Engine.Texture2D'/Game/Sungjun/mask.mask'";
+	USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
+	//ImageLibrary->SearchImageFromUE("/Script/Engine.Texture2D'/Game/Sungjun/mixamo.mixamo'");
+
+	const FSlateBrush* MyBrush = &( ImageLibrary->MySlateBrush );
+
 
 	ChildSlot
 		[
@@ -119,7 +125,7 @@ void SImageConverter::Construct(const FArguments& InArgs)
 			.Padding(40)
 			[
 				SNew(SImage)
-					//.Image(WhiteImageBrush)
+					.Image(MyBrush)
 			]
 		];
 }
