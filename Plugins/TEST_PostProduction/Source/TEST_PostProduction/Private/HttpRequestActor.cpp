@@ -271,12 +271,15 @@ UTexture2D* UHttpRequestActor::Base64ToImage(FString Base64String)
 	{
 		UE_LOG(LogTemp,Warning,TEXT("Decoding"))
 		Texture = FImageUtils::ImportBufferAsTexture2D(ByteArray);
-		Texture->MipGenSettings = TMGS_NoMipmaps;
-		Texture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
-		Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
-		Texture->SRGB = false;
-		Texture->Filter = TextureFilter::TF_Nearest;
-		Texture->UpdateResource();
+		if(Texture!=nullptr)
+		{
+			Texture->MipGenSettings = TMGS_NoMipmaps;
+			Texture->CompressionSettings = TextureCompressionSettings::TC_Default;
+			Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+			Texture->SRGB = false;
+			Texture->Filter = TextureFilter::TF_Nearest;
+			Texture->UpdateResource();
+		}
 	}
 	else
 	{

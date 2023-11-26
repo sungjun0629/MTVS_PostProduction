@@ -24,6 +24,9 @@ public:
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
 
 public:
+
+	TSharedPtr<STextBlock> title;
+
 	void Construct(const FArguments& InArgs);
 
 	FString GetAssetPath() { return AssetPath; }

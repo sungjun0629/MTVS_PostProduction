@@ -97,7 +97,7 @@ FProjectInfo UJsonParseLibrary_Plugin::JsonPraticularProjectParse(const FString&
 	{
 		parsedProjectInfo.projectName = (result->GetStringField("projectName"));
 		parsedProjectInfo.description = (result->GetStringField("description"));
-		parsedProjectInfo.projectName = ( result->GetStringField("poster") );
+		parsedProjectInfo.poster = ( result->GetStringField("poster") );
 
 		const TArray<TSharedPtr<FJsonValue>>* AvatarInfoArray;
 		if(result->TryGetArrayField("avatarInfo" , AvatarInfoArray))
