@@ -18,6 +18,7 @@ public:
 	FString title;
 	FString sequenceName;
 	FString content;
+	int32 priority;
 
 	TArray<TSharedPtr<FString>> Options;
 

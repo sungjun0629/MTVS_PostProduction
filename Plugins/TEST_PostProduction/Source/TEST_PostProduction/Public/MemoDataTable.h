@@ -27,11 +27,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString author;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool isSolved;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString createdAt;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		int32 p_priority;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		bool p_isSolved;
 	
 
 public:
