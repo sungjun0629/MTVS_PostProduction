@@ -31,7 +31,9 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		.Text(FText::FromString("Drop item here!"))
 		.ColorAndOpacity(FLinearColor::White);
 
-
+	title = SNew(STextBlock)
+			.Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 15))
+			.Text(FText::FromString("AI Motion Search"));
 	/*TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("TEST_PostProductionStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("TEST_PostProduction")->GetBaseDir() / TEXT("Resources"));
 	Style->GetBrush("TEST_PostProduction.PluginAction");
@@ -57,34 +59,63 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					]*/
 
 
-		SNew(SBorder)
-			.BorderImage(FCoreStyle::Get().GetBrush("NoBorder"))
-			.ContentScale(FVector2D(1.0f, 0.7f))
-			/*.OnMouseButtonDown_Lambda([]() {
-				UE_LOG(LogTemp, Warning, TEXT("MouseButtonDown"));
-				return FReply::Handled();
-			})
-			.OnMouseButtonUp_Lambda([]() {
-				UE_LOG(LogTemp, Warning, TEXT("MouseButtonUp"));
-				return FReply::Handled();
-			})*/
-			.Padding(0,15)
-			[
+		//SNew(SBorder)
+		//	.BorderImage(FCoreStyle::Get().GetBrush("NoBorder"))
+		//	.ContentScale(FVector2D(1.0f, 0.7f))
+		//	/*.OnMouseButtonDown_Lambda([]() {
+		//		UE_LOG(LogTemp, Warning, TEXT("MouseButtonDown"));
+		//		return FReply::Handled();
+		//	})
+		//	.OnMouseButtonUp_Lambda([]() {
+		//		UE_LOG(LogTemp, Warning, TEXT("MouseButtonUp"));
+		//		return FReply::Handled();
+		//	})*/
+		//	.Padding(0,15)
+		//	[
+		SNew(SHorizontalBox)
+		
+		+SHorizontalBox::Slot()
+.Padding(40)
+		[
+			SNew(SImage) 
+				//.Image(WhiteImageBrush)
+		]
+
+		+SHorizontalBox::Slot()
+		[
 				SNew(SVerticalBox)
 
 					+ SVerticalBox::Slot()
+					.AutoHeight()
+					.VAlign(EVerticalAlignment::VAlign_Center)
+					.HAlign(EHorizontalAlignment::HAlign_Center)
+					.Padding(0 ,30,0,0)
 					[
-						SNew(SDropTarget)
-							.OnAllowDrop_Raw(this , &SMainMenuWidget::OnAllowDrop)
-							.OnDropped(this , &SMainMenuWidget::OnDropVideo)
-							[
-								SNew(SBox)
-									.HAlign(HAlign_Center)
-									.VAlign(VAlign_Center)
-									[
-										dropVideoText.ToSharedRef()
-									]
-							]
+						title.ToSharedRef()
+					]
+
+					+ SVerticalBox::Slot()
+.Padding(30)
+					[
+						SNew(SBorder)
+							.BorderBackgroundColor(FLinearColor::Gray)
+							.Padding(30)
+.VAlign(VAlign_Center)
+.HAlign(HAlign_Center)
+.DesiredSizeScale(FVector2D(0.6, 0.6))
+						[
+							SNew(SDropTarget)
+								.OnAllowDrop_Raw(this , &SMainMenuWidget::OnAllowDrop)
+								.OnDropped(this , &SMainMenuWidget::OnDropVideo)
+								[
+									SNew(SBox)
+										.HAlign(HAlign_Center)
+										.VAlign(VAlign_Center)
+										[
+											dropVideoText.ToSharedRef()
+										]
+								]
+						]
 					]
 
 					+ SVerticalBox::Slot()
@@ -102,8 +133,10 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 							]
 
 					]
-				
-			]
+
+		]
+
+		
 	];
 }
 

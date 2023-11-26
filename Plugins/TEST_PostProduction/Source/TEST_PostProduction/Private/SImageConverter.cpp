@@ -22,74 +22,105 @@ void SImageConverter::Construct(const FArguments& InArgs)
 		.Text(FText::FromString("Drop image here!"))
 		.ColorAndOpacity(FLinearColor::White);
 
+	title = SNew(STextBlock)
+		.Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 15))
+		.Text(FText::FromString("3D Generator"));
+
 
 	ChildSlot
 		[
-			SNew(SBorder)
-				.BorderImage(FCoreStyle::Get().GetBrush("NoBorder"))
-				.ContentScale(FVector2D(1.0f , 0.7f))
-				.Padding(0 , 15)
-				[
-					SNew(SVerticalBox)
-			
-						+ SVerticalBox::Slot()
-						[
-							SNew(SDropTarget)
-								.OnAllowDrop_Raw(this , &SImageConverter::OnAllowDrop)
-								.OnDropped(this , &SImageConverter::OnDropImage)
-								[
-									SNew(SBox)
-										.HAlign(HAlign_Center)
-										.VAlign(VAlign_Center)
-										[
-											dropText.ToSharedRef()
-										]
-								]
-						]
 
-						+ SVerticalBox::Slot()
-						.Padding(0,10,20,0)
-						.AutoHeight()
-						[
-							SNew(SHorizontalBox)
+			SNew(SHorizontalBox)
+
+			+SHorizontalBox::Slot()
+			[
+				SNew(SVerticalBox)
+
+					+ SVerticalBox::Slot()
+					.AutoHeight()
+					.VAlign(EVerticalAlignment::VAlign_Center)
+					.HAlign(EHorizontalAlignment::HAlign_Center)
+					.Padding(0 , 30 , 0 , 0)
+					[
+						title.ToSharedRef()
+					]
+
+
+					+ SVerticalBox::Slot()
+					.Padding(30)
+					[
+						SNew(SBorder)
+							.BorderBackgroundColor(FLinearColor::Gray)
+							.Padding(30)
+							.VAlign(VAlign_Center)
+							.HAlign(HAlign_Center)
+							.DesiredSizeScale(FVector2D(0.6 , 0.6))
+							[
+								SNew(SDropTarget)
+									.OnAllowDrop_Raw(this , &SImageConverter::OnAllowDrop)
+									.OnDropped(this , &SImageConverter::OnDropImage)
+									[
+										SNew(SBox)
+											.HAlign(HAlign_Center)
+											.VAlign(VAlign_Center)
+											[
+												dropText.ToSharedRef()
+											]
+									]
+							]
+					]
+
+
+					+ SVerticalBox::Slot()
+					.Padding(0 , 10 , 20 , 0)
+					.AutoHeight()
+					[
+						SNew(SHorizontalBox)
 
 							+ SHorizontalBox::Slot()
-								.HAlign(HAlign_Right)
+							.HAlign(HAlign_Right)
 							[
 								SNew(STextBlock)
 									.Text(FText::FromString("Description : "))
 							]
 
-							+SHorizontalBox::Slot()
+							+ SHorizontalBox::Slot()
 							[
-									SNew(SEditableText)
-										.Text(FText::FromString("Input"))
-										.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
-										description = InText.ToString();
-											})
+								SNew(SEditableText)
+									.Text(FText::FromString("Input"))
+									.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
+									description = InText.ToString();
+										})
 							]
 
 
-						]
+					]
+
+					+ SVerticalBox::Slot()
+					.Padding(20 , 10)
+					.AutoHeight()
+					.HAlign(HAlign_Right)
+					[
+						SNew(SButton)
+							.VAlign(VAlign_Center)
+							.HAlign(HAlign_Right)
+							.OnClicked(this , &SImageConverter::OnVideoUploadFileClicked)
+							[
+								SNew(STextBlock)
+									.Text(FText::FromString("image Convert"))
+							]
+
+					]
+			]
 
 
-						+ SVerticalBox::Slot()
-						.Padding(20 , 10)
-						.AutoHeight()
-						.HAlign(HAlign_Right)
-						[
-							SNew(SButton)
-								.VAlign(VAlign_Center)
-								.HAlign(HAlign_Right)
-								.OnClicked(this , &SImageConverter::OnVideoUploadFileClicked)
-								[
-									SNew(STextBlock)
-										.Text(FText::FromString("image Convert"))
-								]
 
-						]
-
-				]
+			+ SHorizontalBox::Slot()
+			.Padding(40)
+			[
+				SNew(SImage)
+					//.Image(WhiteImageBrush)
+			]
 		];
 }
 

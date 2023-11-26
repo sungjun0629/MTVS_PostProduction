@@ -22,6 +22,8 @@ public:
 
 	TSharedPtr<STextBlock> dropVideoText;
 
+	TSharedPtr<STextBlock> title;
+	
 	FOnGetResponse OnGetResponse;
 
 	void Construct(const FArguments& InArgs);
