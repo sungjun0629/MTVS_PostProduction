@@ -14,6 +14,10 @@
 #include "IPConfig.h"
 #include "Containers/Array.h"
 #include "Dom/JsonValue.h"
+#include "ProjectTable.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Engine/Texture2D.h"
+#include "SoundConverterLogic.h"
 
 
 void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FString ProjectDes , TArray<FWorkerInfo> StaffInfo , const FString ImagePath)
@@ -88,7 +92,7 @@ void UHttpRequestActor::GetParticularProject(int32 number)
 }
 
 
-void UHttpRequestActor::GetImageTexture(FString url)
+FSlateBrush UHttpRequestActor::GetImageTexture(int32 projectID)
 {
 	/*FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
 
@@ -96,6 +100,34 @@ void UHttpRequestActor::GetImageTexture(FString url)
 	Request->SetHeader(TEXT("Content-Type") , TEXT("image/jpg"));
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetImageTexture);
 	Request->ProcessRequest();*/
+
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/ProjectInfo.ProjectInfo'";
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+	FSlateBrush MySlateBrush;
+
+	TableRows.Empty();
+	LoadedDataTable->GetAllRows<FProjectTable>("random" , TableRows);
+
+	for ( FProjectTable* TableRow : TableRows )
+	{
+		if ( TableRow->projectID == projectID )
+		{
+			/*ConstructorHelpers::FObjectFinder<UTexture2D> imageFinder(*(TableRow->imagePath));
+			if ( imageFinder.Succeeded() )
+			{
+				MySlateBrush.SetResourceObject(imageFinder.Object);
+			}*/
+
+			IPConfig::ImagePath = TableRow->imagePath;
+
+			USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
+			MySlateBrush = (ImageLibrary->MySlateBrush );
+
+			return MySlateBrush;
+		}
+	}
+
+	return MySlateBrush;
 }
 
 void UHttpRequestActor::OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
@@ -113,7 +145,6 @@ void UHttpRequestActor::OnReciveAllProject(FHttpRequestPtr Request , FHttpRespon
 	}
 	else
 	{
-
 	}
 }
 
@@ -123,12 +154,14 @@ void UHttpRequestActor::OnReciveParticularProject(FHttpRequestPtr Request , FHtt
 	{
 		// 파싱을 한다. 
 		FString response = Response->GetContentAsString();
-		TArray<FProjectUnit> allProjectParsedData = UJsonParseLibrary_Plugin::JsonProjectParse(response);
+		FProjectInfo ParticularProjectParsedData = UJsonParseLibrary_Plugin::JsonPraticularProjectParse(response);
 		// 각각의 프로젝트은 Object 형식으로 프로젝트의 정보를 갖고 있다.  
+		projectInfoArray = ParticularProjectParsedData;
+
+		OnGetParticularProjectDelegate.Broadcast(projectInfoArray);
 	}
 	else
 	{
-
 	}
 }
 

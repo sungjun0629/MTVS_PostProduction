@@ -86,6 +86,77 @@ TArray<FProjectUnit> UJsonParseLibrary_Plugin::JsonProjectParse(const FString& o
 }
 
 
+FProjectInfo UJsonParseLibrary_Plugin::JsonPraticularProjectParse(const FString& originData)
+{
+	FProjectInfo parsedProjectInfo;
+
+	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
+	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());;
+
+	if ( FJsonSerializer::Deserialize(reader , result) )
+	{
+		parsedProjectInfo.projectName = (result->GetStringField("projectName"));
+		parsedProjectInfo.description = (result->GetStringField("description"));
+		parsedProjectInfo.projectName = ( result->GetStringField("poster") );
+
+		const TArray<TSharedPtr<FJsonValue>>* AvatarInfoArray;
+		if(result->TryGetArrayField("avatarInfo" , AvatarInfoArray))
+		{
+			for ( const auto& AvatarInfoValue : *AvatarInfoArray ) {
+				
+				FAvartarInfo parsedAvartarInfo;
+				if ( AvatarInfoValue.IsValid() && AvatarInfoValue->Type == EJson::Object ) {
+					const TSharedPtr<FJsonObject>* AvatarInfoObject = &AvatarInfoValue->AsObject();
+
+					int32 AvatarId;
+					FString AvatarName , AvatarImage;
+
+
+					(*AvatarInfoObject )->TryGetNumberField("avatarId" , AvatarId);
+					( *AvatarInfoObject )->TryGetStringField("avatarName" , AvatarName);
+					( *AvatarInfoObject )->TryGetStringField("avatarImage" , AvatarImage);
+
+					parsedAvartarInfo.avartarID = AvatarId;
+					parsedAvartarInfo.avartarName = AvatarName;
+					parsedAvartarInfo.avartarImage = AvatarImage;
+
+					parsedProjectInfo.avartarInfo.Add(parsedAvartarInfo);
+				}
+			}
+		}
+
+		const TArray<TSharedPtr<FJsonValue>>* StaffInfoArray;
+		if ( result->TryGetArrayField("avatarInfo" , StaffInfoArray) )
+		{
+			for ( const auto& AvatarStaffValue : *StaffInfoArray ) {
+				
+				FStaffInfo parsedStaffInfo;
+				if ( AvatarStaffValue.IsValid() && AvatarStaffValue->Type == EJson::Object ) {
+					const TSharedPtr<FJsonObject>* AvatarInfoObject = &AvatarStaffValue->AsObject();
+
+					FString staffName;
+					FString staffImage , staffRole;
+
+
+					( *AvatarInfoObject )->TryGetStringField("staffName" , staffName);
+					( *AvatarInfoObject )->TryGetStringField("staffImage" , staffImage);
+					( *AvatarInfoObject )->TryGetStringField("staffRole" , staffRole);
+
+					parsedStaffInfo.staffName = staffName;
+					parsedStaffInfo.staffImage = staffImage;
+					parsedStaffInfo.staffRole = staffRole;
+
+					parsedProjectInfo.staffInfo.Add(parsedStaffInfo);
+				}
+			}
+		}
+		//parsedProjectInfo.staffInfo = (result->GetArrayField("staffInfo"));
+	}
+
+
+	return parsedProjectInfo;
+}
+
 TArray<FString> UJsonParseLibrary_Plugin::JsonParse3DImage(const FString& originData)
 {
 	TArray<FString> parsedData;

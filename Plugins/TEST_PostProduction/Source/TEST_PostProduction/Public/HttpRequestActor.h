@@ -8,10 +8,12 @@
 #include "Interfaces/IHttpResponse.h"
 #include "JsonParseLibrary_Plugin.h"
 #include "Engine/Texture2D.h"
+#include "ProjectTable.h"
 #include "HttpRequestActor.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetAllProjectDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetParticularProjectDelegate, FProjectInfo, projectInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetImageTextureDelegate);
 
 USTRUCT(BlueprintType)
@@ -38,12 +40,17 @@ public:
 	FOnGetAllProjectDelegate OnreciveAllProjectDeletage; 
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnGetImageTextureDelegate OnGetImageTextureDelegate;
+	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
+	FOnGetParticularProjectDelegate OnGetParticularProjectDelegate;
 
+	TArray<FProjectTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* realTex;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FProjectUnit> projectArray;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FProjectInfo projectInfoArray;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	struct FWorkerInfo workerInfo;
@@ -55,7 +62,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GetParticularProject(int32 number);
 	UFUNCTION(BlueprintCallable)
-	void GetImageTexture(FString url);
+	FSlateBrush GetImageTexture(int32 projectID);
 
 
 	void OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
