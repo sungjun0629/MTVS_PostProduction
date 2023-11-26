@@ -42,7 +42,6 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 		TSharedPtr<FJsonObject> StructObject = MakeShared<FJsonObject>();
 		StructObject->SetStringField(TEXT("email") , *StaffInfo[i].email);
 		StructObject->SetStringField(TEXT("staffRole") , "director");
-		UE_LOG(LogTemp,Warning,TEXT("staffRole : %s"), *StaffInfo[i].role);
 		TSharedPtr<FJsonValueObject> JsonValue = MakeShared<FJsonValueObject>(StructObject);
 		JsonArray.Add(JsonValue);
 	}
@@ -201,7 +200,7 @@ void UHttpRequestActor::OnPostProjectInfo(FHttpRequestPtr Request , FHttpRespons
 {
 	if ( bConnectedSuccessfully )
 	{
-
+		OnSuccessPostDelegate.Broadcast();
 	}
 	else 
 	{
@@ -237,7 +236,6 @@ FString UHttpRequestActor::OnImportButtonClicked()
 		if ( bOpened && OutFolderNames.Num() > 0 )
 		{
 			FString SelectedDirectory = OutFolderNames[ 0 ];
-			UE_LOG(LogTemp , Display , TEXT("Selected Directory: %s") , *SelectedDirectory);
 			path = SelectedDirectory;
 			// You can perform further actions with the selected directory here.
 		}
@@ -263,7 +261,6 @@ UTexture2D* UHttpRequestActor::Base64ToImage(FString Base64String)
 	}
 
 
-	UE_LOG(LogTemp,Warning,TEXT("%s"), *Base64String);
 	UTexture2D* Texture = nullptr;
 	FString Base64DecodedString;
 	bool isDecode = FBase64::Decode(*Base64String , ByteArray , EBase64Mode::Standard);

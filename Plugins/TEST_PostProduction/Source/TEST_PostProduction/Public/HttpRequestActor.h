@@ -15,6 +15,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetAllProjectDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetParticularProjectDelegate, FProjectInfo, projectInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetImageTextureDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPostSuccessDelegate);
 
 USTRUCT(BlueprintType)
 struct FWorkerInfo
@@ -44,6 +45,9 @@ public:
 	FOnGetImageTextureDelegate OnGetImageTextureDelegate;
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnGetParticularProjectDelegate OnGetParticularProjectDelegate;
+	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
+	FOnPostSuccessDelegate OnSuccessPostDelegate;
+
 
 	TArray<FProjectTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 
