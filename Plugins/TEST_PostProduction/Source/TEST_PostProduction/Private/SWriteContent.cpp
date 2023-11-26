@@ -66,7 +66,7 @@ void SWriteContent::Construct(const FArguments& InArgs)
 
 				+ SVerticalBox::Slot()
 				.AutoHeight()
-				.Padding(10,10)
+				.Padding(10,5)
 				[	
 					SNew(SBorder)
 						.BorderBackgroundColor(FLinearColor::Black)
@@ -85,7 +85,27 @@ void SWriteContent::Construct(const FArguments& InArgs)
 				]
 
 				+ SVerticalBox::Slot()
-				.Padding(10,0)
+				.AutoHeight()
+				.Padding(10 ,5)
+				[
+					SNew(SBorder)
+						.BorderBackgroundColor(FLinearColor::Black)
+						.ColorAndOpacity(FLinearColor::Green)
+						[
+							SNew(SEditableText)
+								.HintText(FText::FromString("Priority"))
+								.BackgroundImageSelected(textBlockBG)
+								.OnTextCommitted_Lambda([ = ] (const FText& InText , ETextCommit::Type InCommitType) {
+
+									priority = FCString::Atoi(*InText.ToString());
+								UE_LOG(LogTemp , Warning , TEXT("Title : %s") , *InText.ToString());
+								})
+						]
+
+				]
+
+				+ SVerticalBox::Slot()
+				.Padding(10, 5)
 				[
 					SNew(SBorder)
 						.BorderBackgroundColor(FLinearColor::Black)
@@ -135,8 +155,11 @@ FReply SWriteContent::OnSubmitClicked()
 	FMemoDataTable MemoDataTable;
 	MemoDataTable.title = title;
 	MemoDataTable.content = content;
+	MemoDataTable.p_priority = priority;
 	MemoDataTable.sequenceName = sequenceName;
 	MemoDataTable.createdAt = DateTimeString;
+	MemoDataTable.isSolved = false;
+	
 
 	if ( LoadedDataTable )
 	{

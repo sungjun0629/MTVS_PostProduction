@@ -138,7 +138,7 @@ TMap<FName, bool> FMemoTableEditor::GetSolvedComment(FName RowName) const
 
 		for ( int i = 0; i < AvailableRows.Num(); i++ )
 		{
-			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->p_isSolved )
+			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->isSolved )
 			{
 				rtn.Add(AvailableRows[ i ]->RowId, true);
 				return rtn;
@@ -798,6 +798,7 @@ void FMemoTableEditor::GetSequenceAsset()
 	//AssetRegistry.GetAssetsByClass(ULevelSequence::StaticClass()->GetFName(), AssetList);
 	AssetRegistry.GetAssetsByPath(FName("/Game/Sungjun/Sequence/") , AssetList);
 
+	Options.Empty();
 	Options.Add(MakeShareable(new FString(comboBoxDefaultName)));
 	for ( const FAssetData& Asset : AssetList )
 	{

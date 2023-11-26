@@ -6,6 +6,7 @@
 #include "MemoDataTable.h"
 #include "MemoCommentTable.h"
 #include "SMemoTableListViewRow.h"
+#include "Widgets/Input/SCheckBox.h"
 
 /**
  * 
@@ -22,9 +23,11 @@ public:
 	TSharedPtr<STextBlock> sequenceName;
 	TSharedPtr<STextBlock> title;
 	TSharedPtr<STextBlock> content;
+	TSharedPtr<SCheckBox> isSolvedCheckbox;
 
 	FString comment; 
 	FString contentUUID;
+	bool isSolved;
 
 	TArray<FMemoDataTable*> TableRows;
 	TSharedPtr<SListView<TSharedPtr<FMemoCommentTable>>> commentListView;
@@ -40,5 +43,11 @@ public:
 
 	void ReloadCommentDetail(FString contentUUID);
 
+	void OnCheckBoxClicked(ECheckBoxState state);
+
 	FReply OnSubmitClicked();
+
+	FReply OnDeleteClicked();
+
+
 };

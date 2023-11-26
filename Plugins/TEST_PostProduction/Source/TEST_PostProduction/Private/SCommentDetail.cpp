@@ -10,6 +10,7 @@
 #include "Widgets/Input/SEditableText.h"
 #include "SMemoTableListViewRow.h"
 #include "Fonts/SlateFontInfo.h"
+#include "Widgets/Input/SCheckBox.h"
 
 SCommentDetail::~SCommentDetail()
 {
@@ -35,7 +36,7 @@ void SCommentDetail::Construct(const FArguments& InArgs)
 		commentItems.Add(MakeShareable(new FMemoCommentTable(*TableRow)));
 	}
 
-	sequenceName = SNew(STextBlock).Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 12));
+	sequenceName = SNew(STextBlock).Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 15));
 	title = SNew(STextBlock);
 	content = SNew(STextBlock);
 
@@ -47,6 +48,9 @@ void SCommentDetail::Construct(const FArguments& InArgs)
 		comment = InText.ToString();
 		});
 
+	isSolvedCheckbox = SNew(SCheckBox)
+			.IsChecked(isSolved)
+			.OnCheckStateChanged(this, &SCommentDetail::OnCheckBoxClicked);
 
 	LoadContent(contentUUID);
 
@@ -55,29 +59,88 @@ void SCommentDetail::Construct(const FArguments& InArgs)
 			SNew(SVerticalBox)
 
 			// 시퀀스 이름
+			
 			+SVerticalBox::Slot()
 			.AutoHeight()
-			[
+				.VAlign(EVerticalAlignment::VAlign_Center)
+				.HAlign(EHorizontalAlignment::HAlign_Center)
+				.Padding(0 , 15)
+			[	
 				sequenceName.ToSharedRef()
 			]
 
 			// 의견 제목
-			+ SVerticalBox::Slot()
+
+			+SVerticalBox::Slot()
 			.AutoHeight()
 			[
-				title.ToSharedRef()
+				SNew(SHorizontalBox)
+
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				.Padding(5, 0)
+				[
+					SNew(STextBlock)
+						.Text(FText::FromString("Title :"))
+				]
+
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				.Padding(5, 0)
+				[
+					title.ToSharedRef()
+				]
 			]
 
+
 			// 의견 내용
+
 			+ SVerticalBox::Slot()
 			.AutoHeight()
 			[
-				content.ToSharedRef()
+				SNew(SHorizontalBox)
+
+				+ SHorizontalBox::Slot()
+					.AutoWidth()
+					.Padding(5 , 0, 0, 5)
+				[
+					SNew(STextBlock)
+						.Text(FText::FromString("Content :"))
+				]
+
+				+ SHorizontalBox::Slot()
+					.AutoWidth()
+					.Padding(10 , 0, 0 ,5)
+				[
+					content.ToSharedRef()
+				]
+			]
+
+			+SVerticalBox::Slot()
+			.AutoHeight()	
+			[
+				SNew(SHorizontalBox)
+
+					+ SHorizontalBox::Slot()
+					.AutoWidth()
+					.Padding(5 , 0 , 0 , 5)
+					[
+						SNew(STextBlock)
+							.Text(FText::FromString("Solved :"))
+					]
+
+					+ SHorizontalBox::Slot()
+					.AutoWidth()
+					.Padding(10 , 0 , 0 , 5)
+					[
+						isSolvedCheckbox.ToSharedRef()
+					]
 			]
 
 			// 댓글 불러오기 
 			+ SVerticalBox::Slot()
 			.AutoHeight()
+			.Padding(20,0,0,20)
 			[
 				SAssignNew(commentListView , SListView<TSharedPtr<FMemoCommentTable>>)
 				// DataTable의 Row를 가져온다. 
@@ -117,19 +180,39 @@ void SCommentDetail::Construct(const FArguments& InArgs)
 			// 댓글 작성하기
 			+ SVerticalBox::Slot()
 			.AutoHeight()
+			.Padding(20,0)
 			[
-				commentInputBlank.ToSharedRef()
+				SNew(SBorder)
+				.BorderBackgroundColor(FLinearColor::Black)
+				[
+					commentInputBlank.ToSharedRef()
+				]
+
 			]
 
 			// 댓글 등록 버튼
 				+ SVerticalBox::Slot()
 				.AutoHeight()
+				.Padding(10)
+				.VAlign(VAlign_Center)
+				.HAlign(HAlign_Right)
 				[
 					SNew(SButton)
 						.Text(FText::FromString("submit"))
 						.OnClicked(this , &SCommentDetail::OnSubmitClicked)
 				]
 
+			// 삭제 기능 버튼
+				/*+ SVerticalBox::Slot()
+				.AutoHeight()
+				.Padding(10, 5)
+				.VAlign(VAlign_Center)
+				.HAlign(HAlign_Right)
+				[
+					SNew(SButton)
+						.Text(FText::FromString("delete"))
+						.OnClicked(this , &SCommentDetail::OnDeleteClicked)
+				]*/
 
 
 		];
@@ -146,6 +229,8 @@ void SCommentDetail::LoadContent(FString UUID)
 		sequenceName->SetText(FText::FromString(UUIDrow->sequenceName));
 		title->SetText(FText::FromString(UUIDrow->title));
 		content->SetText(FText::FromString(UUIDrow->content));
+		isSolved = UUIDrow->isSolved;
+		isSolvedCheckbox->SetIsChecked(isSolved);
 	}
 
 }
@@ -170,10 +255,37 @@ void SCommentDetail::ReloadListview()
 
 void SCommentDetail::ReloadCommentDetail(FString ContentUUID)
 {
+	
 	UE_LOG(LogTemp,Warning,TEXT("ReloadCommentDetail"))
 	LoadContent(ContentUUID);
 	ReloadListview();
 	commentListView->RequestListRefresh();
+}
+
+void SCommentDetail::OnCheckBoxClicked(ECheckBoxState state)
+{
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
+	FMemoDataTable* UUIDrow = LoadedDataTable->FindRow<FMemoDataTable>(FName(contentUUID) , "FINDROW");
+
+	if ( state == ECheckBoxState::Checked )
+	{
+		UE_LOG(LogTemp,Warning,TEXT("clicked"));
+		if(UUIDrow) 
+		{
+			UUIDrow->isSolved = true;
+			UE_LOG(LogTemp,Warning,TEXT("true : %d"), UUIDrow->isSolved);
+		}
+	}
+	else if ( state == ECheckBoxState::Unchecked )
+	{
+		if(UUIDrow) 
+		{
+			UUIDrow->isSolved = false;
+			UE_LOG(LogTemp,Warning,TEXT("false : %d"), UUIDrow->isSolved);
+		}
+	}
 }
 
 FReply SCommentDetail::OnSubmitClicked()
@@ -188,7 +300,7 @@ FReply SCommentDetail::OnSubmitClicked()
 	FMemoCommentTable commentTable;
 	commentTable.comment = comment;
 	commentTable.createdAt = DateTimeString;
-	commentTable.author = "untitled";
+	commentTable.author = " : LEE";
 	commentTable.ContentUUID = contentUUID;
 
 	if ( LoadedDataTable )
@@ -198,6 +310,26 @@ FReply SCommentDetail::OnSubmitClicked()
 		ReloadListview();
 		commentInputBlank->SetText(FText::FromString(""));
 		commentListView->RequestListRefresh();
+	}
+
+	return FReply::Handled();
+}
+
+FReply SCommentDetail::OnDeleteClicked()
+{
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
+	if ( LoadedDataTable )
+	{
+		LoadedDataTable->RemoveRow(FName(contentUUID));
+
+
+		TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("CommentDetail Tab"));
+		if ( OldTab.IsValid() )
+		{
+			OldTab->RequestCloseTab();
+		}
 	}
 
 	return FReply::Handled();
