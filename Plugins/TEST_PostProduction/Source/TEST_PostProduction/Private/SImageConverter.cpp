@@ -212,13 +212,15 @@ void SImageConverter::OnGet3DImage(TSharedPtr<IHttpRequest> Request , TSharedPtr
 		extensions.Add("_meshMat.mtl");
 		extensions.Add("_meshObj.obj");
 	
-
-		for ( int32 i = 0 ; i < 3; i++ )
+		if(parsedData.Num()>0 )
 		{
-			FString url = parsedData[i];
-			FString storagePath = SavePath + extensions[i];
+			for ( int32 i = 0; i < 3; i++ )
+			{
+				FString url = parsedData[ i ];
+				FString storagePath = SavePath + extensions[ i ];
 
-			StorageDownload->DownloadFileToStorage(url , storagePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+				StorageDownload->DownloadFileToStorage(url , storagePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+			}
 		}
 	}
 	else

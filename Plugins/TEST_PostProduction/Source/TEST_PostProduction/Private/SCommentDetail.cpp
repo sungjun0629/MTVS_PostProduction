@@ -229,7 +229,7 @@ void SCommentDetail::LoadContent(FString UUID)
 		sequenceName->SetText(FText::FromString(UUIDrow->sequenceName));
 		title->SetText(FText::FromString(UUIDrow->title));
 		content->SetText(FText::FromString(UUIDrow->content));
-		isSolved = UUIDrow->isSolved;
+		isSolved = UUIDrow->p_isSolved;
 		isSolvedCheckbox->SetIsChecked(isSolved);
 	}
 
@@ -274,16 +274,16 @@ void SCommentDetail::OnCheckBoxClicked(ECheckBoxState state)
 		UE_LOG(LogTemp,Warning,TEXT("clicked"));
 		if(UUIDrow) 
 		{
-			UUIDrow->isSolved = true;
-			UE_LOG(LogTemp,Warning,TEXT("true : %d"), UUIDrow->isSolved);
+			UUIDrow->p_isSolved = true;
+			UE_LOG(LogTemp,Warning,TEXT("true : %d"), UUIDrow->p_isSolved);
 		}
 	}
 	else if ( state == ECheckBoxState::Unchecked )
 	{
 		if(UUIDrow) 
 		{
-			UUIDrow->isSolved = false;
-			UE_LOG(LogTemp,Warning,TEXT("false : %d"), UUIDrow->isSolved);
+			UUIDrow->p_isSolved = false;
+			UE_LOG(LogTemp,Warning,TEXT("false : %d"), UUIDrow->p_isSolved);
 		}
 	}
 }
