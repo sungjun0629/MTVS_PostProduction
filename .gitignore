@@ -79,6 +79,9 @@ Content/MetaHumans/*MetaHumanIdentity/Face/*FaceMesh.uasset
 Content/MetaHumans/*/Face/*FaceMesh.uasset
 Content/MetaHumans/RoundMetaHumanIdentity/BP_RoundMetaHumanIdentity.uasset
 
+Content/MetaHumans/LES_metahuman
+
+
 
 # Take Recorder
 Content/Cinematics/Takes/*
