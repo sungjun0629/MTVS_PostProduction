@@ -242,4 +242,5 @@ void USoundConverterLogic::SpawnMemoTab()
 void USoundConverterLogic::SpawnSearchTab()
 {
     FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+    FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
 }

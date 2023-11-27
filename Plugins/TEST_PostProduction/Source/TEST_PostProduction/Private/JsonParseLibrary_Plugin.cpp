@@ -126,7 +126,7 @@ FProjectInfo UJsonParseLibrary_Plugin::JsonPraticularProjectParse(const FString&
 		}
 
 		const TArray<TSharedPtr<FJsonValue>>* StaffInfoArray;
-		if ( result->TryGetArrayField("avatarInfo" , StaffInfoArray) )
+		if ( result->TryGetArrayField("staffInfo" , StaffInfoArray) )
 		{
 			for ( const auto& AvatarStaffValue : *StaffInfoArray ) {
 				
