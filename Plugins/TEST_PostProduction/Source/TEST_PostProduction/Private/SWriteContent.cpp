@@ -158,7 +158,8 @@ FReply SWriteContent::OnSubmitClicked()
 	MemoDataTable.p_priority = priority;
 	MemoDataTable.sequenceName = sequenceName;
 	MemoDataTable.createdAt = DateTimeString;
-	MemoDataTable.isSolved = false;
+	MemoDataTable.author = "Lee";
+	MemoDataTable.p_isSolved = false;
 	
 
 	if ( LoadedDataTable )

@@ -16,15 +16,20 @@ class SSequencerDetail : public SCompoundWidget
 
 public:
 	~SSequencerDetail();
-	TSharedPtr<SImage> image;
-	TSharedPtr<STextBlock> title;
-	TSharedPtr<STextBlock> participants;
-	TSharedPtr<STextBlock> content;
 
-	TSharedPtr<STextBlock> sceneInfo;
+	TSharedPtr<SImage> image;
+	TSharedPtr<SEditableText> title;
+	TSharedPtr<STextBlock> participants;
+	TSharedPtr<STextBlock> buttonText;
+	TSharedPtr<SButton> imageButton;
+	TSharedPtr<SEditableText> content;
+
+	TSharedPtr<SEditableText> sceneInfo;
 	TArray<FMemoDetailTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
 
-
+	FString detailSequenceName;
+	bool isEditable = false;
+	FString imageRePath;
 
 public:
 	void Construct(const FArguments& InArgs);
@@ -34,4 +39,11 @@ public:
 	FString GetImagePath(FString sequenceName);
 
 	void ReloadDetailPage(FString sequenceName);
+
+	void OnTitleCommited(const FText& Intext, ETextCommit::Type type);
+	void OnContentCommited(const FText& Intext, ETextCommit::Type type);
+	void OnInfoCommited(const FText& Intext, ETextCommit::Type type);
+
+	FReply OnModifyButtonClicked();
+	FReply OnimageButtonClicked();
 };

@@ -138,7 +138,7 @@ TMap<FName, bool> FMemoTableEditor::GetSolvedComment(FName RowName) const
 
 		for ( int i = 0; i < AvailableRows.Num(); i++ )
 		{
-			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->isSolved )
+			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->p_isSolved )
 			{
 				rtn.Add(AvailableRows[ i ]->RowId, true);
 				return rtn;
@@ -170,7 +170,7 @@ FSlateColor FMemoTableEditor::GetRowTextColor(FName RowName) const
 
 	if ( !solvedComment.begin().Key().IsNone() && RowName == solvedComment.begin().Key() )
 	{
-		return solvedComment.begin().Value() == true ? FSlateColor(FColorList::DarkBrown) : FSlateColor(FColorList::Red);
+		return solvedComment.begin().Value() == true ? FSlateColor(FColorList::DarkBrown) : FSlateColor(FColorList::OrangeRed);
 	}
 
 	
