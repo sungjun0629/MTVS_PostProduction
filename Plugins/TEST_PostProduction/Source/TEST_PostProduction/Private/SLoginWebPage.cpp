@@ -11,6 +11,8 @@
 #include "Containers/Ticker.h"
 #include "Framework/Docking/TabManager.h"
 #include "WebBrowser/Public/SWebBrowser.h"
+#include "TEST_PostProduction.h"
+#include "Blutility/Public/EditorUtilitySubsystem.h"
 
 
 
@@ -51,9 +53,10 @@ void SLoginWebPage::OnURLChanged(const FText& InText)
 
 	bool NeedValueString = UKismetStringLibrary::Contains(URLString, NextStepString);
 
-	//if (NeedValueString && DoOnceBool == false)
+	if (NeedValueString && DoOnceBool == false)
 	{
 		OnGetToken();
+		FTEST_PostProductionModule::isLoginSuccess = true;
 	}
 
 }
@@ -95,15 +98,23 @@ void SLoginWebPage::ParsingHtml(FString HtmlString)
 
 void SLoginWebPage::ConvertTab()
 {	
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
+	FString widgetPath = "/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/DKW/EditorUI/EUW_MainPanel.EUW_MainPanel'";
+	LoadedEditorWidget = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr , *widgetPath);
+
+	UEditorUtilitySubsystem* utilSubsys = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();
+	if ( utilSubsys != nullptr && LoadedEditorWidget )
+	{
+		utilSubsys->SpawnAndRegisterTab(LoadedEditorWidget);
+	}
 
 	// Close the old tab if it exists
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Login Tab"));
 	if (OldTab.IsValid())
 	{
-		//OldTab->RequestCloseTab();
+		OldTab->RequestCloseTab();
 	}
 }
 

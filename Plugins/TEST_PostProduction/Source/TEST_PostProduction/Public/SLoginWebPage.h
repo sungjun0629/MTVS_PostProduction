@@ -36,4 +36,6 @@ public:
 	void ConvertTab();
 
 	void SequencerTest();
+
+	class UEditorUtilityWidgetBlueprint* LoadedEditorWidget;
 };

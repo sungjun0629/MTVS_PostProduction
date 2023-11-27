@@ -113,10 +113,10 @@ FReply SPostProductionWidget::OnKakaoLoginClicked()
 	UE_LOG(LogTemp, Warning, TEXT("Kakao Login Clicked"));
 
 	// Open the new editor tab
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Motion Tab"));
 
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
 
@@ -138,8 +138,9 @@ FReply SPostProductionWidget::OnGitHubLoginClicked()
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Sound Tab"));
 	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
-	FGlobalTabmanager::Get()->TryInvokeTab(FName("Memo Tab"));
+	//FGlobalTabmanager::Get()->TryInvokeTab(FName("Memo Tab"));
 
+	FGlobalTabmanager::Get()->TryInvokeTab(FName("Login Tab"));
 	
 	// Open Login Web Browser
 
