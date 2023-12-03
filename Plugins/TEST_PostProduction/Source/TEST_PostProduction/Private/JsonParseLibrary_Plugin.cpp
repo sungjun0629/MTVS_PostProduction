@@ -47,6 +47,25 @@ FString UJsonParseLibrary_Plugin::JsonParse(const FString& originData)
 	return parsedData;
 }
 
+FString UJsonParseLibrary_Plugin::JsonParseToGetURL(const FString& originData)
+{
+	FString parsedData;
+	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
+	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());
+
+	// 해독한다.
+	if ( FJsonSerializer::Deserialize(reader , result) )
+	{
+		parsedData = result->GetStringField("uploadUrl");
+	}
+	else
+	{
+		UE_LOG(LogTemp , Warning , TEXT("Failed to Parsing"));
+	}
+
+	return parsedData;
+}
+
 TArray<FProjectUnit> UJsonParseLibrary_Plugin::JsonProjectParse(const FString& originData)
 {
 	TArray<FProjectUnit> parsedProjectData;

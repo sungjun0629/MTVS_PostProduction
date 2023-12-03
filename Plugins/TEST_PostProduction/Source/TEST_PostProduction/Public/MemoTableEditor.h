@@ -184,4 +184,11 @@ public:
 	FReply OnDetailClicked();
 
 	FReply OnWriteClicked();
+
+	FReply RenewMemoContent();
+
+	TSet<FString> ExtractUUIDs(const FString& FilePath);
+
+	void CompareCSVFiles(const FString& File1Path , const FString& File2Path);
+
 };

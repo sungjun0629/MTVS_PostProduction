@@ -23,7 +23,20 @@
 #include "IImageWrapperModule.h"
 #include "Modules/ModuleManager.h"
 #include "Misc/Base64.h"
+#include "FileToStorageDownloader_Plugin.h"
+#include "Misc/FileHelper.h"
+#include "ImportExportDataTable.h"
 
+
+UHttpRequestActor::UHttpRequestActor()
+{
+	OnFileToStorageDownloadCompleteDelegate.BindDynamic(this , &UHttpRequestActor::SuccessCSVDownload);
+}
+
+UHttpRequestActor::~UHttpRequestActor()
+{
+	OnFileToStorageDownloadCompleteDelegate.Unbind();
+}
 
 void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FString scriptPath, const FString ProjectDes , TArray<FWorkerInfo> StaffInfo , const FString ImagePath)
 {
@@ -142,6 +155,93 @@ FSlateBrush UHttpRequestActor::GetImageTexture(int32 projectID)
 	return MySlateBrush;
 }
 
+void UHttpRequestActor::GetCSVDownload()
+{
+	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+	FString URL = IPConfig::StaticVariable + "/group/memo";
+
+	// GET처리 
+	Request->SetURL(URL);
+	Request->SetVerb("GET");
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetCSVDownloadURL);
+	Request->ProcessRequest();
+}
+
+void UHttpRequestActor::SuccessCSVDownload(EDownloadToStorageResult_Plugin Result)
+{
+	if ( Result == EDownloadToStorageResult_Plugin::Success )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("Success"));
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::SucceededByPayload )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("SucceededByPayload"));
+
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::Cancelled )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("Cancelled"));
+
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::DownloadFailed )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("DownloadFailed"));
+
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::SaveFailed )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("SaveFailed"));
+
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::DirectoryCreationFailed )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("DirectoryCreationFailed"));
+
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::InvalidURL )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("InvalidURL"));
+
+	}
+	else if ( Result == EDownloadToStorageResult_Plugin::InvalidSavePath )
+	{
+		UE_LOG(LogTemp , Warning , TEXT("InvalidSavePath"));
+
+	}
+
+
+	// 다운로드 받은 엑셀과 현재의 엑셀을 비교하고 합치는 작업을 진행한다.
+	// 결과물은 Test3.csv로 도출된다.
+	IPConfig::MemoTableEditor->CompareCSVFiles("D:\\DownTest\\Test.csv" , "D:\\DownTest\\Test2.csv");
+}
+
+void UHttpRequestActor::PostCSVToStorage(FString savePath)
+{
+	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+
+	const FString URL = IPConfig::StaticVariable + "/group/memo/upload";
+
+	UE_LOG(LogTemp,Warning,TEXT("savePath : %s"), *savePath);
+	// For Make imageBase64
+	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
+	FString CSVBase64 = FileUpload->UploadFile(savePath);
+
+
+	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
+	RequestObj->SetStringField("csvFile" , *CSVBase64);
+
+	FString RequestBody;
+	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
+	FJsonSerializer::Serialize(RequestObj , Writer);
+
+	Request->SetURL(URL);
+	Request->SetVerb(TEXT("POST"));
+	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
+	Request->SetContentAsString(RequestBody);
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostCSVFile);
+	Request->ProcessRequest();
+}
+
 void UHttpRequestActor::OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
 {
 	if ( bConnectedSuccessfully )
@@ -203,6 +303,52 @@ void UHttpRequestActor::OnPostProjectInfo(FHttpRequestPtr Request , FHttpRespons
 		OnSuccessPostDelegate.Broadcast();
 	}
 	else 
+	{
+
+	}
+}
+
+void UHttpRequestActor::OnPostCSVFile(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
+{
+	if ( bConnectedSuccessfully )
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Success to Post CSV File"));
+
+		
+
+	}
+	else
+	{
+
+	}
+}
+
+void UHttpRequestActor::OnGetCSVDownloadURL(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
+{
+	if ( bConnectedSuccessfully )
+	{
+		
+		UFileToStorageDownloader_Plugin* StorageDownload;
+		FString SavePath = "D:\\DownTest\\Test2.csv";
+		FString response = Response->GetContentAsString();
+		FString URL = UJsonParseLibrary_Plugin::JsonParseToGetURL(response);
+		if(URL!="")
+		{
+			StorageDownload->DownloadFileToStorage(URL , SavePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+			UE_LOG(LogTemp,Warning,TEXT("Success to Get csv File"));
+		}
+		else
+		{// 만약 다운로드 할 url이 없다면! 즉, 스토리지에 아무것도 없다면 임의로 다운로드 파일을 만들어준다.
+			FString OutputContent;
+			FString OutputPath = "D:\\DownTest\\Test2.csv";
+
+			FFileHelper::SaveStringToFile(OutputContent , *OutputPath);
+
+		 // 그리고 빈 값의 csv 파일과 비교를 실시한다.
+			IPConfig::MemoTableEditor->CompareCSVFiles("D:\\DownTest\\Test.csv" , "D:\\DownTest\\Test2.csv");
+		}
+	}
+	else
 	{
 
 	}

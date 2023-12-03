@@ -38,6 +38,9 @@ class UHttpRequestActor : public UObject
 	GENERATED_BODY()
 	
 public:	
+	UHttpRequestActor();
+	~UHttpRequestActor();
+	
 
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnGetAllProjectDelegate OnreciveAllProjectDeletage; 
@@ -47,6 +50,9 @@ public:
 	FOnGetParticularProjectDelegate OnGetParticularProjectDelegate;
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnPostSuccessDelegate OnSuccessPostDelegate;
+
+	FOnDownloadProgress OnDownloadProgressDelegate;
+	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
 
 
 	TArray<FProjectTable*> TableRows; // Assuming FMyDataTableType is the struct type of your DataTable rows.
@@ -70,11 +76,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FSlateBrush GetImageTexture(int32 projectID);
 
+	void GetCSVDownload();
+	UFUNCTION()
+	void SuccessCSVDownload(EDownloadToStorageResult_Plugin Result);
+	void PostCSVToStorage(FString savePath);
 
 	void OnReciveAllProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnReciveParticularProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnGetImageTexture(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnPostProjectInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnPostCSVFile(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnGetCSVDownloadURL(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 
 
 public:
