@@ -22,7 +22,7 @@ void SLoginWebPage::Construct(const FArguments& InArgs)
 
 	loginWebBrowser = SNew(SWebBrowser)
 		.InitialURL(URL)
-		.ShowAddressBar(true)
+		//.ShowAddressBar(true)
 		.OnUrlChanged(this, &SLoginWebPage::OnURLChanged);
 
 	ChildSlot

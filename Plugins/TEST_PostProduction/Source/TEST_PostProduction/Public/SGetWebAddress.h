@@ -17,6 +17,10 @@ class SGetWebAddress : public SCompoundWidget
 
 public:
 
+	FOnDownloadProgress OnDownloadProgressDelegate;
+
+	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
+
 	class USoundConverterLogic* soundConverterLogic = NewObject<USoundConverterLogic>();
 
 	FString convertedURL;
@@ -28,6 +32,9 @@ public:
 	void OnURLChanged(const FText& InText);
 
 	void ReloadAndGetURL(FString url, FString ConvertedName);
+	void ReloadAndGetAssetDownloadURL(FString url, FString StoragePath);
 
 	FString convertedName;
+	FString storagePath;
+	bool isSound = false;
 };
