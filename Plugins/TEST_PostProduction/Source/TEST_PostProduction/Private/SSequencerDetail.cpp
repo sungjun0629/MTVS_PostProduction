@@ -10,6 +10,8 @@
 #include "SoundConverterLogic.h"
 #include "IPConfig.h"
 #include "MemoDetailTable.h"
+#include "DesktopPlatform/Public/IDesktopPlatform.h"
+#include "DesktopPlatform/Public/DesktopPlatformModule.h"
 
 SSequencerDetail::~SSequencerDetail()
 {
@@ -34,88 +36,110 @@ void SSequencerDetail::Construct(const FArguments& InArgs)
 	image = SNew(SImage)
 			.Image(MyBrush);
 
-	title = SNew(STextBlock);
+	title = SNew(SEditableText).IsEnabled(false).OnTextCommitted(this, &SSequencerDetail::OnTitleCommited);
 	participants = SNew(STextBlock);
-	content = SNew(STextBlock);
+	content = SNew(SEditableText).IsEnabled(false).OnTextCommitted(this , &SSequencerDetail::OnContentCommited);
 
-	sceneInfo = SNew(STextBlock);
-
+	sceneInfo = SNew(SEditableText).IsEnabled(false).OnTextCommitted(this , &SSequencerDetail::OnInfoCommited);
 	ReloadContent(sequenceName);
 
+	buttonText =SNew(STextBlock).Text(FText::FromString("modify"));
 
 
 	ChildSlot
 		[
-			SNew(SVerticalBox)
+			SNew(SHorizontalBox)
 
-			+ SVerticalBox::Slot()
-				.Padding(25)
+
+			// 스토리보드 사진
+			+SHorizontalBox::Slot()
+			.Padding(30)
 			[
-				SNew(SHorizontalBox)
-
-				// 스토리보드 사진
-				+ SHorizontalBox::Slot()
+				SAssignNew(imageButton, SButton)
+				.OnClicked(this,&SSequencerDetail::OnimageButtonClicked)
+				.IsEnabled(false)
 				[
 					image.ToSharedRef()
-
 				]
 
-				// 작업기간 및 담당자 
-				+ SHorizontalBox::Slot()
-					.Padding(20)
-					[
-					SNew(SVerticalBox)
+			]
+
+
+			+ SHorizontalBox::Slot()
+				.Padding(10)
+			[
+				SNew(SVerticalBox)
+
 
 					+ SVerticalBox::Slot()
+					.AutoHeight()
+					.Padding(5)
 					[
 						SNew(STextBlock)
 						.Text(FText::FromString("Title"))
 					]
 
 					+ SVerticalBox::Slot()
+					.Padding(5)
 					[
-						title.ToSharedRef()
+						SNew(SBorder)
+.						BorderBackgroundColor(FLinearColor::Black)
+						[
+							title.ToSharedRef()
+							
+						]
 					]
 
 					+ SVerticalBox::Slot()
-						[
-							SNew(STextBlock)
-								.Text(FText::FromString("Content"))
-						]
-
-						+ SVerticalBox::Slot()
-						[
-							content.ToSharedRef()
-						]
-				]
-			]
-
-			+SVerticalBox::Slot()
-			.Padding(25,10,0,30)
-			[
-				SNew(SVerticalBox)
-
-				+ SVerticalBox::Slot()
+					.AutoHeight()
+					.Padding(5)
 					[
-					SNew(STextBlock)
-					.Text(FText::FromString("Sequencer Info"))
-				]
-				
-				+SVerticalBox::Slot()
-					.Padding(0,5,0,0)
-				[
-						sceneInfo.ToSharedRef()
-				]
-			]
+						SNew(STextBlock)
+							.Text(FText::FromString("Content"))
+					]
 
-			+SVerticalBox::Slot()
-				.Padding(25 , 10)
-				.HAlign(HAlign_Right)
-				.AutoHeight()
-				[
-										SNew(SButton)
-					.Text(FText::FromString("modify"))
-				]
+					+ SVerticalBox::Slot()
+					.Padding(5)
+					[
+						SNew(SBorder)
+							.BorderBackgroundColor(FLinearColor::Black)
+							[
+								content.ToSharedRef()
+
+							]
+					]
+
+					+ SVerticalBox::Slot()
+					.AutoHeight()
+					.Padding(5)
+					[
+						SNew(STextBlock)
+							.Text(FText::FromString("Sequencer Info"))
+							
+					]
+				
+					+ SVerticalBox::Slot()
+					.Padding(5)
+					[
+						SNew(SBorder)
+							.BorderBackgroundColor(FLinearColor::Black)
+							[
+								sceneInfo.ToSharedRef()
+							]
+					]
+
+					+ SVerticalBox::Slot()
+					.Padding(25 , 10)
+					.HAlign(HAlign_Right)
+					.AutoHeight()
+					[
+						SNew(SButton)
+							.OnClicked(this , &SSequencerDetail::OnModifyButtonClicked)
+							[
+								buttonText.ToSharedRef()
+							]
+					]
+			]
 		];
 }
 
@@ -145,6 +169,8 @@ FString SSequencerDetail::GetImagePath(FString sequenceName)
 	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/Detail_Info.Detail_Info'";
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
 
+	detailSequenceName = sequenceName;
+
 	TableRows.Empty();
 	LoadedDataTable->GetAllRows<FMemoDetailTable>("random" , TableRows);
 
@@ -152,6 +178,7 @@ FString SSequencerDetail::GetImagePath(FString sequenceName)
 	{
 		if ( TableRow->sequenceTitle == sequenceName )
 		{
+			imageRePath = TableRow->imagePath;
 			return TableRow->imagePath;
 		}
 	}
@@ -168,4 +195,100 @@ void SSequencerDetail::ReloadDetailPage(FString sequenceName)
 	USoundConverterLogic* ImageLibrary = NewObject<USoundConverterLogic>();
 	const FSlateBrush* MyBrush = &(ImageLibrary->MySlateBrush);
 	image->SetImage(MyBrush);
+}
+
+void SSequencerDetail::OnTitleCommited(const FText& Intext , ETextCommit::Type type)
+{
+	title->SetText(Intext);
+}
+
+void SSequencerDetail::OnContentCommited(const FText& Intext , ETextCommit::Type type)
+{
+	content->SetText(Intext);
+}
+
+void SSequencerDetail::OnInfoCommited(const FText& Intext , ETextCommit::Type type)
+{
+	sceneInfo->SetText(Intext);
+}
+
+FReply SSequencerDetail::OnModifyButtonClicked()
+{
+	if(!isEditable )
+	{
+		isEditable = true;
+		title->SetEnabled(true);
+		content->SetEnabled(true);
+		sceneInfo->SetEnabled(true);
+		imageButton->SetEnabled(true);
+		buttonText->SetText(FText::FromString("submit"));
+	}
+	else {
+
+		FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/Detail_Info.Detail_Info'";
+		UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
+		if(LoadedDataTable )
+		{
+			LoadedDataTable->GetAllRows<FMemoDetailTable>("random" , TableRows);
+
+			for ( FMemoDetailTable* TableRow : TableRows )
+			{
+				if ( TableRow->sequenceTitle == detailSequenceName )
+				{
+					TableRow->sequenceTitle = title->GetText().ToString();
+					TableRow->content = content->GetText().ToString();
+					TableRow->sequencerInfo = sceneInfo->GetText().ToString();
+					TableRow->imagePath = imageRePath;
+				}
+			}
+
+			ReloadDetailPage(detailSequenceName);
+		}
+
+		isEditable = false;
+		title->SetEnabled(false);
+		content->SetEnabled(false);
+		sceneInfo->SetEnabled(false);
+		imageButton->SetEnabled(false);
+		buttonText->SetText(FText::FromString("modify"));
+
+	}
+
+	return FReply::Handled();
+}
+
+FReply SSequencerDetail::OnimageButtonClicked()
+{
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	if ( DesktopPlatform )
+	{
+		// Set the default path to the project directory
+		FString DefaultPath = FPaths::ProjectDir();
+
+		// Open the folder picker dialog
+		const void* ParentWindowPtr = FSlateApplication::Get().GetActiveTopLevelWindow()->GetNativeWindow()->GetOSWindowHandle();
+		TArray<FString> OutFolderNames;
+
+		bool bOpened = DesktopPlatform->OpenFileDialog(
+			ParentWindowPtr ,
+			TEXT("Select a folder") ,
+			DefaultPath ,
+			TEXT("") ,
+			TEXT("All Files (*.*)|*.*") ,
+			EFileDialogFlags::None ,
+			OutFolderNames
+		);
+
+		// Process the selected folder
+		if ( bOpened && OutFolderNames.Num() > 0 )
+		{
+			FString SelectedDirectory = OutFolderNames[ 0 ];
+			imageRePath = SelectedDirectory;
+			// You can perform further actions with the selected directory here.
+		}
+	}
+
+
+	return FReply::Handled();
 }

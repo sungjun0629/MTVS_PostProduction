@@ -25,6 +25,9 @@
 #include "Framework/Docking/TabManager.h"
 #include "IPConfig.h"
 #include "Engine/DataTable.h"
+#include "ImportExportDataTable.h"
+#include "Misc/FileHelper.h"
+#include "HttpRequestActor.h"
 
 FMemoTableEditor::FMemoTableEditor()
 {
@@ -138,7 +141,7 @@ TMap<FName, bool> FMemoTableEditor::GetSolvedComment(FName RowName) const
 
 		for ( int i = 0; i < AvailableRows.Num(); i++ )
 		{
-			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->isSolved )
+			if ( RowName == AvailableRows[i]->RowId && TableRows[i]->p_isSolved )
 			{
 				rtn.Add(AvailableRows[ i ]->RowId, true);
 				return rtn;
@@ -170,7 +173,7 @@ FSlateColor FMemoTableEditor::GetRowTextColor(FName RowName) const
 
 	if ( !solvedComment.begin().Key().IsNone() && RowName == solvedComment.begin().Key() )
 	{
-		return solvedComment.begin().Value() == true ? FSlateColor(FColorList::DarkBrown) : FSlateColor(FColorList::Red);
+		return solvedComment.begin().Value() == true ? FSlateColor(FColorList::DarkBrown) : FSlateColor(FColorList::OrangeRed);
 	}
 
 	
@@ -381,27 +384,29 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 		+ SVerticalBox::Slot()
 		[
 
-			CellsListView.ToSharedRef()
+			//CellsListView.ToSharedRef()
 
-			//SNew(SHorizontalBox)
-			//	+ SHorizontalBox::Slot()
+			SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot()
 
-			//	[
-			//		SNew(SScrollBox)
-			//			.Orientation(Orient_Horizontal)
-			//			.ExternalScrollbar(HorizontalScrollBar)
-			//			+ SScrollBox::Slot()
-			//			[
-			//				CellsListView.ToSharedRef()
-			//			]
-			//	]
+				[
+					SNew(SScrollBox)
+						// 있으면 ui가 이상해짐 -> 원인 분석 ㄱㄱ
+						//.Orientation(Orient_Horizontal)
+						//.ExternalScrollbar(HorizontalScrollBar)
+						+ SScrollBox::Slot()
+						[
+							CellsListView.ToSharedRef()
+						]
+				]
 			//	+ SHorizontalBox::Slot()
 			//	//.AutoWidth()
 			//	[
 			//		VerticalScrollBar
 			//	]
 		]
-		+ SVerticalBox::Slot()
+
+		/*+ SVerticalBox::Slot()
 		.AutoHeight()
 		[
 			SNew(SHorizontalBox)
@@ -409,6 +414,17 @@ TSharedRef<SVerticalBox> FMemoTableEditor::CreateContentBox()
 				[
 					HorizontalScrollBar
 				]
+		]*/
+
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		.HAlign(EHorizontalAlignment::HAlign_Right)
+		.VAlign(EVerticalAlignment::VAlign_Center)
+		.Padding(10)
+		[
+			SNew(SButton)
+				.Text(FText::FromString("Renew"))
+				.OnClicked(this,&FMemoTableEditor::RenewMemoContent)
 		];
 }
 
@@ -830,4 +846,101 @@ FReply FMemoTableEditor::OnWriteClicked()
 	FGlobalTabmanager::Get()->TryInvokeTab(FName("MemoWrite Tab"));
 
 	return FReply::Handled();
+}
+
+FReply FMemoTableEditor::RenewMemoContent()
+{
+	FString DataTablePath = "/Script/Engine.DataTable'/Game/Sungjun/NewDataTable.NewDataTable'";
+
+	UE_LOG(LogTemp , Warning , TEXT("OnExportClicked"));
+	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+	bool isSuccess = false;
+	FString OutInfoMessage;
+	UExcelImportExportDataTable::ExportDataTableToCSV("D:\\DownTest\\Test.csv" , LoadedDataTable , isSuccess , OutInfoMessage);
+
+	// 저장소에 있는 엑셀 파일을 다운로드 받는다.
+	UHttpRequestActor* httpLibrary = NewObject<UHttpRequestActor>();
+	httpLibrary->GetCSVDownload();
+
+
+	return FReply::Handled();
+}
+
+TSet<FString> FMemoTableEditor::ExtractUUIDs(const FString& FilePath) {
+	TArray<FString> FileLines;
+	TSet<FString> UUIDs;
+
+	if ( FFileHelper::LoadANSITextFileToStrings(*FilePath , nullptr , FileLines) ) {
+		for ( const FString& Line : FileLines ) {
+			TArray<FString> CSVValues;
+			Line.ParseIntoArray(CSVValues , TEXT(",") , true); // Assuming CSV is comma-separated
+
+			if ( CSVValues.Num() > 0 ) {
+				UUIDs.Add(CSVValues[ 0 ]); // Assuming UUIDs are in the first column
+			}
+		}
+	}
+	else {
+		UE_LOG(LogTemp , Error , TEXT("Unable to open file: %s") , *FilePath);
+	}
+
+	return UUIDs;
+}
+
+
+void FMemoTableEditor::CompareCSVFiles(const FString& File1Path , const FString& File2Path) {
+	TSet<FString> UUIDsFile1 = ExtractUUIDs(File1Path);
+	TSet<FString> UUIDsFile2 = ExtractUUIDs(File2Path);
+
+	// Read rows from both files and copy matching rows to output
+	TArray<FString> File1Rows;
+	TArray<FString> File2Rows;
+	FFileHelper::LoadANSITextFileToStrings(*File1Path , nullptr , File1Rows);
+	FFileHelper::LoadANSITextFileToStrings(*File2Path , nullptr , File2Rows);
+	TArray<FString> RowsToCopy;
+	int32 index = 0;
+
+	// Compare UUIDs
+	for ( const FString& UUID : UUIDsFile1 ) {
+
+		// 만약 겹치지 않는다면 새로 추가를 해준다.
+		if ( !UUIDsFile2.Contains(UUID) ) {
+			UE_LOG(LogTemp , Warning , TEXT("UUID %s is present in %s but not in %s") , *UUID , *File1Path , *File2Path);
+			RowsToCopy.Add(File1Rows[index]);
+		}
+		// 만약 겹친다면, 시간을 기준으로 제일 최신의 것을 가져온다.
+		else
+		{
+			RowsToCopy.Add(File1Rows[index]);
+		}
+		index++;
+	}
+
+	index = 0;
+	for ( const FString& UUID : UUIDsFile2 ) {
+
+		if ( !UUIDsFile1.Contains(UUID) ) {
+			UE_LOG(LogTemp , Warning , TEXT("UUID %s is present in %s but not in %s") , *UUID , *File2Path , *File1Path);
+			RowsToCopy.Add(File2Rows[index]);
+		}
+		index++;
+	}
+
+	FString OutputContent;
+	FString OutputPath = "D:\\DownTest\\Test3.csv";
+	for ( const FString& Row : RowsToCopy ) {
+		OutputContent.Append(Row + "\n");
+	}
+
+	FFileHelper::SaveStringToFile(OutputContent , *OutputPath);
+
+	// 합치는 것이 완료되었다면 이것을 다시 upload 시켜준다.
+	UHttpRequestActor* httpLibrary = NewObject<UHttpRequestActor>();
+	httpLibrary->PostCSVToStorage(OutputPath);
+
+	bool isSuccess = false;
+	FString OutInfoMessage;
+
+	// 언리얼내로 해당 CSV 파일을 Import를 실시한다.
+	UExcelImportExportDataTable::ImportDataTableFromCSV(OutputPath, "/Game/Sungjun/NewDataTable", FMemoDataTable::StaticStruct(), isSuccess, OutInfoMessage);
 }

@@ -82,6 +82,8 @@ public:
 
 	static FString JsonParse(const FString& originData);
 
+	static FString JsonParseToGetURL(const FString& originData);
+
 	static TArray<FProjectUnit> JsonProjectParse(const FString& originData);
 
 	static FProjectInfo JsonPraticularProjectParse(const FString& originData);

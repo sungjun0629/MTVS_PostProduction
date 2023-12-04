@@ -27,7 +27,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString author;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		bool isSolved;
+		bool p_isSolved;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FString createdAt;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
