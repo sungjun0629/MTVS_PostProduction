@@ -25,8 +25,10 @@ public:
 	~USoundConverterLogic();
 	
 	FOnDownloadProgress OnDownloadProgressDelegate;
+	FOnDownloadProgress OnDownloadAssetProgressDelegate;
 
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
+	FOnFileToStorageDownloadComplete OnFileToStorageAssetDownloadCompleteDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category = "SoundConverter")
 	FDownloadSuccessBlueprint OnDownloadSuccessBlueprint;
@@ -71,6 +73,8 @@ public:
 	TArray<TSharedPtr<FString>> Options;
 
 	TSharedPtr<SGetWebAddress> getWebAddress;
+
+	void ImageDownloadUrl(const FString res , const FString decription);
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "SoundConverter")

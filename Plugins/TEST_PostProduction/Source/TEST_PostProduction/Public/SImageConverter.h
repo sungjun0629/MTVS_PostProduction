@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Widgets/SCompoundWidget.h"
+#include "SGetWebAddress.h"
 
 /**
  * 
@@ -40,6 +41,7 @@ public:
 	FReply OnVideoUploadFileClicked();
 
 	void OnGet3DImage(TSharedPtr<IHttpRequest> Request , TSharedPtr<IHttpResponse> Response , bool bConnectedSuccessfully);
+
 
 private:
 	FString AssetPath;

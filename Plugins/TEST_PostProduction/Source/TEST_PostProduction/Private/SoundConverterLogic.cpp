@@ -21,6 +21,7 @@
 #include "Kismet/KismetStringLibrary.h"
 #include "Framework/Docking/TabManager.h"
 #include "Templates/SharedPointer.h"
+//#include "../Plugins/Developer/Concert/ConcertMain/Source/ConcertClient/Public/ConcertClientSettings.h"
 
 
 USoundConverterLogic::USoundConverterLogic()
@@ -230,6 +231,42 @@ void USoundConverterLogic::GetSequenceAsset()
     }
 }
 
+void USoundConverterLogic::ImageDownloadUrl(const FString res, const FString decription)
+{
+    UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
+    UFileToStorageDownloader_Plugin* StorageDownload;
+
+    TArray<FString> parsedData = jsonParser->JsonParse3DImage(res);
+
+    FString SaveAssetPath = "D:\\DownTest\\";
+    //SavePath.Append(DateTimeString);
+    SaveAssetPath.Append(decription);
+    TArray<FString> extensions;
+
+    extensions.Add("_albedo.png");
+    extensions.Add("_meshMat.mtl");
+    extensions.Add("_meshObj.obj");
+
+
+    FString urlDownload = parsedData[ 0 ];
+    FString storageImagePath = SaveAssetPath + extensions[ 0 ];
+    getWebAddress = MakeShared<SGetWebAddress>();
+    getWebAddress->ReloadAndGetAssetDownloadURL(urlDownload , storageImagePath);
+    if ( parsedData.Num() > 1 )
+    {
+        for ( int32 i = 1; i < 3; i++ )
+        {
+            FString url = parsedData[ i ];
+            FString storagePath = SaveAssetPath + extensions[ i ];
+
+            UE_LOG(LogTemp , Warning , TEXT("Asset Download : %s") , *url);
+  
+             StorageDownload->DownloadFileToStorage(url , storagePath , 15.f , "" , true , OnDownloadAssetProgressDelegate , OnFileToStorageAssetDownloadCompleteDelegate);
+
+        }
+    }
+}
+
 void USoundConverterLogic::SpawnMemoTab()
 {
     const TSharedRef<FTabManager> InTabManager = FGlobalTabmanager::Get();
@@ -237,10 +274,15 @@ void USoundConverterLogic::SpawnMemoTab()
 
     // UObject
     IPConfig::MemoTableEditor->CreateAndRegisterDataTableTab(InTabManager);
+
+    //FConcertClientSettings* MultiUserSettings = GetMutableDefault<FConcertClientSettings>();
+    //MultiUserSettings->DisplayName = "sungjun";
+
 }   
 
 void USoundConverterLogic::SpawnSearchTab()
 {
     FGlobalTabmanager::Get()->TryInvokeTab(FName("Video Tab"));
     FGlobalTabmanager::Get()->TryInvokeTab(FName("Asset Tab"));
+
 }

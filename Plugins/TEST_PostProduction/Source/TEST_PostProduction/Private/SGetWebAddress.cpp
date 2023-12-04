@@ -6,6 +6,7 @@
 #include "Widgets/SCanvas.h"
 #include "AudioDevice.h"
 #include "Engine/Engine.h"
+#include "FileToStorageDownloader_Plugin.h"
 
 void SGetWebAddress::Construct(const FArguments& InArgs)
 {
@@ -46,7 +47,17 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 	}
 	else
 	{
-		soundConverterLogic->DownloadVoice(InText.ToString(), convertedName);
+		if(isSound)
+		{
+			soundConverterLogic->DownloadVoice(InText.ToString(), convertedName);
+			isSound = false;
+		}else
+		{
+			UFileToStorageDownloader_Plugin* StorageDownload;
+			convertedName = InText.ToString();
+			StorageDownload->DownloadFileToStorage(convertedName , storagePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+		}
+
 		if(loginWebBrowser)
 		{
 			//loginWebBrowser->~SWebBrowser();
@@ -56,6 +67,7 @@ void SGetWebAddress::OnURLChanged(const FText& InText)
 
 void SGetWebAddress::ReloadAndGetURL(FString url, FString ConvertedName)
 {
+	isSound = true;
 	UE_LOG(LogTemp, Warning, TEXT("SGetWebAddress::ReloadAndGetURL : %s"), *url);
 
 	convertedName = ConvertedName;
@@ -69,4 +81,21 @@ void SGetWebAddress::ReloadAndGetURL(FString url, FString ConvertedName)
 	if(loginWebBrowser.IsValid())
 	loginWebBrowser->LoadURL(url);
 
+}
+
+void SGetWebAddress::ReloadAndGetAssetDownloadURL(FString url, FString StoragePath)
+{
+	isSound = false;
+	storagePath = StoragePath;
+	FString URL = url;
+	loginWebBrowser = SNew(SWebBrowser)
+		.InitialURL(URL)
+		//.ShowAddressBar(true)
+		.OnUrlChanged_Raw(this , &SGetWebAddress::OnURLChanged);
+
+	if ( loginWebBrowser.IsValid() )
+	{
+		//loginWebBrowser->LoadURL(url);
+		UE_LOG(LogTemp,Warning,TEXT("ReloadAndGetAssetDownloadURL : %s"), *url)
+	}
 }

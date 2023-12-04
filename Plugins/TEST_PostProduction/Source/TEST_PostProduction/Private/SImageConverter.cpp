@@ -11,6 +11,8 @@
 #include "EditorWidgets/Public/SDropTarget.h"
 #include "FileToStorageDownloader_Plugin.h"
 #include "JsonParseLibrary_Plugin.h"
+#include "SGetWebAddress.h"
+#include "SoundConverterLogic.h"
 
 void SImageConverter::Construct(const FArguments& InArgs)
 {
@@ -194,34 +196,46 @@ void SImageConverter::OnGet3DImage(TSharedPtr<IHttpRequest> Request , TSharedPtr
 {
 	if ( bConnectedSuccessfully )
 	{
-		UFileToStorageDownloader_Plugin* StorageDownload;
-		UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
+		//UFileToStorageDownloader_Plugin* StorageDownload;
+		//UJsonParseLibrary_Plugin* jsonParser = NewObject<UJsonParseLibrary_Plugin>();
 		/*const FDateTime Now = FDateTime::Now();
 		const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S")); const FDateTime Now = FDateTime::Now();
 		const FString DateTimeString = Now.ToString(TEXT("%Y%m%d%H%M%S"));*/
-		const FString res	= Response->GetContentAsString();
+		const FString res = Response->GetContentAsString();
 
-		TArray<FString> parsedData = jsonParser->JsonParse3DImage(res);
+		USoundConverterLogic* changeLibrary = NewObject<USoundConverterLogic>();
+		changeLibrary->ImageDownloadUrl(res, description);
 
-		FString SavePath = "D:\\DownTest\\";
-		//SavePath.Append(DateTimeString);
-		SavePath.Append(description);
-		TArray<FString> extensions;
+		//TArray<FString> parsedData = jsonParser->JsonParse3DImage(res);
 
-		extensions.Add("_albedo.png");
-		extensions.Add("_meshMat.mtl");
-		extensions.Add("_meshObj.obj");
+		//FString SavePath = "D:\\DownTest\\";
+		////SavePath.Append(DateTimeString);
+		//SavePath.Append(description);
+		//TArray<FString> extensions;
+
+		//extensions.Add("_albedo.png");
+		//extensions.Add("_meshMat.mtl");
+		//extensions.Add("_meshObj.obj");
 	
-		if(parsedData.Num()>0 )
-		{
-			for ( int32 i = 0; i < 3; i++ )
-			{
-				FString url = parsedData[ i ];
-				FString storagePath = SavePath + extensions[ i ];
+		//if(parsedData.Num()>0 )
+		//{
+		//	for ( int32 i = 0; i < 3; i++ )
+		//	{
+		//		FString url = parsedData[ i ];
+		//		FString storagePath = SavePath + extensions[ i ];
 
-				StorageDownload->DownloadFileToStorage(url , storagePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
-			}
-		}
+		//		UE_LOG(LogTemp,Warning,TEXT("%s"), *url);
+		//		if(i==0)
+		//		{
+		//			TSharedPtr<SGetWebAddress> getWebAddress = MakeShared<SGetWebAddress>();
+		//			getWebAddress->ReloadAndGetAssetDownloadURL(url , storagePath);
+		//			/*StorageDownload->DownloadFileToStorage(url , storagePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);*/
+		//		}
+		//		//url = getWebAddress->convertedName;
+
+
+		//	}
+		//}
 	}
 	else
 	{

@@ -61,7 +61,8 @@ public class TEST_PostProduction : ModuleRules
                 "DataTableEditor",
                 "ApplicationCore",
                 "PropertyEditor",
-				"AssetTools"
+				"AssetTools",
+                "LiveLinkMultiUser"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
