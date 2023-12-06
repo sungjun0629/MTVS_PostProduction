@@ -13,6 +13,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetAllProjectDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetParticularSceneCardDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetParticularProjectDelegate, FProjectInfo, projectInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetImageTextureDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPostSuccessDelegate);
@@ -51,6 +52,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnPostSuccessDelegate OnSuccessPostDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
+	FOnGetParticularSceneCardDelegate OnGetParticularSceneCardDelegate;
+
+
 	FOnDownloadProgress OnDownloadProgressDelegate;
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;
 
@@ -66,13 +71,21 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	struct FWorkerInfo workerInfo;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	struct FSceneCardInfo sceneInfo;
 
 	UFUNCTION(BlueprintCallable)
 	void PostProjectRequest(const FString ProjectName, const FString scriptPath , const FString ProjectDes, TArray<FWorkerInfo> StaffInfo, const FString ImagePath);
 	UFUNCTION(BlueprintCallable)
+	void PostSceneCard(int32 projectID ,const FString story, FString levelLocation, FString imagePath);
+	UFUNCTION(BlueprintCallable)
 	void GetAllProject();
 	UFUNCTION(BlueprintCallable)
+	void GetScriptCSV(int32 projectId);
+	UFUNCTION(BlueprintCallable)
 	void GetParticularProject(int32 number);
+	UFUNCTION(BlueprintCallable)
+	void GetParticularSceneCard(int32 projectID, int32 sceneNo);
 	UFUNCTION(BlueprintCallable)
 	FSlateBrush GetImageTexture(int32 projectID);
 
@@ -87,7 +100,10 @@ public:
 	void OnPostProjectInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnPostCSVFile(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnGetCSVDownloadURL(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnGetScriptCSVDownload(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnGetParticularSceneCard(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 
+	bool isScript = false;
 
 public:
 	UFUNCTION(BlueprintCallable)	

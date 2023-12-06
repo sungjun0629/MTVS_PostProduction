@@ -70,6 +70,21 @@ public:
 
 };
 
+USTRUCT(BlueprintType)
+struct FSceneCardInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString story = "untitled";
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString levelLocation = TEXT("untitled");
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString imageBase64 = TEXT("untitled");
+
+};
+
 
 UCLASS()
 class UJsonParseLibrary_Plugin : public UBlueprintFunctionLibrary
@@ -83,6 +98,8 @@ public:
 	static FString JsonParse(const FString& originData);
 
 	static FString JsonParseToGetURL(const FString& originData);
+
+	static FSceneCardInfo JsonParseToGetSceneInfo(const FString& originData);
 
 	static TArray<FProjectUnit> JsonProjectParse(const FString& originData);
 

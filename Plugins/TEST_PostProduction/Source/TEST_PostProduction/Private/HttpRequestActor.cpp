@@ -26,6 +26,7 @@
 #include "FileToStorageDownloader_Plugin.h"
 #include "Misc/FileHelper.h"
 #include "ImportExportDataTable.h"
+#include "EUW_ScriptSystem.h"
 
 
 UHttpRequestActor::UHttpRequestActor()
@@ -89,6 +90,33 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	Request->ProcessRequest();
 }
 
+void UHttpRequestActor::PostSceneCard(int32 projectID , const FString story , FString levelLocation , FString imagePath)
+{
+	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+
+	const FString URL = IPConfig::StaticVariable + "/group/scene/upload";
+
+	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
+	FString ImageBase64 = FileUpload->UploadFile(imagePath);
+
+	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
+	RequestObj->SetNumberField("scriptId" , projectID);
+	RequestObj->SetStringField("story" , *story);
+	RequestObj->SetStringField("levelPosition" , *levelLocation);
+	RequestObj->SetStringField("thumbNail" , *ImageBase64);
+
+	FString RequestBody;
+	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
+	FJsonSerializer::Serialize(RequestObj , Writer);
+
+	Request->SetURL(URL);
+	Request->SetVerb(TEXT("POST"));
+	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
+	Request->SetContentAsString(RequestBody);
+	//Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostProjectInfo);
+	Request->ProcessRequest();
+}
+
 void UHttpRequestActor::GetAllProject()
 {
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
@@ -98,6 +126,21 @@ void UHttpRequestActor::GetAllProject()
 	Request->SetURL(URL);
 	Request->SetVerb("GET");
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnReciveAllProject);
+	Request->ProcessRequest();
+}
+
+
+void UHttpRequestActor::GetScriptCSV(int32 projectId)
+{
+	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+	FString URL = IPConfig::StaticVariable + "group/scene/";
+	URL.Append(FString::Printf(TEXT("%d") , projectId));
+
+
+	// GET처리 
+	Request->SetURL(URL);
+	Request->SetVerb("GET");
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetScriptCSVDownload);
 	Request->ProcessRequest();
 }
 
@@ -115,6 +158,20 @@ void UHttpRequestActor::GetParticularProject(int32 number)
 	Request->ProcessRequest();
 }
 
+
+void UHttpRequestActor::GetParticularSceneCard(int32 projectID , int32 sceneNo)
+{
+	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
+	FString URL = IPConfig::StaticVariable + "/group/scene/";
+	// 프로젝트와 씬카드의 고유 번호를 통해 접근한다. 
+	URL.Append(FString::Printf(TEXT("%d/%d") , projectID, sceneNo));
+
+	// GET처리 
+	Request->SetURL(URL);
+	Request->SetVerb("GET");
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetParticularSceneCard);
+	Request->ProcessRequest();
+}
 
 FSlateBrush UHttpRequestActor::GetImageTexture(int32 projectID)
 {
@@ -213,7 +270,24 @@ void UHttpRequestActor::SuccessCSVDownload(EDownloadToStorageResult_Plugin Resul
 
 	// 다운로드 받은 엑셀과 현재의 엑셀을 비교하고 합치는 작업을 진행한다.
 	// 결과물은 Test3.csv로 도출된다.
-	IPConfig::MemoTableEditor->CompareCSVFiles("D:\\DownTest\\Test.csv" , "D:\\DownTest\\Test2.csv");
+	if(!isScript) IPConfig::MemoTableEditor->CompareCSVFiles("D:\\DownTest\\Test.csv" , "D:\\DownTest\\Test2.csv");
+	else {
+		isScript = false;
+
+		FString OutputPath = "D:\\DownTest\\TempScript.csv";
+		bool isSuccess = false;
+		FString OutInfoMessage;
+
+		// 언리얼내로 해당 CSV 파일을 Import를 실시한다.
+		UExcelImportExportDataTable::ImportDataTableFromCSV(OutputPath , "/Game/Shoplifters_ScriptSheet" , FScriptDT::StaticStruct() , isSuccess , OutInfoMessage);
+		
+		// Import가 제대로 수행되었다면.. 
+		if ( isSuccess )
+		{
+			UE_LOG(LogTemp,Warning,TEXT("Script CSV Import Success... Let's Parsing"));
+		}
+		
+	}
 }
 
 void UHttpRequestActor::PostCSVToStorage(FString savePath)
@@ -348,6 +422,49 @@ void UHttpRequestActor::OnGetCSVDownloadURL(FHttpRequestPtr Request , FHttpRespo
 		 // 그리고 빈 값의 csv 파일과 비교를 실시한다.
 			IPConfig::MemoTableEditor->CompareCSVFiles("D:\\DownTest\\Test.csv" , "D:\\DownTest\\Test2.csv");
 		}
+	}
+	else
+	{
+
+	}
+}
+
+void UHttpRequestActor::OnGetScriptCSVDownload(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
+{
+	if ( bConnectedSuccessfully )
+	{
+		
+		UFileToStorageDownloader_Plugin* StorageDownload;
+		FString response = Response->GetContentAsString();
+		FString SavePath = "D:\\DownTest\\TempScript.csv";
+		FString URL = UJsonParseLibrary_Plugin::JsonParseToGetURL(response);
+		
+		if ( !URL.IsEmpty() )
+		{
+			isScript = true;
+			StorageDownload->DownloadFileToStorage(URL , SavePath , 15.f , "" , true , OnDownloadProgressDelegate , OnFileToStorageDownloadCompleteDelegate);
+			UE_LOG(LogTemp , Warning , TEXT("Success to Get Script csv File"));
+			// 다운로드가 완료된다면 언리얼에 Import를 해주어야한다. 
+		}
+
+	}
+	else
+	{
+
+	}
+}
+
+void UHttpRequestActor::OnGetParticularSceneCard(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
+{
+	if ( bConnectedSuccessfully )
+	{
+		FString response = Response->GetContentAsString();
+		// Response값을 파싱해준다. 
+		FSceneCardInfo parsedInfo = UJsonParseLibrary_Plugin::JsonParseToGetSceneInfo(response);
+		// 파싱해준값을 전역 변수에 저장한다. 
+		sceneInfo = parsedInfo;
+
+		OnGetParticularSceneCardDelegate.Broadcast();
 	}
 	else
 	{

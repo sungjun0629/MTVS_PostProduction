@@ -57,10 +57,31 @@ FString UJsonParseLibrary_Plugin::JsonParseToGetURL(const FString& originData)
 	if ( FJsonSerializer::Deserialize(reader , result) )
 	{
 		parsedData = result->GetStringField("uploadUrl");
+
+		if ( parsedData.IsEmpty() )
+		{
+			parsedData = result->GetStringField("scriptUrl");
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp , Warning , TEXT("Failed to Parsing"));
+	}
+
+	return parsedData;
+}
+
+FSceneCardInfo UJsonParseLibrary_Plugin::JsonParseToGetSceneInfo(const FString& originData)
+{
+	FSceneCardInfo	parsedData;
+	TSharedRef<TJsonReader<TCHAR>> reader = TJsonReaderFactory<TCHAR>::Create(originData);
+	TSharedPtr<FJsonObject> result = MakeShareable(new FJsonObject());
+
+	if ( FJsonSerializer::Deserialize(reader , result) )
+	{
+		parsedData.story = result->GetStringField("uploadUrl");
+		parsedData.levelLocation = result->GetStringField("uploadUrl");
+		parsedData.imageBase64 = result->GetStringField("uploadUrl");
 	}
 
 	return parsedData;
