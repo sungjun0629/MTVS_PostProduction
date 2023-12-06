@@ -47,6 +47,7 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	// For Make imageBase64
 	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
 	FString ImageBase64 = FileUpload->UploadFile(ImagePath);
+	FString CSVBase64 = FileUpload->UploadFile(scriptPath);
 
 	// Crate a JSON object
 	TArray<TSharedPtr<FJsonValue>> JsonArray;
@@ -72,7 +73,7 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	RequestObj->SetStringField("description" , *ProjectDes);
 	RequestObj->SetArrayField("staffs", JsonArray);
 	RequestObj->SetArrayField("avatarName", AvatarNamesArray);
-	RequestObj->SetStringField("script", *scriptPath);
+	RequestObj->SetStringField("script", *CSVBase64);
 	RequestObj->SetStringField("poster" , *ImageBase64);
 
 
@@ -386,7 +387,6 @@ FString UHttpRequestActor::OnImportButtonClicked()
 			// You can perform further actions with the selected directory here.
 		}
 	}
-
 
 	return path;
 }

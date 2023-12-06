@@ -944,5 +944,6 @@ void FMemoTableEditor::CompareCSVFiles(const FString& File1Path , const FString&
 	// 언리얼내로 해당 CSV 파일을 Import를 실시한다.
 	UExcelImportExportDataTable::ImportDataTableFromCSV(OutputPath, "/Game/Sungjun/NewDataTable", FMemoDataTable::StaticStruct(), isSuccess, OutInfoMessage);
 
+	// 수정 필요 : 시간 차이를 주어야 한다!!!
 	RefreshCachedDataTable();
 }
