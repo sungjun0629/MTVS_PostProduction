@@ -1,0 +1,191 @@
+Begin Object Class=/Script/Engine.ParticleSystem Name="PS_DustFloating_01" ExportPath=/Script/Engine.ParticleSystem'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01"'
+   Begin Object Class=/Script/Engine.ParticleModuleTypeDataGpu Name="ParticleModuleTypeDataGpu_4" ExportPath=/Script/Engine.ParticleModuleTypeDataGpu'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleTypeDataGpu_4"'
+   End Object
+   Begin Object Class=/Script/Engine.ParticleSpriteEmitter Name="ParticleSpriteEmitter_0" ExportPath=/Script/Engine.ParticleSpriteEmitter'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleSpriteEmitter_0"'
+      Begin Object Class=/Script/Engine.ParticleLODLevel Name="ParticleLODLevel_0" ExportPath=/Script/Engine.ParticleLODLevel'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleSpriteEmitter_0.ParticleLODLevel_0"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.InterpCurveEdSetup Name="InterpCurveEdSetup_0" ExportPath=/Script/Engine.InterpCurveEdSetup'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:InterpCurveEdSetup_0"'
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleSize Name="ParticleModuleSize_0" ExportPath=/Script/Engine.ParticleModuleSize'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSize_0"'
+      Begin Object Class=/Script/Engine.DistributionVectorUniform Name="DistributionStartSize" ExportPath=/Script/Engine.DistributionVectorUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSize_0.DistributionStartSize"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleLocation Name="ParticleModuleLocation_0" ExportPath=/Script/Engine.ParticleModuleLocation'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLocation_0"'
+      Begin Object Class=/Script/Engine.DistributionVectorUniform Name="DistributionStartLocation" ExportPath=/Script/Engine.DistributionVectorUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLocation_0.DistributionStartLocation"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleVelocity Name="ParticleModuleVelocity_0" ExportPath=/Script/Engine.ParticleModuleVelocity'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleVelocity_0"'
+      Begin Object Class=/Script/Engine.DistributionVectorUniform Name="DistributionStartVelocity" ExportPath=/Script/Engine.DistributionVectorUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleVelocity_0.DistributionStartVelocity"'
+      End Object
+      Begin Object Class=/Script/Engine.DistributionFloatUniform Name="DistributionStartVelocityRadial" ExportPath=/Script/Engine.DistributionFloatUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleVelocity_0.DistributionStartVelocityRadial"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleRotation Name="ParticleModuleRotation_0" ExportPath=/Script/Engine.ParticleModuleRotation'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRotation_0"'
+      Begin Object Class=/Script/Engine.DistributionFloatUniform Name="DistributionStartRotation" ExportPath=/Script/Engine.DistributionFloatUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRotation_0.DistributionStartRotation"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleLifetime Name="ParticleModuleLifetime_0" ExportPath=/Script/Engine.ParticleModuleLifetime'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLifetime_0"'
+      Begin Object Class=/Script/Engine.DistributionFloatUniform Name="DistributionLifetime" ExportPath=/Script/Engine.DistributionFloatUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLifetime_0.DistributionLifetime"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleSpawn Name="ParticleModuleSpawn_0" ExportPath=/Script/Engine.ParticleModuleSpawn'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0"'
+      Begin Object Class=/Script/Engine.DistributionFloatConstant Name="RequiredDistributionSpawnRateScale" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0.RequiredDistributionSpawnRateScale"'
+      End Object
+      Begin Object Class=/Script/Engine.DistributionFloatConstant Name="RequiredDistributionSpawnRate" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0.RequiredDistributionSpawnRate"'
+      End Object
+      Begin Object Class=/Script/Engine.DistributionFloatConstant Name="BurstScaleDistribution" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0.BurstScaleDistribution"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleRequired Name="ParticleModuleRequired_0" ExportPath=/Script/Engine.ParticleModuleRequired'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRequired_0"'
+      Begin Object Class=/Script/Engine.DistributionFloatConstant Name="RequiredDistributionSpawnRate" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRequired_0.RequiredDistributionSpawnRate"'
+      End Object
+   End Object
+   Begin Object Class=/Script/Engine.ParticleModuleColorOverLife Name="ParticleModuleColorOverLife_0" ExportPath=/Script/Engine.ParticleModuleColorOverLife'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0"'
+      Begin Object Class=/Script/Engine.DistributionVectorConstant Name="DistributionVectorConstant_0" ExportPath=/Script/Engine.DistributionVectorConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionVectorConstant_0"'
+      End Object
+      Begin Object Class=/Script/Engine.DistributionFloatConstantCurve Name="DistributionFloatConstantCurve_0" ExportPath=/Script/Engine.DistributionFloatConstantCurve'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionFloatConstantCurve_0"'
+      End Object
+      Begin Object Class=/Script/Engine.DistributionFloatConstant Name="DistributionFloatConstant_0" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionFloatConstant_0"'
+      End Object
+   End Object
+   Begin Object Name="ParticleModuleTypeDataGpu_4" ExportPath=/Script/Engine.ParticleModuleTypeDataGpu'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleTypeDataGpu_4"'
+      EmitterInfo=(RequiredModule=/Script/Engine.ParticleModuleRequired'"PS_DustFloating_01:ParticleModuleRequired_0"',SpawnModule=/Script/Engine.ParticleModuleSpawn'"PS_DustFloating_01:ParticleModuleSpawn_0"',SpawnModules=(/Script/Engine.ParticleModuleRequired'"PS_DustFloating_01:ParticleModuleRequired_0"',/Script/Engine.ParticleModuleLifetime'"PS_DustFloating_01:ParticleModuleLifetime_0"',/Script/Engine.ParticleModuleSize'"PS_DustFloating_01:ParticleModuleSize_0"',/Script/Engine.ParticleModuleVelocity'"PS_DustFloating_01:ParticleModuleVelocity_0"',/Script/Engine.ParticleModuleLocation'"PS_DustFloating_01:ParticleModuleLocation_0"',/Script/Engine.ParticleModuleRotation'"PS_DustFloating_01:ParticleModuleRotation_0"'),InvMaxSize=(X=0.500000,Y=0.500000),InvRotationRateScale=0.100000,MaxLifetime=10.000000,MaxParticleCount=2007,ScreenAlignment=PSA_Square)
+      ResourceData=(QuantizedColorSamples=((B=0,G=0,R=0,A=0),(B=0,G=0,R=0,A=67),(B=0,G=0,R=0,A=136),(B=0,G=0,R=0,A=203),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=255),(B=0,G=0,R=0,A=228),(B=0,G=0,R=0,A=140),(B=0,G=0,R=0,A=44),(B=0,G=0,R=0,A=0)),ColorScale=(X=0.000000,Y=0.000000,Z=0.000000,W=1.000000),ColorBias=(X=0.645833,Y=0.443048,Z=0.126469,W=0.000000),MiscBias=(X=2.000000,Y=2.000000,Z=0.000000,W=0.000000),SimulationAttrCurveBias=(X=1.000000,Y=1.000000,Z=0.000000,W=1.000000),SubImageSize=(X=1.000000,Y=1.000000,Z=1.000000,W=1.000000),SizeBySpeed=(X=0.000000,Y=0.000000,Z=1.000000,W=1.000000),PerParticleVectorFieldBias=1.000000,CollisionRadiusScale=0.500000,CollisionRandomDistribution=1.000000,OneMinusFriction=1.000000,RotationRateScale=10.000000,ScreenAlignment=PSA_Square)
+      bClearExistingParticlesOnInit=True
+      LODValidity=1
+      ModuleEditorColor=(B=0,G=165,R=174,A=255)
+   End Object
+   Begin Object Name="ParticleSpriteEmitter_0" ExportPath=/Script/Engine.ParticleSpriteEmitter'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleSpriteEmitter_0"'
+      Begin Object Name="ParticleLODLevel_0" ExportPath=/Script/Engine.ParticleLODLevel'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleSpriteEmitter_0.ParticleLODLevel_0"'
+         RequiredModule=/Script/Engine.ParticleModuleRequired'"PS_DustFloating_01:ParticleModuleRequired_0"'
+         Modules(0)=/Script/Engine.ParticleModuleLifetime'"PS_DustFloating_01:ParticleModuleLifetime_0"'
+         Modules(1)=/Script/Engine.ParticleModuleSize'"PS_DustFloating_01:ParticleModuleSize_0"'
+         Modules(2)=/Script/Engine.ParticleModuleVelocity'"PS_DustFloating_01:ParticleModuleVelocity_0"'
+         Modules(3)=/Script/Engine.ParticleModuleColorOverLife'"PS_DustFloating_01:ParticleModuleColorOverLife_0"'
+         Modules(4)=/Script/Engine.ParticleModuleLocation'"PS_DustFloating_01:ParticleModuleLocation_0"'
+         Modules(5)=/Script/Engine.ParticleModuleRotation'"PS_DustFloating_01:ParticleModuleRotation_0"'
+         TypeDataModule=/Script/Engine.ParticleModuleTypeDataGpu'"PS_DustFloating_01:ParticleModuleTypeDataGpu_4"'
+         SpawnModule=/Script/Engine.ParticleModuleSpawn'"PS_DustFloating_01:ParticleModuleSpawn_0"'
+         PeakActiveParticles=2007
+      End Object
+      bUseLegacySpawningBehavior=True
+      EmitterEditorColor=(B=0,G=112,R=210,A=255)
+      LODLevels(0)=/Script/Engine.ParticleLODLevel'"ParticleLODLevel_0"'
+      DetailModeBitmask=7
+   End Object
+   Begin Object Name="InterpCurveEdSetup_0" ExportPath=/Script/Engine.InterpCurveEdSetup'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:InterpCurveEdSetup_0"'
+      Tabs(0)=(Curves=((CurveObject=/Script/Engine.DistributionVectorConstant'"PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionVectorConstant_0"',CurveColor=(B=204,G=123,R=0,A=255),CurveName="ColorOverLife",bColorCurve=1,bFloatingPointColorCurve=1),(CurveObject=/Script/Engine.DistributionFloatConstant'"PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionFloatConstant_0"',CurveColor=(B=204,G=123,R=0,A=255),CurveName="AlphaOverLife",bColorCurve=1,bFloatingPointColorCurve=1,bClamp=1,ClampHigh=1.000000)),ViewStartInput=-0.306672,ViewEndInput=0.799248,ViewStartOutput=-0.663584,ViewEndOutput=1.548255)
+   End Object
+   Begin Object Name="ParticleModuleSize_0" ExportPath=/Script/Engine.ParticleModuleSize'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSize_0"'
+      Begin Object Name="DistributionStartSize" ExportPath=/Script/Engine.DistributionVectorUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSize_0.DistributionStartSize"'
+         Max=(X=2.000000,Y=0.000000,Z=0.000000)
+         Min=(X=1.500000,Y=0.000000,Z=0.000000)
+         bIsDirty=False
+         bBakedDataSuccesfully=True
+      End Object
+      StartSize=(MaxValue=2.000000,MinValueVec=(X=1.500000,Y=0.000000,Z=0.000000),MaxValueVec=(X=2.000000,Y=0.000000,Z=0.000000),Distribution=/Script/Engine.DistributionVectorUniform'"DistributionStartSize"',Table=(Values=(1.500000,0.000000,0.000000,2.000000,0.000000,0.000000),Op=2,EntryCount=1,EntryStride=6,SubEntryStride=3))
+      LODValidity=1
+      ModuleEditorColor=(B=150,G=0,R=188,A=255)
+   End Object
+   Begin Object Name="ParticleModuleLocation_0" ExportPath=/Script/Engine.ParticleModuleLocation'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLocation_0"'
+      Begin Object Name="DistributionStartLocation" ExportPath=/Script/Engine.DistributionVectorUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLocation_0.DistributionStartLocation"'
+         Max=(X=500.000000,Y=500.000000,Z=250.000000)
+         Min=(X=-500.000000,Y=-500.000000,Z=-250.000000)
+         bIsDirty=False
+         bBakedDataSuccesfully=True
+      End Object
+      StartLocation=(MinValue=-500.000000,MaxValue=500.000000,MinValueVec=(X=-500.000000,Y=-500.000000,Z=-250.000000),MaxValueVec=(X=500.000000,Y=500.000000,Z=250.000000),Distribution=/Script/Engine.DistributionVectorUniform'"DistributionStartLocation"',Table=(Values=(-500.000000,-500.000000,-250.000000,500.000000,500.000000,250.000000),Op=2,EntryCount=1,EntryStride=6,SubEntryStride=3))
+      LODValidity=1
+      ModuleEditorColor=(B=203,G=0,R=128,A=255)
+   End Object
+   Begin Object Name="ParticleModuleVelocity_0" ExportPath=/Script/Engine.ParticleModuleVelocity'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleVelocity_0"'
+      Begin Object Name="DistributionStartVelocity" ExportPath=/Script/Engine.DistributionVectorUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleVelocity_0.DistributionStartVelocity"'
+         Max=(X=3.000000,Y=3.000000,Z=3.000000)
+         Min=(X=-3.000000,Y=-3.000000,Z=-3.000000)
+         bIsDirty=False
+         bBakedDataSuccesfully=True
+      End Object
+      Begin Object Name="DistributionStartVelocityRadial" ExportPath=/Script/Engine.DistributionFloatUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleVelocity_0.DistributionStartVelocityRadial"'
+         bBakedDataSuccesfully=True
+      End Object
+      StartVelocity=(MinValue=-3.000000,MaxValue=3.000000,MinValueVec=(X=-3.000000,Y=-3.000000,Z=-3.000000),MaxValueVec=(X=3.000000,Y=3.000000,Z=3.000000),Distribution=/Script/Engine.DistributionVectorUniform'"DistributionStartVelocity"',Table=(Values=(-3.000000,-3.000000,-3.000000,3.000000,3.000000,3.000000),Op=2,EntryCount=1,EntryStride=6,SubEntryStride=3))
+      StartVelocityRadial=(Distribution=/Script/Engine.DistributionFloatUniform'"DistributionStartVelocityRadial"',Table=(Values=(0.000000),Op=1,EntryCount=1,EntryStride=1))
+      LODValidity=1
+      ModuleEditorColor=(B=50,G=229,R=0,A=255)
+   End Object
+   Begin Object Name="ParticleModuleRotation_0" ExportPath=/Script/Engine.ParticleModuleRotation'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRotation_0"'
+      Begin Object Name="DistributionStartRotation" ExportPath=/Script/Engine.DistributionFloatUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRotation_0.DistributionStartRotation"'
+         Max=1.000000
+         bBakedDataSuccesfully=True
+      End Object
+      StartRotation=(MaxValue=1.000000,Distribution=/Script/Engine.DistributionFloatUniform'"DistributionStartRotation"',Table=(Values=(0.000000,1.000000),Op=2,EntryCount=1,EntryStride=2,SubEntryStride=1))
+      LODValidity=1
+      ModuleEditorColor=(B=229,G=50,R=0,A=255)
+   End Object
+   Begin Object Name="ParticleModuleLifetime_0" ExportPath=/Script/Engine.ParticleModuleLifetime'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLifetime_0"'
+      Begin Object Name="DistributionLifetime" ExportPath=/Script/Engine.DistributionFloatUniform'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleLifetime_0.DistributionLifetime"'
+         Min=7.000000
+         Max=10.000000
+         bBakedDataSuccesfully=True
+      End Object
+      Lifetime=(MinValue=7.000000,MaxValue=10.000000,Distribution=/Script/Engine.DistributionFloatUniform'"DistributionLifetime"',Table=(Values=(7.000000,10.000000),Op=2,EntryCount=1,EntryStride=2,SubEntryStride=1))
+      LODValidity=1
+      ModuleEditorColor=(B=231,G=30,R=0,A=255)
+   End Object
+   Begin Object Name="ParticleModuleSpawn_0" ExportPath=/Script/Engine.ParticleModuleSpawn'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0"'
+      Begin Object Name="RequiredDistributionSpawnRateScale" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0.RequiredDistributionSpawnRateScale"'
+         Constant=1.000000
+         bBakedDataSuccesfully=True
+      End Object
+      Begin Object Name="RequiredDistributionSpawnRate" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0.RequiredDistributionSpawnRate"'
+         Constant=200.000000
+         bBakedDataSuccesfully=True
+      End Object
+      Begin Object Name="BurstScaleDistribution" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleSpawn_0.BurstScaleDistribution"'
+         Constant=1.000000
+      End Object
+      Rate=(MinValue=200.000000,MaxValue=200.000000,Distribution=/Script/Engine.DistributionFloatConstant'"RequiredDistributionSpawnRate"',Table=(Values=(200.000000),Op=1,EntryCount=1,EntryStride=1))
+      RateScale=(MinValue=1.000000,MaxValue=1.000000,Distribution=/Script/Engine.DistributionFloatConstant'"RequiredDistributionSpawnRateScale"',Table=(Values=(1.000000),Op=1,EntryCount=1,EntryStride=1))
+      BurstScale=(Distribution=/Script/Engine.DistributionFloatConstant'"BurstScaleDistribution"')
+      LODValidity=1
+      ModuleEditorColor=(B=150,G=0,R=188,A=255)
+   End Object
+   Begin Object Name="ParticleModuleRequired_0" ExportPath=/Script/Engine.ParticleModuleRequired'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRequired_0"'
+      Begin Object Name="RequiredDistributionSpawnRate" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleRequired_0.RequiredDistributionSpawnRate"'
+      End Object
+      Material=/Script/Engine.Material'"/Game/DeepElderCaves/Materials/M_DustFloatingFX.M_DustFloatingFX"'
+      bUseLegacyEmitterTime=False
+      SpawnRate=(Distribution=/Script/Engine.DistributionFloatConstant'"RequiredDistributionSpawnRate"')
+      InterpolationMethod=PSUVIM_Linear
+      bScaleUV=True
+      RandomImageTime=1.000000
+      LODValidity=1
+      ModuleEditorColor=(B=128,G=202,R=0,A=255)
+   End Object
+   Begin Object Name="ParticleModuleColorOverLife_0" ExportPath=/Script/Engine.ParticleModuleColorOverLife'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0"'
+      Begin Object Name="DistributionVectorConstant_0" ExportPath=/Script/Engine.DistributionVectorConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionVectorConstant_0"'
+         Constant=(X=0.645833,Y=0.443048,Z=0.126469)
+         bBakedDataSuccesfully=True
+      End Object
+      Begin Object Name="DistributionFloatConstantCurve_0" ExportPath=/Script/Engine.DistributionFloatConstantCurve'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionFloatConstantCurve_0"'
+         ConstantCurve=(Points=((),(InVal=0.250000,OutVal=1.000000,InterpMode=CIM_CurveAutoClamped),(InVal=0.750000,OutVal=1.000000,InterpMode=CIM_CurveAutoClamped),(InVal=1.000000)))
+         bBakedDataSuccesfully=True
+      End Object
+      Begin Object Name="DistributionFloatConstant_0" ExportPath=/Script/Engine.DistributionFloatConstant'"/Game/DeepElderCaves/Particles/PS_DustFloating_01.PS_DustFloating_01:ParticleModuleColorOverLife_0.DistributionFloatConstant_0"'
+      End Object
+      ColorOverLife=(MinValue=0.020000,MaxValue=0.100000,Distribution=/Script/Engine.DistributionVectorConstant'"DistributionVectorConstant_0"',Table=(Values=(0.100000,0.050000,0.020000),Op=1,EntryCount=1,EntryStride=3))
+      AlphaOverLife=(MaxValue=1.000000,Distribution=/Script/Engine.DistributionFloatConstantCurve'"DistributionFloatConstantCurve_0"',Table=(TimeScale=14.999999,Values=(0.000000,0.266667,0.533333,0.800000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,0.895568,0.549917,0.175752,0.000000),Op=1,EntryCount=16,EntryStride=1))
+      LODValidity=1
+      ModuleEditorColor=(B=204,G=123,R=0,A=255)
+   End Object
+   WarmupTime=5.000000
+   Emitters(0)=/Script/Engine.ParticleSpriteEmitter'"ParticleSpriteEmitter_0"'
+   CurveEdSetup=/Script/Engine.InterpCurveEdSetup'"InterpCurveEdSetup_0"'
+   LODDistances(0)=0.000000
+   LODSettings(0)=()
+   FixedRelativeBoundingBox=(Min=(X=-1102.318726,Y=-1099.198975,Z=-562.058655),Max=(X=1101.353149,Y=1097.507080,Z=552.491516),IsValid=True)
+   bUseFixedRelativeBoundingBox=True
+   bShouldResetPeakCounts=True
+   CustomOcclusionBounds=(Min=(X=0.000000,Y=0.000000,Z=0.000000),Max=(X=0.000000,Y=0.000000,Z=0.000000),IsValid=True)
+End Object
