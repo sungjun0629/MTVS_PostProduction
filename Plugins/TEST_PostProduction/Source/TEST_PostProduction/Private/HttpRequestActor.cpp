@@ -49,6 +49,14 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	UFileToBase64Uploader_Plugin* FileUpload = NewObject<UFileToBase64Uploader_Plugin>();
 	FString ImageBase64 = FileUpload->UploadFile(ImagePath);
 	FString CSVBase64 = FileUpload->UploadFile(scriptPath);
+	/*FString CSVBase64;
+	TArray<uint8> FileData;
+
+	if ( !FFileHelper::LoadFileToArray(FileData , *scriptPath) )
+	{
+		UE_LOG(LogTemp , Error , TEXT("Failed to load file: %s") , *scriptPath);
+	}
+	CSVBase64 = FBase64::Encode(FileData);*/
 
 	// Crate a JSON object
 	TArray<TSharedPtr<FJsonValue>> JsonArray;
@@ -133,7 +141,7 @@ void UHttpRequestActor::GetAllProject()
 void UHttpRequestActor::GetScriptCSV(int32 projectId)
 {
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
-	FString URL = IPConfig::StaticVariable + "group/scene/";
+	FString URL = IPConfig::StaticVariable + "/group/scene/";
 	URL.Append(FString::Printf(TEXT("%d") , projectId));
 
 
@@ -285,10 +293,12 @@ void UHttpRequestActor::SuccessCSVDownload(EDownloadToStorageResult_Plugin Resul
 		if ( isSuccess )
 		{
 			UE_LOG(LogTemp,Warning,TEXT("Script CSV Import Success... Let's Parsing"));
+			OnScriptSuccessDelegate.Broadcast();
 		}
 		
 	}
 }
+
 
 void UHttpRequestActor::PostCSVToStorage(FString savePath)
 {
@@ -437,7 +447,7 @@ void UHttpRequestActor::OnGetScriptCSVDownload(FHttpRequestPtr Request , FHttpRe
 		UFileToStorageDownloader_Plugin* StorageDownload;
 		FString response = Response->GetContentAsString();
 		FString SavePath = "D:\\DownTest\\TempScript.csv";
-		FString URL = UJsonParseLibrary_Plugin::JsonParseToGetURL(response);
+		FString URL = UJsonParseLibrary_OnScriptSuccessDelegatePlugin::JsonParseToGetURL(response);
 		
 		if ( !URL.IsEmpty() )
 		{

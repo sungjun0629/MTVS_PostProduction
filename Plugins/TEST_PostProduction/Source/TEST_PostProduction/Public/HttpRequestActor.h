@@ -17,6 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetParticularSceneCardDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetParticularProjectDelegate, FProjectInfo, projectInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGetImageTextureDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPostSuccessDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnScriptSuccessDelegate);
 
 USTRUCT(BlueprintType)
 struct FWorkerInfo
@@ -54,7 +55,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
 	FOnGetParticularSceneCardDelegate OnGetParticularSceneCardDelegate;
-
+	UPROPERTY(BlueprintAssignable, Category = "PPHttp")
+	FOnScriptSuccessDelegate OnScriptSuccessDelegate;
 
 	FOnDownloadProgress OnDownloadProgressDelegate;
 	FOnFileToStorageDownloadComplete OnFileToStorageDownloadCompleteDelegate;

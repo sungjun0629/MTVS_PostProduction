@@ -30,7 +30,8 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 	dropVideoText = SNew(STextBlock)
 		.Text(FText::FromString("Drop item here!"))
-		.ColorAndOpacity(FLinearColor::White);
+		.ColorAndOpacity(FLinearColor::White)
+		.MinDesiredWidth(100);
 
 	title = SNew(STextBlock)
 			.Font(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf") , 15))
@@ -103,7 +104,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					]
 
 					+ SVerticalBox::Slot()
-.Padding(30)
+						.Padding(30)
 					[
 						SNew(SBorder)
 							.BorderBackgroundColor(FLinearColor::Gray)
@@ -175,7 +176,7 @@ FReply SMainMenuWidget::OnDropVideo(const FGeometry& MyGeometry, const FDragDrop
 
 		UE_LOG(LogTemp, Warning, TEXT("Dropped file path num: %s"), **FileOperation->GetFiles().begin());
 
-		dropText->SetText(FText::FromString("Click *Upload File* Button To Get Animation"));
+		dropVideoText->SetText(FText::FromString("Click *Upload File* Button To Get Animation"));
 
 		SetAssetPath(*FileOperation->GetFiles().begin());
 		
