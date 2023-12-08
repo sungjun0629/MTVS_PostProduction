@@ -447,7 +447,7 @@ void UHttpRequestActor::OnGetScriptCSVDownload(FHttpRequestPtr Request , FHttpRe
 		UFileToStorageDownloader_Plugin* StorageDownload;
 		FString response = Response->GetContentAsString();
 		FString SavePath = "D:\\DownTest\\TempScript.csv";
-		FString URL = UJsonParseLibrary_OnScriptSuccessDelegatePlugin::JsonParseToGetURL(response);
+		FString URL = UJsonParseLibrary_Plugin::JsonParseToGetURL(response);
 		
 		if ( !URL.IsEmpty() )
 		{

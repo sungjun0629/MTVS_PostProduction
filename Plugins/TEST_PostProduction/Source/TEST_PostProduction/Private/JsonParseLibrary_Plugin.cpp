@@ -79,9 +79,9 @@ FSceneCardInfo UJsonParseLibrary_Plugin::JsonParseToGetSceneInfo(const FString& 
 
 	if ( FJsonSerializer::Deserialize(reader , result) )
 	{
-		parsedData.story = result->GetStringField("uploadUrl");
-		parsedData.levelLocation = result->GetStringField("uploadUrl");
-		parsedData.imageBase64 = result->GetStringField("uploadUrl");
+		parsedData.story = result->GetStringField("story");
+		parsedData.levelLocation = result->GetStringField("levelPosition");
+		parsedData.imageBase64 = result->GetStringField("thumbnail");
 	}
 
 	return parsedData;
