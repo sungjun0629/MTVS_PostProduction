@@ -94,3 +94,6 @@ Content/MetaHumans/LES_metahuman/Face/body/sk_les.uasset
 Content/MetaHumans/LES_metahuman/Face/*/FFF_LES_metahuman_FaceMesh.uasset
 Content/MetaHumans/LES_metahuman/Face/*/cloth_SET_alemblc_abc_walktiun.uasset
 Content/MetaHumans/LES_metahuman/Face/test/SHOPPING.uasset
+
+#Alembic
+Content/DKW/Motion/*
