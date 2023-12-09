@@ -88,6 +88,9 @@ Content/Record File Name
 
 
 #LES work
+Content/LES/animation/*
+Content/LES/Retargeting/*
+
 Content/LES/animation/Animation_Retargeting/m3mdance-graceful_250999.uasset
 Content/LES/Retargeting/Retagetin02/animation/dance-graceful_250999.uasset
 Content/MetaHumans/LES_metahuman/Face/body/sk_les.uasset
