@@ -98,7 +98,7 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	Request->ProcessRequest();
 }
 
-void UHttpRequestActor::PostSceneCard(int32 projectID , const FString story , FString levelLocation , FString imagePath)
+void UHttpRequestActor::PostSceneCard(int32 projectID , int32 sceneNo , const FString story , FString levelLocation , FString imagePath)
 {
 	FHttpRequestRef Request = FHttpModule::Get().CreateRequest();
 
@@ -108,7 +108,8 @@ void UHttpRequestActor::PostSceneCard(int32 projectID , const FString story , FS
 	FString ImageBase64 = FileUpload->UploadFile(imagePath);
 
 	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
-	RequestObj->SetNumberField("scriptId" , projectID);
+	RequestObj->SetNumberField("projectId" , projectID);
+	RequestObj->SetNumberField("sceneNo" , sceneNo);
 	RequestObj->SetStringField("story" , *story);
 	RequestObj->SetStringField("levelPosition" , *levelLocation);
 	RequestObj->SetStringField("thumbNail" , *ImageBase64);
@@ -121,7 +122,7 @@ void UHttpRequestActor::PostSceneCard(int32 projectID , const FString story , FS
 	Request->SetVerb(TEXT("POST"));
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
 	Request->SetContentAsString(RequestBody);
-	//Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostProjectInfo);
+	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostSceneCardInfo);
 	Request->ProcessRequest();
 }
 
@@ -173,6 +174,8 @@ void UHttpRequestActor::GetParticularSceneCard(int32 projectID , int32 sceneNo)
 	FString URL = IPConfig::StaticVariable + "/group/scene/";
 	// 프로젝트와 씬카드의 고유 번호를 통해 접근한다. 
 	URL.Append(FString::Printf(TEXT("%d/%d") , projectID, sceneNo));
+
+	UE_LOG(LogTemp,Warning,TEXT("Get particular Scnen, %d, %d"), projectID, sceneNo)
 
 	// GET처리 
 	Request->SetURL(URL);
@@ -393,6 +396,18 @@ void UHttpRequestActor::OnPostProjectInfo(FHttpRequestPtr Request , FHttpRespons
 	}
 }
 
+void UHttpRequestActor::OnPostSceneCardInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
+{
+	if ( bConnectedSuccessfully )
+	{
+		UE_LOG(LogTemp,Warning,TEXT("PostSceneCard Completed."))
+	}
+	else
+	{
+
+	}
+}
+
 void UHttpRequestActor::OnPostCSVFile(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully)
 {
 	if ( bConnectedSuccessfully )
@@ -478,7 +493,7 @@ void UHttpRequestActor::OnGetParticularSceneCard(FHttpRequestPtr Request , FHttp
 	}
 	else
 	{
-
+		UE_LOG(LogTemp,Warning,TEXT("Can't get Particular Scene Card"));
 	}
 }
 
@@ -558,6 +573,31 @@ UTexture2D* UHttpRequestActor::Base64ToImage(FString Base64String)
 
 	return Texture;
 }
+
+
+FString UHttpRequestActor::ConvertToContentPath(const FString& FullPath)
+{
+	// Find the Content directory path in the provided FullPath
+	FString ContentDirectory = FPaths::ProjectContentDir();
+
+	// Check if the FullPath contains the Content directory
+	if ( FullPath.Contains(ContentDirectory) )
+	{
+		// Get the substring after the Content directory to find the relative path
+		FString RelativePath = FullPath.RightChop(ContentDirectory.Len());
+
+		// Replace backslashes with forward slashes (optional step)
+		RelativePath.ReplaceInline(TEXT("\\") , TEXT("/"));
+
+		// Return the path relative to /Game
+		return FString("/Game") / RelativePath;
+	}
+
+	// If FullPath doesn't contain the Content directory, return an empty string or handle the case as needed
+	return FString();
+}
+
+
 
 #pragma region other
 

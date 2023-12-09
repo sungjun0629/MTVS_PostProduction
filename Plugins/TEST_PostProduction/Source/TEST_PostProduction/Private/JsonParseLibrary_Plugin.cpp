@@ -82,6 +82,12 @@ FSceneCardInfo UJsonParseLibrary_Plugin::JsonParseToGetSceneInfo(const FString& 
 		parsedData.story = result->GetStringField("story");
 		parsedData.levelLocation = result->GetStringField("levelPosition");
 		parsedData.imageBase64 = result->GetStringField("thumbnail");
+
+		UE_LOG(LogTemp,Warning,TEXT("%s"), *parsedData.story)
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Failed to Parsing"))
 	}
 
 	return parsedData;

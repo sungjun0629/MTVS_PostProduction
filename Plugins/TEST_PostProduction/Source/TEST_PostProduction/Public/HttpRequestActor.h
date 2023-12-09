@@ -79,7 +79,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PostProjectRequest(const FString ProjectName, const FString scriptPath , const FString ProjectDes, TArray<FWorkerInfo> StaffInfo, const FString ImagePath);
 	UFUNCTION(BlueprintCallable)
-	void PostSceneCard(int32 projectID ,const FString story, FString levelLocation, FString imagePath);
+	void PostSceneCard(int32 projectID , int32 sceneNo ,const FString story, FString levelLocation, FString imagePath);
 	UFUNCTION(BlueprintCallable)
 	void GetAllProject();
 	UFUNCTION(BlueprintCallable)
@@ -100,6 +100,7 @@ public:
 	void OnReciveParticularProject(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnGetImageTexture(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnPostProjectInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
+	void OnPostSceneCardInfo(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnPostCSVFile(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnGetCSVDownloadURL(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
 	void OnGetScriptCSVDownload(FHttpRequestPtr Request , FHttpResponsePtr Response , bool bConnectedSuccessfully);
@@ -112,4 +113,6 @@ public:
 	FString OnImportButtonClicked();
 	UFUNCTION(BlueprintCallable)	
 	UTexture2D* Base64ToImage(FString Base64);
+	UFUNCTION(BlueprintCallable)
+	FString ConvertToContentPath(const FString& FullPath);
 };
