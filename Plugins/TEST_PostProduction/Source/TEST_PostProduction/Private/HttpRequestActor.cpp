@@ -607,8 +607,9 @@ FString UHttpRequestActor::ConvertToContentPath(const FString& FullPath)
 		// Replace backslashes with forward slashes (optional step)
 		RelativePath.ReplaceInline(TEXT("\\") , TEXT("/"));
 
+
 		// Return the path relative to /Game
-		return FString("/Game") / RelativePath;
+		return FString("Content") / RelativePath;
 	}
 
 	// If FullPath doesn't contain the Content directory, return an empty string or handle the case as needed
