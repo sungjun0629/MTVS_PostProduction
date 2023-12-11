@@ -13,6 +13,7 @@
 #include "WebBrowser/Public/SWebBrowser.h"
 #include "TEST_PostProduction.h"
 #include "Blutility/Public/EditorUtilitySubsystem.h"
+#include "Templates/SharedPointer.h"
 
 
 
@@ -74,8 +75,7 @@ void SLoginWebPage::OnGetToken()
 
 	loginWebBrowser.Get()->GetSource(Callback);
 
-
-		UE_LOG(LogTemp, Warning, TEXT("rawHtml : %s"), *rawHtml);
+	UE_LOG(LogTemp, Warning, TEXT("rawHtml : %s"), *rawHtml);
 
 }
 
@@ -114,7 +114,7 @@ void SLoginWebPage::ConvertTab()
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Login Tab"));
 	if (OldTab.IsValid())
 	{
-		OldTab->RequestCloseTab();
+		//OldTab->RequestCloseTab();
 	}
 }
 

@@ -247,7 +247,7 @@ void USoundConverterLogic::ImageDownloadUrl(const FString res, const FString dec
     extensions.Add("_albedo.png");
     extensions.Add("_meshMat.mtl");
     extensions.Add("_meshObj.obj");
-    extensions.Add("_gif");
+    extensions.Add(".mp4");
 
 
     FString urlDownload = parsedData[ 0 ];
