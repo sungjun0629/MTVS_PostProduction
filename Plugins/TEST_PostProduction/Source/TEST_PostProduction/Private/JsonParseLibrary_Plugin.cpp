@@ -220,6 +220,7 @@ TArray<FString> UJsonParseLibrary_Plugin::JsonParse3DImage(const FString& origin
 		parsedData.Add(result->GetStringField("albedoUrl"));
 		parsedData.Add(result->GetStringField("meshMtl"));
 		parsedData.Add(result->GetStringField("meshObj"));
+		parsedData.Add(result->GetStringField("thumbnailUrl"));
 	}
 	else
 	{

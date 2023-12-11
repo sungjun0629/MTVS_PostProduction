@@ -854,6 +854,7 @@ FReply FMemoTableEditor::RenewMemoContent()
 
 	UE_LOG(LogTemp , Warning , TEXT("OnExportClicked"));
 	UDataTable* LoadedDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass() , nullptr , *DataTablePath));
+
 	bool isSuccess = false;
 	FString OutInfoMessage;
 	UExcelImportExportDataTable::ExportDataTableToCSV("D:\\DownTest\\Test.csv" , LoadedDataTable , isSuccess , OutInfoMessage);
@@ -912,6 +913,7 @@ void FMemoTableEditor::CompareCSVFiles(const FString& File1Path , const FString&
 		else
 		{
 			RowsToCopy.Add(File1Rows[index]);
+			UE_LOG(LogTemp , Warning , TEXT("UUID %s is present in %s") , *UUID, *File1Path);
 		}
 		index++;
 	}
@@ -923,13 +925,17 @@ void FMemoTableEditor::CompareCSVFiles(const FString& File1Path , const FString&
 			UE_LOG(LogTemp , Warning , TEXT("UUID %s is present in %s but not in %s") , *UUID , *File2Path , *File1Path);
 			RowsToCopy.Add(File2Rows[index]);
 		}
+
 		index++;
 	}
 
 	FString OutputContent;
 	FString OutputPath = "D:\\DownTest\\Test3.csv";
-	for ( const FString& Row : RowsToCopy ) {
-		OutputContent.Append(Row + "\n");
+	if(RowsToCopy.Num()>0 )
+	{
+		for ( const FString& Row : RowsToCopy ) {
+			OutputContent.Append(Row + "\n");
+		}
 	}
 
 	FFileHelper::SaveStringToFile(OutputContent , *OutputPath);

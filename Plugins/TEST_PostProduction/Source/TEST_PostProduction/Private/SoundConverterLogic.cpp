@@ -56,6 +56,7 @@ void USoundConverterLogic::ConvertedSoundDownload(FString loadedAsset, FString m
     FString ModelName = modelName;
     RequestObj->SetStringField("fileName" , *base64Info);
     RequestObj->SetStringField("modelName" , *ModelName);
+    RequestObj->SetStringField("gender" , "male");
 
     FString RequestBody;
     FString URL = IPConfig::StaticVariable + "/view/voice";
@@ -246,6 +247,7 @@ void USoundConverterLogic::ImageDownloadUrl(const FString res, const FString dec
     extensions.Add("_albedo.png");
     extensions.Add("_meshMat.mtl");
     extensions.Add("_meshObj.obj");
+    extensions.Add("_gif");
 
 
     FString urlDownload = parsedData[ 0 ];
@@ -254,7 +256,7 @@ void USoundConverterLogic::ImageDownloadUrl(const FString res, const FString dec
     getWebAddress->ReloadAndGetAssetDownloadURL(urlDownload , storageImagePath);
     if ( parsedData.Num() > 1 )
     {
-        for ( int32 i = 1; i < 3; i++ )
+        for ( int32 i = 1; i < 4; i++ )
         {
             FString url = parsedData[ i ];
             FString storagePath = SaveAssetPath + extensions[ i ];

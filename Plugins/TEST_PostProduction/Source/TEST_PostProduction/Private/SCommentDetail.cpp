@@ -257,6 +257,7 @@ void SCommentDetail::ReloadCommentDetail(FString ContentUUID)
 {
 	
 	UE_LOG(LogTemp,Warning,TEXT("ReloadCommentDetail"))
+	contentUUID = ContentUUID;
 	LoadContent(ContentUUID);
 	ReloadListview();
 	commentListView->RequestListRefresh();
