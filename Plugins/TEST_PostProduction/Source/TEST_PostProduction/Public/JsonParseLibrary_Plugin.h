@@ -82,6 +82,8 @@ public:
 	FString levelLocation = TEXT("untitled");
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString imageBase64 = TEXT("untitled");
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 sceneNo = 9999;
 
 };
 
