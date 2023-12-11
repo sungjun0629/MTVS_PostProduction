@@ -184,7 +184,7 @@ FReply SImageConverter::OnVideoUploadFileClicked()
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
-	//Request->SetHeader(TEXT("Authorization"), BearerToken);
+	Request->SetHeader(TEXT("Authorization"), BearerToken);
 	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindRaw(this, &SImageConverter::OnGet3DImage);
 	Request->ProcessRequest();

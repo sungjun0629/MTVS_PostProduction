@@ -66,14 +66,15 @@ void SLoginWebPage::OnURLChanged(const FText& InText)
 void SLoginWebPage::OnGetToken()
 {
 
-	auto Callback = [=](const FString& SourceURL) {
-			// Handle the source URL as needed
-			rawHtml = SourceURL;
-			UE_LOG(LogTemp, Warning, TEXT("SourceURL : %s"), *SourceURL);
-			ParsingHtml(SourceURL);
-		};
+	//auto Callback = [=](const FString& SourceURL) {
+	//		// Handle the source URL as needed
+	//		rawHtml = SourceURL;
+	//		UE_LOG(LogTemp, Warning, TEXT("SourceURL : %s"), *SourceURL);
+	//		ParsingHtml(SourceURL);
+	//	};
 
-	loginWebBrowser.Get()->GetSource(Callback);
+	//loginWebBrowser.Get()->GetSource(Callback);
+	ParsingHtml(URLString);
 
 	UE_LOG(LogTemp, Warning, TEXT("rawHtml : %s"), *rawHtml);
 
@@ -84,10 +85,11 @@ void SLoginWebPage::ParsingHtml(FString HtmlString)
 	
 	UE_LOG(LogTemp, Warning, TEXT("Before Parseing : %s"), *HtmlString);
 
-	HtmlString.Split(TEXT("{"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
-	HtmlString.Split(TEXT(":"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
-	HtmlString.Split(TEXT("\""), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
-	HtmlString.Split(TEXT("\""), &HtmlString, nullptr, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	//HtmlString.Split(TEXT("{"), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	HtmlString.Split(TEXT("="), nullptr, &HtmlString, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	HtmlString.Split(TEXT("&"), &HtmlString , nullptr, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+	/*HtmlString.Split(TEXT("\"") , nullptr , &HtmlString , ESearchCase::IgnoreCase , ESearchDir::FromStart);
+	HtmlString.Split(TEXT("\""), &HtmlString, nullptr, ESearchCase::IgnoreCase, ESearchDir::FromStart);*/
 
 	UE_LOG(LogTemp, Warning, TEXT("Access Token : %s"), *HtmlString);
 	IPConfig::Token = HtmlString;
@@ -114,7 +116,7 @@ void SLoginWebPage::ConvertTab()
 	TSharedPtr<SDockTab> OldTab = FGlobalTabmanager::Get()->FindExistingLiveTab(FName("Login Tab"));
 	if (OldTab.IsValid())
 	{
-		//OldTab->RequestCloseTab();
+		OldTab->RequestCloseTab();
 	}
 }
 

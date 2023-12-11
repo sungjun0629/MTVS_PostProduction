@@ -90,6 +90,8 @@ void UHttpRequestActor::PostProjectRequest(const FString ProjectName , const FSt
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj , Writer);
 
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->SetURL(URL);
 	Request->SetVerb(TEXT("POST"));
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
@@ -120,6 +122,8 @@ void UHttpRequestActor::PostSceneCard(int32 projectID , int32 sceneNo , const FS
 
 	Request->SetURL(URL);
 	Request->SetVerb(TEXT("POST"));
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
 	Request->SetContentAsString(RequestBody);
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnPostSceneCardInfo);
@@ -134,6 +138,8 @@ void UHttpRequestActor::GetAllProject()
 	// GET처리 
 	Request->SetURL(URL);
 	Request->SetVerb("GET");
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnReciveAllProject);
 	Request->ProcessRequest();
 }
@@ -149,6 +155,8 @@ void UHttpRequestActor::GetScriptCSV(int32 projectId)
 	// GET처리 
 	Request->SetURL(URL);
 	Request->SetVerb("GET");
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetScriptCSVDownload);
 	Request->ProcessRequest();
 }
@@ -160,7 +168,11 @@ void UHttpRequestActor::GetParticularProject(int32 number)
 	// 프로젝트의 고유 번호를 통해 접근한다. 
 	URL.Append(FString::Printf(TEXT("%d") , number));
 
+	UE_LOG(LogTemp,Warning,TEXT("debuging %s"), *URL)
+
 	// GET처리 
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->SetURL(URL);
 	Request->SetVerb("GET");
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnReciveParticularProject);
@@ -180,6 +192,8 @@ void UHttpRequestActor::GetParticularSceneCard(int32 projectID , int32 sceneNo)
 	// GET처리 
 	Request->SetURL(URL);
 	Request->SetVerb("GET");
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetParticularSceneCard);
 	Request->ProcessRequest();
 }
@@ -232,6 +246,8 @@ void UHttpRequestActor::GetCSVDownload()
 	// GET처리 
 	Request->SetURL(URL);
 	Request->SetVerb("GET");
+	FString BearerToken = "Bearer " + IPConfig::Token;
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->OnProcessRequestComplete().BindUObject(this , &UHttpRequestActor::OnGetCSVDownloadURL);
 	Request->ProcessRequest();
 }
@@ -321,7 +337,9 @@ void UHttpRequestActor::PostCSVToStorage(FString savePath)
 	FString RequestBody;
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj , Writer);
+	FString BearerToken = "Bearer " + IPConfig::Token;
 
+	Request->SetHeader(TEXT("Authorization") , BearerToken);
 	Request->SetURL(URL);
 	Request->SetVerb(TEXT("POST"));
 	Request->SetHeader(TEXT("Content-Type") , TEXT("application/json"));
