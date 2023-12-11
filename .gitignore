@@ -88,9 +88,15 @@ Content/Record File Name
 
 
 #LES work
+Content/LES/animation/*
+Content/LES/Retargeting/*
+
 Content/LES/animation/Animation_Retargeting/m3mdance-graceful_250999.uasset
 Content/LES/Retargeting/Retagetin02/animation/dance-graceful_250999.uasset
 Content/MetaHumans/LES_metahuman/Face/body/sk_les.uasset
 Content/MetaHumans/LES_metahuman/Face/*/FFF_LES_metahuman_FaceMesh.uasset
 Content/MetaHumans/LES_metahuman/Face/*/cloth_SET_alemblc_abc_walktiun.uasset
 Content/MetaHumans/LES_metahuman/Face/test/SHOPPING.uasset
+
+#Alembic
+Content/DKW/Motion/*
