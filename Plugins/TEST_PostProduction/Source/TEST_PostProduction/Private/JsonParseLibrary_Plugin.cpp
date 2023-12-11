@@ -82,7 +82,8 @@ FSceneCardInfo UJsonParseLibrary_Plugin::JsonParseToGetSceneInfo(const FString& 
 		parsedData.story = result->GetStringField("story");
 		parsedData.levelLocation = result->GetStringField("levelPosition");
 		parsedData.imageBase64 = result->GetStringField("thumbnail");
-
+		parsedData.sceneNo = result->GetIntegerField("sceneNo");
+	
 	}
 	else
 	{
